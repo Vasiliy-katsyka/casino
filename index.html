@@ -41,7 +41,19 @@
         .case-container { position: relative; width: 100%; height: 160px; overflow: hidden; margin: 20px 0; border-radius: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); }
         .case-marker { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 3px; height: 100%; background: var(--gold); z-index: 5; box-shadow: 0 0 10px var(--gold); }
         .case-strip { display: flex; height: 100%; align-items: center; will-change: transform; }
-        .case-item { min-width: 110px; height: 130px; margin: 0 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* Find .case-item in your CSS and change it to this: */
+        .case-item { 
+            min-width: 110px; 
+            height: 130px; 
+            margin: 0 4px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            
+            /* --- ADD THIS LINE --- */
+            flex-shrink: 0; 
+        }
         .case-item img { width: 70px; height: 70px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
         .price-tag { font-size: 10px; color: #aaa; margin-top: 4px; font-family: 'Rajdhani'; }
 
