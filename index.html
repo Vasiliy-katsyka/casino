@@ -101,70 +101,113 @@
             margin-top: 20px; 
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
+        /* CRASH MONITOR */
+        .crash-monitor {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background: #0d0d10;
+            border-radius: 16px;
+            border: 1px solid #2a2a35;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
         
-        canvas { 
-            width: 100%; 
-            height: 100%; 
+        canvas {
+            width: 100%;
+            height: 100%;
             display: block;
         }
         
-        .crash-overlay { 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            pointer-events: none; /* Let clicks pass through to canvas if needed */
+        /* UI OVERLAY */
+        .crash-ui {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
             z-index: 10;
+            width: 100%;
         }
         
-        .crash-val {
-            font-size: 56px; 
-            font-weight: 800; 
-            font-family: 'Rajdhani', sans-serif; 
+        .crash-multiplier {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 800;
+            font-size: 64px;
             color: white;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            font-variant-numeric: tabular-nums; /* Prevents jittering */
+            text-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
         }
         
         .crash-status {
             font-size: 14px;
-            text-transform: uppercase;
             letter-spacing: 2px;
-            margin-top: -5px;
+            color: #555;
             font-weight: 700;
+            margin-top: 10px;
         }
         
-        .crash-controls {
-            display: flex;
-            gap: 10px;
+        .crash-win-msg {
+            font-family: 'Rajdhani';
+            font-size: 24px;
+            color: #00ff88;
+            font-weight: bold;
+            margin-top: 5px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+            height: 30px; /* reserve space */
+        }
+        
+        /* CONTROLS AREA */
+        .crash-controls-area {
             margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         
-        .bet-input-group {
+        .bet-selector {
             display: flex;
             align-items: center;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
             padding: 0 15px;
-            flex: 1;
+            height: 50px;
         }
         
-        .bet-input-group span { color: var(--gold); font-weight: bold; font-size: 12px; }
-        .bet-input {
-            background: transparent;
+        .input-label { color: #666; font-size: 10px; font-weight: 700; width: 50px; }
+        .bet-input { 
+            background: transparent; border: none; color: white; 
+            font-family: 'Rajdhani'; font-size: 22px; font-weight: bold; 
+            width: 100%; text-align: right; margin-right: 10px; 
+        }
+        .ton-badge { color: var(--primary); font-weight: bold; font-size: 12px; }
+        
+        .button-group { display: flex; gap: 10px; }
+        .btn-half {
+            flex: 1; background: rgba(255,255,255,0.05); border: none; color: #888;
+            padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
+        .btn-half:active { background: rgba(255,255,255,0.1); }
+        
+        .btn-launch {
+            width: 100%;
+            background: linear-gradient(90deg, #0088cc, #005f8f);
             border: none;
             color: white;
-            padding: 14px;
-            width: 100%;
-            font-weight: bold;
-            font-size: 18px;
-            text-align: right;
+            padding: 16px;
+            border-radius: 12px;
             font-family: 'Rajdhani';
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+            transition: 0.2s;
         }
+        .btn-launch:active { transform: scale(0.98); }
+        .btn-launch.cashout { background: linear-gradient(90deg, #ff0055, #cc0044); box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4); }
     </style>
 </head>
 <body>
@@ -234,32 +277,43 @@
             <div style="margin-top:auto;"><button class="btn" id="upgrade-action-btn" onclick="runUpgrade()" disabled>INITIATE FUSION</button></div>
         </div>
 
-        <!-- CRASH -->
-        <!-- CRASH GAME VIEW -->
         <div id="view-crash" class="game-view">
-            <div style="margin-bottom: 10px;">
-                <h2 style="margin:0; font-family:'Rajdhani'">CRASH</h2>
-                <span style="color:var(--text-secondary); font-size: 13px;">Multiplier rises... until it crashes!</span>
+            <!-- HEADER -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 15px;">
+                <div>
+                    <h2 style="margin:0; font-family:'Rajdhani'; font-size: 28px;">CRASH</h2>
+                    <span style="color:var(--text-secondary); font-size: 12px;">Eject before the explosion!</span>
+                </div>
+                <div style="text-align:right;">
+                     <div style="font-size:10px; color:#666;">BALANCE</div>
+                     <div id="crash-balance-display" style="font-family:'Rajdhani'; font-size:18px; color:var(--gold);">0.00</div>
+                </div>
             </div>
         
-            <!-- THE GAME CANVAS -->
-            <div class="canvas-container">
+            <!-- GAME AREA -->
+            <div class="crash-monitor">
                 <canvas id="crashCanvas"></canvas>
-                <div class="crash-overlay">
-                    <div class="crash-val" id="crash-text">1.00x</div>
-                    <div class="crash-status" id="crash-msg" style="color:#aaa">Place Bet</div>
+                
+                <!-- OVERLAY UI -->
+                <div class="crash-ui">
+                    <div class="crash-multiplier" id="crash-text">1.00x</div>
+                    <div class="crash-status" id="crash-status">PLACE YOUR BET</div>
+                    <div class="crash-win-msg" id="crash-win-msg"></div>
                 </div>
             </div>
         
             <!-- CONTROLS -->
-            <div class="crash-controls">
-                <div class="bet-input-group">
-                    <span>BET</span>
-                    <input type="number" id="crash-bet" value="1.0" min="0.1" step="0.1" class="bet-input">
+            <div class="crash-controls-area">
+                <div class="bet-selector">
+                    <span class="input-label">AMOUNT</span>
+                    <input type="number" id="crash-bet" value="1.0" step="0.5" min="0.5" class="bet-input">
+                    <span class="ton-badge">TON</span>
                 </div>
-                <button class="btn" id="crash-action-btn" onclick="toggleCrash()" style="width: 140px;">
-                    LAUNCH
-                </button>
+                <div class="button-group">
+                    <button class="btn-half" onclick="setHalfBet()">1/2</button>
+                    <button class="btn-half" onclick="setDoubleBet()">x2</button>
+                </div>
+                <button class="btn-launch" id="crash-action-btn" onclick="toggleCrash()">LAUNCH ROCKET</button>
             </div>
         </div>
 
@@ -536,314 +590,352 @@
         const BOOM_IMG = new Image();
         BOOM_IMG.src = "https://cdn-icons-png.flaticon.com/512/9426/9426997.png"; // Explosion
         
-        // Config
-        const C_CONFIG = {
-            bgColor: "#121216",
-            gridColor: "rgba(255, 255, 255, 0.05)",
-            lineColor: "#00ff88",
-            crashColor: "#ff0055",
-            timeScale: 60, // Horizontal speed (pixels per sec)
-            multScale: 150, // Vertical speed (pixels per 1x)
-            trailLimit: 50 // Max particles
-        };
+        // ==========================================
+        //  CRASH GAME ENGINE (FIXED & OPTIMIZED)
+        // ==========================================
         
-        // State
-        let cState = {
-            status: 'IDLE', // IDLE, RUNNING, CRASHED, CASHED_OUT
+        const RocketEngine = {
+            canvas: null,
+            ctx: null,
+            width: 0,
+            height: 0,
+            animId: null,
+            
+            // Game State
+            status: 'IDLE', // IDLE, RUNNING, CRASHED
             startTime: 0,
             multiplier: 1.00,
-            limit: 0,
+            crashPoint: 0,
             bet: 0,
-            animId: null,
-            particles: []
+            
+            // Assets
+            rocketImg: new Image(),
+            boomImg: new Image(),
+            
+            // Physics & Visuals
+            scaleX: 100,  // Pixels per second
+            scaleY: 200,  // Pixels per multiplier
+            offsetX: 50,  // Padding left
+            offsetY: 50,  // Padding bottom
+            particles: [],
+        
+            init: function() {
+                this.canvas = document.getElementById('crashCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.rocketImg.src = "https://cdn-icons-png.flaticon.com/512/1356/1356479.png"; 
+                this.boomImg.src = "https://cdn-icons-png.flaticon.com/512/9426/9426997.png";
+                
+                // Handle Resize
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                
+                // Initial Render
+                this.drawIdle();
+            },
+        
+            resize: function() {
+                if(!this.canvas) return;
+                const parent = this.canvas.parentElement;
+                this.width = parent.offsetWidth;
+                this.height = parent.offsetHeight;
+                this.canvas.width = this.width;
+                this.canvas.height = this.height;
+                if(this.status === 'IDLE') this.drawIdle();
+            },
+        
+            startGame: function(betAmount, finalCrashPoint) {
+                this.bet = betAmount;
+                this.crashPoint = finalCrashPoint;
+                this.startTime = Date.now();
+                this.status = 'RUNNING';
+                this.multiplier = 1.00;
+                this.particles = [];
+                
+                if (this.animId) cancelAnimationFrame(this.animId);
+                this.loop();
+            },
+        
+            cashOut: function() {
+                this.status = 'IDLE'; // Stop logic, keep rendering static win
+                cancelAnimationFrame(this.animId);
+                return this.multiplier;
+            },
+        
+            crash: function() {
+                this.status = 'CRASHED';
+                // Run one last frame to draw explosion
+                this.draw(this.getErrorTime(), this.crashPoint); 
+                cancelAnimationFrame(this.animId);
+            },
+        
+            // --- MATH ---
+            getMultiplier: function(t) {
+                // Growth formula: 1 + 0.06 * t^2 (simpler parabolic curve looks better on phone)
+                // or Exponential: Math.exp(0.06 * t)
+                // Let's use Exponential for realism
+                return Math.exp(0.065 * t); 
+            },
+            
+            getTimeFromMult: function(m) {
+                return Math.log(m) / 0.065;
+            },
+            
+            getErrorTime: function() {
+                return (Date.now() - this.startTime) / 1000;
+            },
+        
+            // --- RENDER LOOP ---
+            loop: function() {
+                if(this.status !== 'RUNNING') return;
+        
+                const t = this.getErrorTime();
+                this.multiplier = this.getMultiplier(t);
+        
+                // Update UI immediately for smoothness
+                document.getElementById('crash-text').innerText = this.multiplier.toFixed(2) + "x";
+        
+                // Check Crash
+                if(this.multiplier >= this.crashPoint) {
+                    this.multiplier = this.crashPoint;
+                    document.getElementById('crash-text').innerText = this.crashPoint.toFixed(2) + "x";
+                    crashEnd(); // Call main function
+                    return; 
+                }
+        
+                this.draw(t, this.multiplier);
+                this.animId = requestAnimationFrame(() => this.loop());
+            },
+        
+            draw: function(t, currentMult) {
+                const ctx = this.ctx;
+                const w = this.width;
+                const h = this.height;
+        
+                // 1. Clear
+                ctx.fillStyle = "#0d0d10";
+                ctx.fillRect(0, 0, w, h);
+        
+                // 2. Calculate "Camera" Scaling
+                // We want the rocket to be at roughly 80% width and 80% height relative to origin
+                const worldX = t * this.scaleX;
+                const worldY = (currentMult - 1) * this.scaleY;
+                
+                // Viewport padding
+                const padX = w * 0.8; 
+                const padY = h * 0.8;
+        
+                // Zoom factor (1.0 = normal, <1.0 = zoomed out)
+                let zoom = 1.0;
+                if (worldX > padX || worldY > padY) {
+                    const zoomX = padX / worldX;
+                    const zoomY = padY / worldY;
+                    zoom = Math.min(zoomX, zoomY); // Fit both
+                }
+        
+                ctx.save();
+                
+                // Transform Coordinate System
+                // Move Origin to Bottom-Left + Padding
+                ctx.translate(this.offsetX, h - this.offsetY);
+                ctx.scale(zoom, -zoom); // Flip Y so Up is Positive
+        
+                // 3. Draw Grid
+                ctx.lineWidth = 1 / zoom;
+                ctx.strokeStyle = "rgba(255,255,255,0.05)";
+                ctx.beginPath();
+                // Dynamic grid lines based on view
+                const maxValX = (w / zoom);
+                const maxValY = (h / zoom);
+                for(let gx=0; gx<maxValX; gx+=100) { ctx.moveTo(gx, 0); ctx.lineTo(gx, maxValY); }
+                for(let gy=0; gy<maxValY; gy+=100) { ctx.moveTo(0, gy); ctx.lineTo(maxValX, gy); }
+                ctx.stroke();
+        
+                // 4. Draw Graph (The Curve)
+                ctx.beginPath();
+                ctx.lineWidth = 5 / zoom;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                // Color depends on state
+                ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#00ff88"; 
+        
+                // Draw segments to create curve
+                ctx.moveTo(0,0);
+                const steps = 20; // Resolution
+                for(let i=1; i<=steps; i++) {
+                    const stepT = (t / steps) * i;
+                    const stepM = this.getMultiplier(stepT);
+                    ctx.lineTo(stepT * this.scaleX, (stepM - 1) * this.scaleY);
+                }
+                ctx.stroke();
+        
+                // 5. Fill Area Under Graph
+                ctx.lineTo(worldX, 0); // Drop to bottom
+                ctx.lineTo(0, 0);      // Back to start
+                ctx.closePath();
+                
+                ctx.save();
+                ctx.scale(1, -1); // Unflip for gradient
+                // Create gradient from top of rocket down to axis
+                const grad = ctx.createLinearGradient(0, -worldY, 0, 0);
+                grad.addColorStop(0, (this.status === 'CRASHED') ? "rgba(255, 0, 85, 0.4)" : "rgba(0, 255, 136, 0.4)");
+                grad.addColorStop(1, "rgba(0,0,0,0)");
+                ctx.fillStyle = grad;
+                ctx.fill();
+                ctx.restore();
+        
+                // 6. Draw Particles (Fire Exhaust)
+                if(this.status === 'RUNNING') {
+                    // Add new particles
+                    for(let k=0; k<2; k++) {
+                        this.particles.push({
+                            x: worldX, y: worldY,
+                            vx: (Math.random()-0.5) * 20, vy: -(Math.random()*30 + 10),
+                            life: 1.0, size: Math.random() * 4 + 2
+                        });
+                    }
+                }
+                
+                for(let i=this.particles.length-1; i>=0; i--) {
+                    let p = this.particles[i];
+                    p.x += p.vx; p.y += p.vy; p.life -= 0.05;
+                    if(p.life <= 0) this.particles.splice(i,1);
+                    else {
+                        ctx.fillStyle = `rgba(255, ${Math.random()*150+100}, 0, ${p.life})`;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, (p.size / zoom), 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                }
+        
+                // 7. Draw Rocket or Explosion
+                ctx.translate(worldX, worldY);
+                const imgSize = 60 / zoom; // Keep size consistent relative to screen
+        
+                if(this.status === 'CRASHED') {
+                    ctx.scale(1, -1);
+                    ctx.drawImage(this.boomImg, -imgSize/2, -imgSize/2, imgSize, imgSize);
+                } else {
+                    // Rotate based on slope
+                    const dt = 0.1;
+                    const mNext = this.getMultiplier(t + dt);
+                    const dy = ((mNext - 1) * this.scaleY) - worldY;
+                    const dx = (dt * this.scaleX);
+                    const angle = Math.atan2(dy, dx);
+                    
+                    ctx.rotate(angle);
+                    
+                    // Shake effect
+                    const shake = (Math.random() - 0.5) * (2 / zoom);
+                    ctx.translate(0, shake);
+        
+                    ctx.scale(1, -1); // Flip image back
+                    ctx.drawImage(this.rocketImg, -imgSize/2, -imgSize/2, imgSize, imgSize);
+                }
+        
+                ctx.restore();
+            },
+        
+            drawIdle: function() {
+                const ctx = this.ctx;
+                ctx.fillStyle = "#0d0d10";
+                ctx.fillRect(0,0,this.width, this.height);
+                
+                // Simple Grid
+                ctx.strokeStyle = "rgba(255,255,255,0.03)";
+                ctx.beginPath();
+                for(let i=0; i<this.width; i+=50) { ctx.moveTo(i,0); ctx.lineTo(i,this.height); }
+                ctx.stroke();
+            }
         };
         
-        // Init Canvas
-        const cvs = document.getElementById('crashCanvas');
-        const ctx = cvs.getContext('2d', { alpha: false }); // Optimize
+        // ==========================================
+        //  GAME LOGIC CONNECTION
+        // ==========================================
         
-        function resizeCanvas() {
-            if(cvs.parentElement) {
-                cvs.width = cvs.parentElement.offsetWidth;
-                cvs.height = cvs.parentElement.offsetHeight;
-                if(cState.status === 'IDLE') drawIdle(); // Redraw idle screen on resize
-            }
+        // Init Engine on Load
+        setTimeout(() => RocketEngine.init(), 500);
+        
+        // Helper Buttons
+        function setHalfBet() { 
+            const input = document.getElementById('crash-bet'); 
+            input.value = Math.max(0.5, parseFloat(input.value)/2).toFixed(1); 
         }
-        window.addEventListener('resize', resizeCanvas);
-        setTimeout(resizeCanvas, 100);
-        
-        // --- PHYSICS & MATH ---
-        
-        // Easing for multiplier (Exponential growth standard in gambling)
-        function getMultiplier(seconds) {
-            // Formula: E^(0.065 * t)
-            return Math.pow(Math.E, 0.065 * seconds);
+        function setDoubleBet() { 
+            const input = document.getElementById('crash-bet'); 
+            input.value = (parseFloat(input.value)*2).toFixed(1); 
         }
         
-        // Inverse to find X position for a given multiplier
-        function getSeconds(mult) {
-            return Math.log(mult) / 0.065;
-        }
-        
-        // --- GAME LOOP ---
-        
-        function toggleCrash() {
+        // MAIN TOGGLE FUNCTION
+        async function toggleCrash() {
             const btn = document.getElementById('crash-action-btn');
-            const txt = document.getElementById('crash-text');
-            const msg = document.getElementById('crash-msg');
-            
-            // CASHOUT
-            if (cState.status === 'RUNNING') {
-                finishGame(true); // User Won
+            const msg = document.getElementById('crash-status');
+            const winMsg = document.getElementById('crash-win-msg');
+        
+            // 1. CASHOUT LOGIC
+            if (RocketEngine.status === 'RUNNING') {
+                const finalMult = RocketEngine.cashOut();
+                const winAmt = RocketEngine.bet * finalMult;
+                
+                balance += winAmt; // Immediate UI update
+                document.getElementById('user-balance').innerText = balance.toFixed(2);
+                
+                // Update UI
+                btn.innerHTML = "LAUNCH ROCKET";
+                btn.classList.remove('cashout');
+                
+                document.getElementById('crash-text').style.color = "#00ff88"; // WIN GREEN
+                msg.innerText = "VICTORY!";
+                winMsg.innerText = `+${winAmt.toFixed(2)} TON`;
+                
+                // Sync with backend (Optional)
+                // api("/api/game/crash/win", "POST", { amount: winAmt });
                 return;
             }
         
-            // START
-            if (cState.status === 'IDLE' || cState.status === 'CRASHED' || cState.status === 'CASHED_OUT') {
+            // 2. START LOGIC
+            if (RocketEngine.status !== 'RUNNING') {
                 const betInput = document.getElementById('crash-bet');
-                const amount = parseFloat(betInput.value);
+                const betAmt = parseFloat(betInput.value);
         
-                if (isNaN(amount) || amount <= 0) return alert("Invalid bet");
-                if (balance < amount) return alert("Insufficient balance");
+                if(balance < betAmt) { alert("Insufficient funds!"); return; }
         
-                // Logic
-                balance -= amount;
+                // Deduct
+                balance -= betAmt;
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-                
-                cState.bet = amount;
-                cState.status = 'RUNNING';
-                cState.startTime = Date.now();
-                cState.multiplier = 1.00;
-                cState.particles = [];
-                
-                // Determine Crash Point (Rigged Logic)
-                // 30% instant crash (<1.2), 40% mid (1.2-3.0), 30% high (3+)
+        
+                // Reset UI
+                document.getElementById('crash-text').style.color = "white";
+                msg.innerText = "ROCKET IN FLIGHT";
+                winMsg.innerText = "";
+                btn.innerHTML = "EJECT NOW";
+                btn.classList.add('cashout');
+        
+                // Determine result
+                let crashAt = 1.0;
                 const r = Math.random();
-                if(r < 0.3) cState.limit = 1.0 + (Math.random() * 0.2);
-                else if(r < 0.7) cState.limit = 1.2 + (Math.random() * 2.8);
-                else cState.limit = 4.0 + (Math.random() * 10);
-                
-                // UI
-                btn.innerText = "CASHOUT";
-                btn.style.background = "#ff0055";
-                btn.style.boxShadow = "0 0 15px rgba(255, 0, 85, 0.4)";
-                txt.style.color = "#fff";
-                msg.innerText = "FLYING...";
-                msg.style.color = "#00ff88";
+                if(r < 0.3) crashAt = 1.0 + Math.random()*0.2;       // 30% Instant Loss
+                else if(r < 0.6) crashAt = 1.2 + Math.random()*1.8;  // 30% 1.2x - 3.0x
+                else if(r < 0.9) crashAt = 3.0 + Math.random()*7.0;  // 30% 3.0x - 10.0x
+                else crashAt = 10 + Math.random()*50;                // 10% Moon
         
-                // Start Loop
-                if(cState.animId) cancelAnimationFrame(cState.animId);
-                runEngine();
+                RocketEngine.startGame(betAmt, crashAt);
             }
         }
         
-        function finishGame(win) {
+        // Handle Crash End
+        function crashEnd() {
+            RocketEngine.crash();
+            
             const btn = document.getElementById('crash-action-btn');
-            const txt = document.getElementById('crash-text');
-            const msg = document.getElementById('crash-msg');
-        
-            if (win) {
-                cState.status = 'CASHED_OUT';
-                const winAmount = cState.bet * cState.multiplier;
-                balance += winAmount; // Add profit locally
-                document.getElementById('user-balance').innerText = balance.toFixed(2);
-                
-                txt.innerText = cState.multiplier.toFixed(2) + "x";
-                txt.style.color = "#00ff88";
-                msg.innerText = `WON ${(winAmount - cState.bet).toFixed(2)} TON`;
-                msg.style.color = "#00ff88";
-                
-                btn.innerText = "PLAY AGAIN";
-                btn.style.background = "";
-                btn.style.boxShadow = "";
-            } else {
-                cState.status = 'CRASHED';
-                txt.style.color = "#ff0055";
-                msg.innerText = "CRASHED";
-                msg.style.color = "#ff0055";
-                
-                btn.innerText = "TRY AGAIN";
-                btn.style.background = "";
-                btn.style.boxShadow = "";
-        
-                // Send Loss to Backend
-                api("/api/game/crash/lost", "POST", { bet: cState.bet });
-            }
-        }
-        
-        // --- RENDERER ---
-        
-        function runEngine() {
-            const now = Date.now();
-            const elapsed = (now - cState.startTime) / 1000;
+            btn.innerHTML = "TRY AGAIN";
+            btn.classList.remove('cashout');
             
-            // Update Multiplier
-            if(cState.status === 'RUNNING') {
-                cState.multiplier = getMultiplier(elapsed);
-                
-                // Update UI Text
-                document.getElementById('crash-text').innerText = cState.multiplier.toFixed(2) + "x";
-        
-                // Check Crash
-                if (cState.multiplier >= cState.limit) {
-                    cState.multiplier = cState.limit; // Clamp
-                    document.getElementById('crash-text').innerText = cState.limit.toFixed(2) + "x";
-                    finishGame(false);
-                }
-            }
-        
-            // --- DRAWING ---
+            document.getElementById('crash-text').style.color = "#ff0055"; // RED
+            document.getElementById('crash-status').innerText = "ROCKET EXPLODED";
+            document.getElementById('crash-win-msg').innerText = "";
             
-            // 1. Calculate World Coordinates
-            const worldX = elapsed * C_CONFIG.timeScale;
-            const worldY = (cState.multiplier - 1) * C_CONFIG.multScale;
-        
-            // 2. Camera Logic (Auto-Zoom)
-            // We want the rocket to sit at ~70% of the view
-            const padX = cvs.width * 0.7;
-            const padY = cvs.height * 0.7;
-            
-            // If world position exceeds padding, we scale down
-            let scale = 1;
-            if (worldX > padX || worldY > padY) {
-                const scaleX = padX / worldX;
-                const scaleY = padY / worldY;
-                scale = Math.min(scaleX, scaleY);
-            }
-        
-            // Clear Screen
-            ctx.fillStyle = C_CONFIG.bgColor;
-            ctx.fillRect(0, 0, cvs.width, cvs.height);
-        
-            ctx.save(); // Save default context
-        
-            // Apply Camera Transform
-            ctx.translate(0, cvs.height); // Move 0,0 to bottom-left
-            ctx.scale(scale, -scale); // Flip Y so up is positive
-            ctx.translate(40 / scale, 40 / scale); // Padding from axes
-        
-            // 3. Draw Grid (Dynamic)
-            ctx.lineWidth = 1 / scale;
-            ctx.strokeStyle = C_CONFIG.gridColor;
-            ctx.beginPath();
-            
-            const visibleW = (cvs.width / scale);
-            const visibleH = (cvs.height / scale);
-            const gridSize = 100;
-        
-            for(let x=0; x<visibleW; x+=gridSize) { ctx.moveTo(x, 0); ctx.lineTo(x, visibleH); }
-            for(let y=0; y<visibleH; y+=gridSize) { ctx.moveTo(0, y); ctx.lineTo(visibleW, y); }
-            ctx.stroke();
-        
-            // 4. Draw The Curve
-            ctx.beginPath();
-            ctx.lineWidth = 4 / scale;
-            ctx.lineCap = "round";
-            ctx.strokeStyle = (cState.status === 'CRASHED') ? C_CONFIG.crashColor : C_CONFIG.lineColor;
-        
-            // We redraw the curve from 0 to current time
-            const steps = 30; 
-            ctx.moveTo(0, 0);
-            
-            let endT = (cState.status === 'RUNNING') ? elapsed : getSeconds(cState.multiplier);
-        
-            for(let i=1; i<=steps; i++) {
-                const t = (endT / steps) * i;
-                const m = getMultiplier(t);
-                const wx = t * C_CONFIG.timeScale;
-                const wy = (m - 1) * C_CONFIG.multScale;
-                ctx.lineTo(wx, wy);
-            }
-            ctx.stroke();
-        
-            // Gradient Fill under curve
-            ctx.lineTo(endT * C_CONFIG.timeScale, 0);
-            ctx.lineTo(0,0);
-            ctx.closePath();
-            
-            ctx.save();
-            ctx.scale(1, -1); // Unflip for gradient
-            const grad = ctx.createLinearGradient(0, 0, 0, -(worldY + 50));
-            grad.addColorStop(0, "rgba(0, 255, 136, 0)");
-            grad.addColorStop(1, (cState.status === 'CRASHED') ? "rgba(255, 0, 85, 0.2)" : "rgba(0, 255, 136, 0.25)");
-            ctx.fillStyle = grad;
-            ctx.fill();
-            ctx.restore();
-        
-            // 5. Particles (Fire)
-            if(cState.status === 'RUNNING') {
-                // Spawn
-                for(let i=0; i<2; i++) {
-                    cState.particles.push({
-                        x: worldX, y: worldY,
-                        vx: (Math.random() - 0.5) * 10,
-                        vy: -(Math.random() * 20) - 10,
-                        life: 1.0,
-                        hue: Math.random() > 0.5 ? 30 : 0 // Orange or Red
-                    });
-                }
-            }
-            
-            // Render Particles
-            for(let i=cState.particles.length-1; i>=0; i--) {
-                let p = cState.particles[i];
-                p.x += p.vx; p.y += p.vy;
-                p.life -= 0.04;
-                
-                if(p.life <= 0) cState.particles.splice(i,1);
-                else {
-                    ctx.fillStyle = `hsla(${p.hue}, 100%, 50%, ${p.life})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, (3 / scale) * p.life + (1/scale), 0, Math.PI*2);
-                    ctx.fill();
-                }
-            }
-        
-            // 6. Draw Rocket / Explosion
-            ctx.translate(worldX, worldY);
-            
-            if (cState.status === 'CRASHED') {
-                const size = 80 / scale;
-                ctx.scale(1, -1); 
-                ctx.drawImage(BOOM_IMG, -size/2, -size/2, size, size);
-            } else {
-                // Calculate Rotation
-                const dt = 0.05;
-                const mNow = getMultiplier(endT);
-                const mNext = getMultiplier(endT + dt);
-                const dy = ((mNext - 1) * C_CONFIG.multScale) - ((mNow - 1) * C_CONFIG.multScale);
-                const dx = dt * C_CONFIG.timeScale;
-                const angle = Math.atan2(dy, dx);
-        
-                ctx.rotate(angle);
-                ctx.scale(1, -1);
-                const size = 50 / scale;
-                ctx.drawImage(ROCKET_IMG, -size/2, -size/2, size, size);
-            }
-        
-            ctx.restore(); // Restore to normal screen space
-        
-            if(cState.status === 'RUNNING') {
-                cState.animId = requestAnimationFrame(runEngine);
-            }
-        }
-        
-        function drawIdle() {
-            ctx.fillStyle = C_CONFIG.bgColor;
-            ctx.fillRect(0, 0, cvs.width, cvs.height);
-            
-            ctx.save();
-            ctx.translate(0, cvs.height);
-            ctx.scale(1, -1);
-            
-            // Draw a static grid
-            ctx.strokeStyle = "rgba(255,255,255,0.02)";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            for(let i=0; i<cvs.width; i+=50) { ctx.moveTo(i,0); ctx.lineTo(i,cvs.height); }
-            for(let i=0; i<cvs.height; i+=50) { ctx.moveTo(0,i); ctx.lineTo(cvs.width,i); }
-            ctx.stroke();
-            ctx.restore();
+            // Notify Server
+            api("/api/game/crash/lost", "POST", { bet: RocketEngine.bet });
         }
 
         // UTILS
