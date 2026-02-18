@@ -636,10 +636,18 @@
             resize: function() {
                 if(!this.canvas) return;
                 const parent = this.canvas.parentElement;
+                
+                // Get dimensions
                 this.width = parent.offsetWidth;
                 this.height = parent.offsetHeight;
+            
+                // SAFETY FIX: If hidden, default to a safe size so it doesn't break
+                if (this.width === 0) this.width = 300; 
+                if (this.height === 0) this.height = 300;
+            
                 this.canvas.width = this.width;
                 this.canvas.height = this.height;
+                
                 if(this.status === 'IDLE') this.drawIdle();
             },
         
@@ -939,7 +947,31 @@
         }
 
         // UTILS
-        function switchView(id){ document.querySelectorAll('.game-view').forEach(e=>e.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); if(id==='view-home'||id.includes('case'))document.getElementById('nav-home').classList.add('active'); if(id==='view-inventory'){renderInventory();document.getElementById('nav-inv').classList.add('active');}}
+        function switchView(id) {
+            // 1. Hide all views
+            document.querySelectorAll('.game-view').forEach(e => e.classList.remove('active'));
+            
+            // 2. Show selected view
+            document.getElementById(id).classList.add('active');
+            
+            // 3. Update Bottom Nav
+            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+            if (id === 'view-home' || id.includes('case')) document.getElementById('nav-home').classList.add('active');
+            
+            // 4. Handle Specific View Logic
+            if (id === 'view-inventory') {
+                renderInventory();
+                document.getElementById('nav-inv').classList.add('active');
+            }
+        
+            // --- THE FIX IS HERE ---
+            if (id === 'view-crash') {
+                // Wait 50ms for the CSS 'display: flex' to apply, then resize canvas
+                setTimeout(() => {
+                    if (window.RocketEngine) RocketEngine.resize();
+                }, 50);
+            }
+        }
         function renderInventory(){ const g=document.getElementById('main-inventory-grid'); g.innerHTML=''; if(!inventory.length){document.getElementById('empty-inv').style.display='block';return;} document.getElementById('empty-inv').style.display='none'; inventory.slice().reverse().forEach(i=>{ const d=document.createElement('div'); d.className='glass inv-card'; d.innerHTML=`<img src="https://cdn.changes.tg/gifts/originals/${i.gift_id}/Original.png"><div class="inv-info"><div class="inv-name">${i.gift_name}</div><div class="inv-price">${i.gift_price}</div></div><button class="btn sell-btn" onclick="sellItem(${i.id})">SELL</button>`; g.appendChild(d); }); }
         async function sellItem(id){ if(confirm("Sell?")) { await api("/api/inventory/sell","POST",{itemId:id}); refreshUser(); } }
         function openCasesMenu(){ switchView('view-cases-menu'); checkDailyTimer(); }
