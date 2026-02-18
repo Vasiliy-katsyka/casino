@@ -296,7 +296,7 @@
             // Render Drops (Unique)
             const grid = document.getElementById('case-drops-grid'); grid.innerHTML='';
             const unique = [...new Map(pool.map(item => [item['id'], item])).values()].sort((a,b)=>b.price-a.price);
-            unique.slice(0, 15).forEach(i => {
+            unique.forEach(i => {
                 grid.innerHTML += `<div class="select-item"><img src="https://cdn.changes.tg/gifts/originals/${i.id}/Original.png"><div style="font-size:9px;">${i.price}</div></div>`;
             });
 
