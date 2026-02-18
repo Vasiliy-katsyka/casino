@@ -436,254 +436,283 @@
         }
 
         // CRASH
-        // --- NEW CRASH ENGINE ---
+        // --- PROFESSIONAL CRASH ENGINE ---
         const cvs = document.getElementById('crashCanvas');
         const ctx = cvs.getContext('2d');
+        
+        // Game State
         let crashAnimId;
         let cStatus = 'IDLE'; // IDLE, RUNNING, CRASHED
         let cMultiplier = 1.00;
-        let cProgress = 0;
-        let cLimit = 0;
+        let cStartTime = 0;
+        let cLimit = 0; // Where it will crash
         let cBetAmount = 0;
-
-        // Load Rocket Image
+    
+        // Visual Assets
         const rocketImg = new Image();
-        // A nice 3D style rocket icon
-        rocketImg.src = "https://cdn-icons-png.flaticon.com/512/1356/1356479.png"; 
-
-        // Resize Canvas
+        rocketImg.src = "https://cdn-icons-png.flaticon.com/512/1356/1356479.png"; // 3D Rocket Icon
+        const boomImg = new Image();
+        boomImg.src = "https://cdn-icons-png.flaticon.com/512/9426/9426997.png"; // Explosion Icon
+    
+        // Particles (Fire exhaust)
+        let particles = [];
+    
+        // Configuration
+        const TIME_SCALE = 80;  // Horizontal speed (pixels per second)
+        const MULT_SCALE = 200; // Vertical speed (pixels per 1x)
+        
+        // Resize Canvas correctly
         function resizeC() {
-            const parent = cvs.parentElement;
-            cvs.width = parent.offsetWidth;
-            cvs.height = parent.offsetHeight;
+            const p = cvs.parentElement;
+            cvs.width = p.offsetWidth;
+            cvs.height = p.offsetHeight;
         }
         window.addEventListener('resize', resizeC);
-        setTimeout(resizeC, 100);
-
-        // particles for exhaust
-        let particles = [];
-
-        function addParticle(x, y) {
-            particles.push({
-                x: x, y: y,
-                vx: (Math.random() - 0.5) * 2,
-                vy: (Math.random() * 2) + 1,
-                life: 1.0,
-                color: `rgba(255, ${Math.floor(Math.random()*150)}, 0,`
-            });
+        setTimeout(resizeC, 500); // Init delay
+    
+        // Easing function for the curve growth (Exponential)
+        function getMultiplier(seconds) {
+            // Starts slow, speeds up. Classic crash formula: E^(0.06 * t)
+            return Math.pow(Math.E, 0.06 * seconds); 
         }
-
-        function drawGraph() {
-            // Background
-            ctx.fillStyle = "#0f0f13";
+    
+        // The Main Animation Loop
+        function renderCrashFrame() {
+            // 1. Calculate Physics
+            const now = Date.now();
+            const elapsed = (now - cStartTime) / 1000; // Seconds
+            
+            if (cStatus === 'RUNNING') {
+                cMultiplier = getMultiplier(elapsed);
+                
+                // Check Collision (Crash)
+                if (cMultiplier >= cLimit) {
+                    crashEnd();
+                    return; // Stop this frame
+                }
+    
+                // Update UI Text
+                const txt = document.getElementById('crash-text');
+                txt.innerText = cMultiplier.toFixed(2) + "x";
+                txt.style.color = "#ffffff";
+            }
+    
+            // 2. Clear Screen
+            ctx.fillStyle = "#15151a"; // Dark background
             ctx.fillRect(0, 0, cvs.width, cvs.height);
-
-            // Grid
-            ctx.strokeStyle = "rgba(255,255,255,0.05)";
-            ctx.lineWidth = 1;
-            const gridSize = 50;
-            const offsetX = (cProgress * 50) % gridSize; // Moving grid effect
+    
+            // 3. Camera Logic (The "Zoom Out" Effect)
+            // We want the rocket to be at roughly 70% width and 70% height of the screen.
+            // If the graph is larger than that, we scale everything down.
             
-            ctx.beginPath();
-            // Vertical lines moving left
-            for(let x = gridSize - offsetX; x < cvs.width; x += gridSize) {
-                ctx.moveTo(x, 0); ctx.lineTo(x, cvs.height);
+            // Calculate where the rocket is in "World Space"
+            const worldX = elapsed * TIME_SCALE; 
+            const worldY = (cMultiplier - 1) * MULT_SCALE;
+    
+            // Determine Scale Factor
+            const padX = cvs.width * 0.7;
+            const padY = cvs.height * 0.7;
+            
+            let scale = 1;
+            // If rocket goes out of bounds, shrink the world
+            if (worldX > padX || worldY > padY) {
+                const scaleX = padX / worldX;
+                const scaleY = padY / worldY;
+                scale = Math.min(scaleX, scaleY); // Fit both dimensions
             }
-            // Horizontal lines static
-            for(let y = 0; y < cvs.height; y += gridSize) {
-                ctx.moveTo(0, y); ctx.lineTo(cvs.width, y);
+    
+            ctx.save(); // Save default state
+            
+            // Apply Camera Transform
+            // Move origin to bottom-left
+            ctx.translate(0, cvs.height); 
+            ctx.scale(scale, -scale); // Flip Y so + is Up
+            ctx.translate(50, 50); // Little padding from axes
+    
+            // 4. Draw Grid (Dynamic)
+            ctx.lineWidth = 2 / scale; // Keep lines thin regardless of zoom
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+            ctx.beginPath();
+            
+            const gridSize = 100;
+            // Optimization: Only draw grid lines that are visible
+            const maxVisibleX = (cvs.width / scale) + 100;
+            const maxVisibleY = (cvs.height / scale) + 100;
+    
+            for(let x=0; x<maxVisibleX; x+=gridSize) { ctx.moveTo(x, 0); ctx.lineTo(x, maxVisibleY); }
+            for(let y=0; y<maxVisibleY; y+=gridSize) { ctx.moveTo(0, y); ctx.lineTo(maxVisibleX, y); }
+            ctx.stroke();
+    
+            // 5. Draw The Curve (Green Line)
+            ctx.beginPath();
+            ctx.strokeStyle = cStatus === 'CRASHED' ? "#ff0055" : "#00ff88"; // Red if dead, Green if alive
+            ctx.lineWidth = 5 / scale;
+            ctx.lineCap = "round";
+            ctx.moveTo(0, 0);
+    
+            // Draw segments
+            // We simulate the curve by drawing points backwards
+            const steps = 20; // Resolution
+            for(let i=1; i<=steps; i++) {
+                const t = (elapsed / steps) * i;
+                const m = getMultiplier(t);
+                const wx = t * TIME_SCALE;
+                const wy = (m - 1) * MULT_SCALE;
+                ctx.lineTo(wx, wy);
             }
             ctx.stroke();
-
-            // Calculate Curve Points
-            // We simulate a camera that zooms out or moves origin based on progress
-            ctx.save();
-            
-            // Camera Logic: Keep rocket in the visible area (approx 80% width, 80% height)
-            let scaleX = 1;
-            let scaleY = 1;
-            
-            // As progress grows, we scale the world down to fit the curve
-            if(cProgress > 5) {
-                const zoom = 5 / cProgress;
-                ctx.scale(zoom, zoom);
-                ctx.translate(0, cvs.height * (1 - zoom)); // Keep bottom aligned
-            }
-
-            // Draw Curve
-            ctx.beginPath();
-            ctx.moveTo(0, cvs.height);
-            
-            let currentX = 0;
-            let currentY = cvs.height;
-
-            // Resolution of curve
-            const steps = Math.floor(cProgress * 20); 
-            for(let i=0; i<=steps; i++) {
-                const t = i / 20;
-                const m = Math.pow(Math.E, 0.06 * t); // Exponential formula
-                
-                // Map math to screen coordinates
-                // X moves 50px per second of progress
-                // Y moves based on multiplier height
-                const px = t * 100; 
-                const py = cvs.height - ((m - 1) * 100); 
-                
-                ctx.lineTo(px, py);
-                
-                if(i === steps) { currentX = px; currentY = py; }
-            }
-
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = cStatus === 'CRASHED' ? "#ff0055" : "#00ff88";
-            ctx.stroke();
-
-            // Gradient under curve
-            ctx.lineTo(currentX, cvs.height);
-            ctx.lineTo(0, cvs.height);
+    
+            // 6. Draw Gradient under curve
+            ctx.lineTo(worldX, 0); // Drop to bottom
+            ctx.lineTo(0, 0); // Back to start
             ctx.closePath();
-            const grad = ctx.createLinearGradient(0, 0, 0, cvs.height);
-            grad.addColorStop(0, cStatus === 'CRASHED' ? "rgba(255, 0, 85, 0.2)" : "rgba(0, 255, 136, 0.2)");
-            grad.addColorStop(1, "transparent");
+            
+            // Inverse the Y scale for gradient so it renders correctly
+            ctx.save();
+            ctx.scale(1, -1); 
+            const grad = ctx.createLinearGradient(0, 0, 0, -worldY);
+            grad.addColorStop(0, "rgba(0, 255, 136, 0.0)");
+            grad.addColorStop(1, cStatus === 'CRASHED' ? "rgba(255, 0, 85, 0.2)" : "rgba(0, 255, 136, 0.2)");
             ctx.fillStyle = grad;
             ctx.fill();
-
-            // Draw Particles (Exhaust) behind rocket
+            ctx.restore();
+    
+            // 7. Particles (Fire)
             if(cStatus === 'RUNNING') {
-                for(let k=0; k<3; k++) addParticle(currentX - 10, currentY + 10);
+                 // Add new particles at rocket position
+                 for(let i=0; i<2; i++) {
+                     particles.push({
+                         x: worldX, y: worldY,
+                         vx: (Math.random() - 0.5) * 10, vy: -(Math.random() * 20) - 10,
+                         life: 1.0
+                     });
+                 }
             }
             
             // Render Particles
             for(let i=particles.length-1; i>=0; i--) {
-                const p = particles[i];
-                p.x -= p.vx; p.y += p.vy; p.life -= 0.05;
-                if(p.life <= 0) particles.splice(i, 1);
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy; p.life -= 0.05;
+                if(p.life <= 0) particles.splice(i,1);
                 else {
-                    ctx.fillStyle = p.color + p.life + ")";
-                    ctx.beginPath(); ctx.arc(p.x, p.y, (Math.random()*3)+1, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = `rgba(255, ${Math.floor(Math.random()*200)}, 0, ${p.life})`;
+                    ctx.beginPath();
+                    // Draw circle, adjusting size by scale so they don't get microscopic
+                    ctx.arc(p.x, p.y, (4 / scale) * p.life, 0, Math.PI*2);
+                    ctx.fill();
                 }
             }
-
-            // Draw Rocket
-            ctx.save();
-            ctx.translate(currentX, currentY);
+    
+            // 8. Draw Rocket
+            ctx.translate(worldX, worldY);
             
-            // Calculate rotation angle based on derivative (slope)
-            // Simplified: steeper as it goes higher
-            const angle = Math.atan2(-1.5, 1); // Approx 45 degrees up
-            ctx.rotate(cStatus === 'CRASHED' ? Math.PI/2 : -0.8); // Rotate down if crashed, else up
-            
-            const rSize = 40;
-            ctx.drawImage(rocketImg, -rSize/2, -rSize/2, rSize, rSize);
-            
-            // Explosion if crashed
-            if(cStatus === 'CRASHED') {
-                 ctx.font = "30px Arial";
-                 ctx.fillText("💥", -15, 10);
-            }
-
-            ctx.restore();
-            ctx.restore(); // Undo camera zoom
-        }
-
-        function loopCrash() {
-            if(cStatus === 'IDLE') return;
-
-            if(cStatus === 'RUNNING') {
-                cProgress += 0.03; // Speed of time
-                cMultiplier = Math.pow(Math.E, 0.06 * cProgress); // Math for multiplier
+            if (cStatus === 'CRASHED') {
+                // Draw Explosion
+                const boomSize = 80 / scale;
+                ctx.scale(1, -1); // Flip back for image
+                ctx.drawImage(boomImg, -boomSize/2, -boomSize/2, boomSize, boomSize);
+            } else {
+                // Rotate Rocket to match curve slope
+                // Calculate slope (derivative)
+                const dt = 0.1;
+                const mNow = getMultiplier(elapsed);
+                const mNext = getMultiplier(elapsed + dt);
+                const dy = ((mNext - 1) * MULT_SCALE) - ((mNow - 1) * MULT_SCALE);
+                const dx = dt * TIME_SCALE;
+                const angle = Math.atan2(dy, dx);
+    
+                ctx.rotate(angle); 
+                ctx.scale(1, -1); // Flip back for image drawing
                 
-                // Update UI
-                const txt = document.getElementById('crash-text');
-                txt.innerText = cMultiplier.toFixed(2) + "x";
-                txt.style.color = "white";
-
-                // Check Crash
-                if(cMultiplier >= cLimit) {
-                    crashEnd(true);
-                }
+                const rSize = 50 / scale; // Keep rocket constant size relative to screen, not world
+                ctx.drawImage(rocketImg, -rSize/2, -rSize/2, rSize, rSize);
             }
-
-            drawGraph();
-            
-            if(cStatus !== 'IDLE') {
-                crashAnimId = requestAnimationFrame(loopCrash);
+    
+            ctx.restore(); // Restore Camera
+    
+            if (cStatus === 'RUNNING') {
+                crashAnimId = requestAnimationFrame(renderCrashFrame);
             }
         }
-
+    
         async function toggleCrash() {
             const btn = document.getElementById('crash-action-btn');
             const betInput = document.getElementById('crash-bet');
             cBetAmount = parseFloat(betInput.value);
-
-            if(cStatus === 'RUNNING') {
-                // CASHOUT LOGIC
-                cStatus = 'IDLE'; // Stop loop temporarily
+    
+            // --- CASHOUT LOGIC ---
+            if (cStatus === 'RUNNING') {
+                cStatus = 'IDLE'; // Win state
                 cancelAnimationFrame(crashAnimId);
                 
                 const winAmt = cBetAmount * cMultiplier;
-                // Add balance locally
-                const d = await api("/api/user"); // Sync first
-                balance = d.balance + winAmt; 
-                // We fake the win API here since user only had "loss" logic
-                // In real app, you'd send /api/game/crash/win
-                // For now, update local and DB via "sell" hack or similar, 
-                // OR just rely on your manual logic provided earlier.
-                // NOTE: The previous logic relied on client-side math. 
-                // Let's just update local balance for visual.
-                balance = d.balance + (winAmt - cBetAmount); // Adjust
                 
+                // Optimistic UI Update
+                balance += (winAmt - cBetAmount); // User already paid bet, add profit
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-                document.getElementById('crash-text').innerText = "WON " + winAmt.toFixed(2);
-                document.getElementById('crash-text').style.color = "#00ff88"; // Green
                 
+                const txt = document.getElementById('crash-text');
+                txt.innerText = "WON " + winAmt.toFixed(2);
+                txt.style.color = "#00ff88"; // Green
+    
                 btn.innerText = "LAUNCH";
                 btn.style.background = "";
-                drawGraph(); // Draw one last static frame
+                
+                // Send Win to Server (You should implement a specific win endpoint, 
+                // but for now we just keep the local balance updated or rely on 'sell' logic)
+                // api("/api/game/crash/win", "POST", { amount: winAmt });
+                
                 return;
             }
-
-            if(cStatus === 'CRASHED' || cStatus === 'IDLE') {
-                // START GAME
-                if(balance < cBetAmount) return alert("Insufficient funds");
-                
-                // Deduct Balance Immediately
+    
+            // --- START LOGIC ---
+            if (cStatus === 'IDLE' || cStatus === 'CRASHED') {
+                if (balance < cBetAmount) return alert("Insufficient funds");
+    
+                // Deduct Balance
                 balance -= cBetAmount;
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-
-                // RESET
+    
+                // Reset Game
                 cStatus = 'RUNNING';
+                cStartTime = Date.now();
                 cMultiplier = 1.00;
-                cProgress = 0;
                 particles = [];
+                
                 btn.innerText = "CASHOUT";
-                btn.style.background = "#ff0055"; // Red color for panic button
-
-                // DETERMINE RESULT (Rigged Logic)
+                btn.style.background = "#ff0055"; // Panic button color
+                
+                // Decide Result (Rigged)
                 const r = Math.random();
-                if(r < 0.3) cLimit = 1.0; // Instant crash 30% chance
-                else if (r < 0.6) cLimit = 1.0 + Math.random() * 0.5; // Crash under 1.5x
-                else if (r < 0.9) cLimit = 1.5 + Math.random() * 2.0; // Medium win
-                else cLimit = 100.0; // Moon (Manual cashout required)
-
-                loopCrash();
+                // 30% chance < 1.1x (Instant loss)
+                // 30% chance < 1.5x
+                // 30% chance < 2.5x
+                // 10% chance Moon
+                if(r < 0.3) cLimit = 1.0 + Math.random()*0.1; 
+                else if (r < 0.6) cLimit = 1.1 + Math.random()*0.4;
+                else if (r < 0.9) cLimit = 1.5 + Math.random();
+                else cLimit = 2.0 + Math.random() * 5.0;
+    
+                renderCrashFrame();
             }
         }
-
-        async function crashEnd(isCrash) {
+    
+        function crashEnd() {
             cStatus = 'CRASHED';
             const btn = document.getElementById('crash-action-btn');
             
-            document.getElementById('crash-text').innerText = "CRASHED @ " + cLimit.toFixed(2) + "x";
-            document.getElementById('crash-text').style.color = "#ff0055";
+            const txt = document.getElementById('crash-text');
+            txt.innerText = "CRASHED @ " + cLimit.toFixed(2) + "x";
+            txt.style.color = "#ff0055"; // Red
             
             btn.innerText = "TRY AGAIN";
             btn.style.background = "";
-            
-            // Send loss to backend
+    
+            // Notify Backend of Loss
             api("/api/game/crash/lost", "POST", { bet: cBetAmount });
             
-            drawGraph(); // Draw final crashed frame
+            // Draw one final frame to show the explosion
+            renderCrashFrame(); 
         }
 
         // UTILS
