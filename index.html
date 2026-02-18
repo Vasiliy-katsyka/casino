@@ -183,7 +183,18 @@
         // CONFIG
         const BACKEND_URL = "https://casino.kviappsgames.workers.dev"; // Your Worker
         const WALLET_ADDR = "UQBoRkvzUelDcxR65b5J9J3KM1Ic638n1QJUo5kZTKhT3O64";
-        const USER_ID = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "user_" + Math.floor(Math.random()*99999);
+        // Persistent Testing ID logic
+        let savedId = localStorage.getItem('test_user_id');
+        if (!savedId) {
+            savedId = "user_" + Math.floor(Math.random()*99999);
+            localStorage.setItem('test_user_id', savedId);
+        }
+        
+        // prioritize real Telegram ID, fallback to the persistent saved ID
+        const USER_ID = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || savedId;
+        
+        // Update the memo in the UI immediately
+        document.getElementById('dep-memo').innerText = USER_ID;
         document.getElementById('dep-memo').innerText = USER_ID;
 
         // DATA
