@@ -101,18 +101,19 @@
             margin-top: 20px; 
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
-        /* CRASH MONITOR */
+        /* Update this existing class */
         .crash-monitor {
             position: relative;
             width: 100%;
-            height: 280px;
-            background: #0d0d10;
+            height: 300px; /* Fixed height for better aspect ratio */
+            background: #0d0d10; /* Dark background */
             border-radius: 16px;
             border: 1px solid #2a2a35;
-            overflow: hidden;
+            overflow: hidden; /* CRITICAL: Hides graph going off screen */
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
         }
         
+        /* Ensure canvas is responsive */
         canvas {
             width: 100%;
             height: 100%;
@@ -591,7 +592,7 @@
         BOOM_IMG.src = "https://cdn-icons-png.flaticon.com/512/9426/9426997.png"; // Explosion
         
         // ==========================================
-        //  CRASH GAME ENGINE (FIXED & OPTIMIZED)
+        //  CRASH GAME ENGINE (FIXED & PROFESSIONAL)
         // ==========================================
         
         const RocketEngine = {
@@ -612,20 +613,20 @@
             rocketImg: new Image(),
             boomImg: new Image(),
             
-            // Physics & Visuals
-            scaleX: 100,  // Pixels per second
-            scaleY: 200,  // Pixels per multiplier
-            offsetX: 50,  // Padding left
-            offsetY: 50,  // Padding bottom
-            particles: [],
-        
+            // Physics Configuration
+            scaleX: 120,  // Horizontal speed (pixels per second)
+            scaleY: 100,  // Vertical steepness (pixels per multiplier unit)
+            
             init: function() {
                 this.canvas = document.getElementById('crashCanvas');
                 this.ctx = this.canvas.getContext('2d');
+                
+                // 3D Rocket Icon
                 this.rocketImg.src = "https://cdn-icons-png.flaticon.com/512/1356/1356479.png"; 
+                // Explosion Icon
                 this.boomImg.src = "https://cdn-icons-png.flaticon.com/512/9426/9426997.png";
                 
-                // Handle Resize
+                // Initial Resize
                 this.resize();
                 window.addEventListener('resize', () => this.resize());
                 
@@ -636,15 +637,8 @@
             resize: function() {
                 if(!this.canvas) return;
                 const parent = this.canvas.parentElement;
-                
-                // Get dimensions
-                this.width = parent.offsetWidth;
-                this.height = parent.offsetHeight;
-            
-                // SAFETY FIX: If hidden, default to a safe size so it doesn't break
-                if (this.width === 0) this.width = 300; 
-                if (this.height === 0) this.height = 300;
-            
+                this.width = parent.offsetWidth || 300;
+                this.height = parent.offsetHeight || 300;
                 this.canvas.width = this.width;
                 this.canvas.height = this.height;
                 
@@ -657,35 +651,27 @@
                 this.startTime = Date.now();
                 this.status = 'RUNNING';
                 this.multiplier = 1.00;
-                this.particles = [];
                 
                 if (this.animId) cancelAnimationFrame(this.animId);
                 this.loop();
             },
         
             cashOut: function() {
-                this.status = 'IDLE'; // Stop logic, keep rendering static win
+                this.status = 'IDLE'; 
                 cancelAnimationFrame(this.animId);
                 return this.multiplier;
             },
         
             crash: function() {
                 this.status = 'CRASHED';
-                // Run one last frame to draw explosion
-                this.draw(this.getErrorTime(), this.crashPoint); 
+                this.draw(this.getErrorTime()); 
                 cancelAnimationFrame(this.animId);
             },
         
             // --- MATH ---
+            // Standard Exponential Curve: e^(k*t)
             getMultiplier: function(t) {
-                // Growth formula: 1 + 0.06 * t^2 (simpler parabolic curve looks better on phone)
-                // or Exponential: Math.exp(0.06 * t)
-                // Let's use Exponential for realism
                 return Math.exp(0.065 * t); 
-            },
-            
-            getTimeFromMult: function(m) {
-                return Math.log(m) / 0.065;
             },
             
             getErrorTime: function() {
@@ -699,160 +685,184 @@
                 const t = this.getErrorTime();
                 this.multiplier = this.getMultiplier(t);
         
-                // Update UI immediately for smoothness
+                // Update Text
                 document.getElementById('crash-text').innerText = this.multiplier.toFixed(2) + "x";
         
                 // Check Crash
                 if(this.multiplier >= this.crashPoint) {
                     this.multiplier = this.crashPoint;
                     document.getElementById('crash-text').innerText = this.crashPoint.toFixed(2) + "x";
-                    crashEnd(); // Call main function
+                    crashEnd(); 
                     return; 
                 }
         
-                this.draw(t, this.multiplier);
+                this.draw(t);
                 this.animId = requestAnimationFrame(() => this.loop());
             },
         
-            draw: function(t, currentMult) {
+            draw: function(t) {
                 const ctx = this.ctx;
                 const w = this.width;
                 const h = this.height;
         
-                // 1. Clear
+                // 1. Calculate World Coordinates (Where the rocket is in the abstract graph)
+                // X = Time * Scale
+                // Y = (Multiplier - 1) * Scale
+                const worldX = t * this.scaleX;
+                const worldY = (this.multiplier - 1) * this.scaleY;
+        
+                // 2. Camera Logic (The core fix)
+                // We want the rocket to start at (0, h) and move to (w/2, h/2)
+                // Once it hits (w/2, h/2), the camera moves instead of the rocket.
+                
+                const targetX = w / 2;
+                const targetY = h / 2;
+        
+                // Camera Offset Calculation
+                // If world position is less than target, camera is 0 (Rocket moves).
+                // If world position is greater, camera follows rocket (Rocket stays centered).
+                let camX = 0;
+                let camY = 0;
+        
+                if (worldX > targetX) {
+                    camX = worldX - targetX;
+                }
+                if (worldY > targetY) {
+                    camY = worldY - targetY;
+                }
+        
+                // 3. Clear Screen
                 ctx.fillStyle = "#0d0d10";
                 ctx.fillRect(0, 0, w, h);
         
-                // 2. Calculate "Camera" Scaling
-                // We want the rocket to be at roughly 80% width and 80% height relative to origin
-                const worldX = t * this.scaleX;
-                const worldY = (currentMult - 1) * this.scaleY;
-                
-                // Viewport padding
-                const padX = w * 0.8; 
-                const padY = h * 0.8;
-        
-                // Zoom factor (1.0 = normal, <1.0 = zoomed out)
-                let zoom = 1.0;
-                if (worldX > padX || worldY > padY) {
-                    const zoomX = padX / worldX;
-                    const zoomY = padY / worldY;
-                    zoom = Math.min(zoomX, zoomY); // Fit both
-                }
-        
-                ctx.save();
-                
-                // Transform Coordinate System
-                // Move Origin to Bottom-Left + Padding
-                ctx.translate(this.offsetX, h - this.offsetY);
-                ctx.scale(zoom, -zoom); // Flip Y so Up is Positive
-        
-                // 3. Draw Grid
-                ctx.lineWidth = 1 / zoom;
+                // 4. Draw Infinite Grid
+                // We draw lines based on the camera position modulo grid size
+                const gridSize = 50;
+                ctx.lineWidth = 1;
                 ctx.strokeStyle = "rgba(255,255,255,0.05)";
                 ctx.beginPath();
-                // Dynamic grid lines based on view
-                const maxValX = (w / zoom);
-                const maxValY = (h / zoom);
-                for(let gx=0; gx<maxValX; gx+=100) { ctx.moveTo(gx, 0); ctx.lineTo(gx, maxValY); }
-                for(let gy=0; gy<maxValY; gy+=100) { ctx.moveTo(0, gy); ctx.lineTo(maxValX, gy); }
+        
+                // Vertical Lines (scrolling left)
+                const offsetX = camX % gridSize;
+                for (let x = -offsetX; x <= w; x += gridSize) {
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, h);
+                }
+        
+                // Horizontal Lines (scrolling down)
+                const offsetY = camY % gridSize;
+                // We draw from bottom up visually to match graph
+                for (let y = h + offsetY; y >= 0; y -= gridSize) {
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(w, y);
+                }
                 ctx.stroke();
         
-                // 4. Draw Graph (The Curve)
-                ctx.beginPath();
-                ctx.lineWidth = 5 / zoom;
+                // 5. Draw The Graph Line
+                ctx.save();
+                
+                // Define the line style
+                ctx.lineWidth = 4;
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
-                // Color depends on state
                 ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#00ff88"; 
+                
+                // We need to draw the path from t=0 to current t
+                // Converted to screen coordinates: ScreenX = WorldX - CamX
+                
+                ctx.beginPath();
+                // Start exactly at bottom-left corner relative to camera
+                // World(0,0) -> Screen(0 - camX, h - (0 - camY))
+                ctx.moveTo(0 - camX, h + camY); // +camY because canvas Y is inverted
         
-                // Draw segments to create curve
-                ctx.moveTo(0,0);
-                const steps = 20; // Resolution
-                for(let i=1; i<=steps; i++) {
-                    const stepT = (t / steps) * i;
-                    const stepM = this.getMultiplier(stepT);
-                    ctx.lineTo(stepT * this.scaleX, (stepM - 1) * this.scaleY);
+                const stepSize = 10; // Resolution of curve (pixels)
+                // Draw segments
+                for (let px = 0; px <= worldX; px += stepSize) {
+                    // Reverse calc time from X pixels
+                    const pTime = px / this.scaleX;
+                    const pMult = this.getMultiplier(pTime);
+                    const pWorldY = (pMult - 1) * this.scaleY;
+                    
+                    // Convert to Screen Coords
+                    const screenX = px - camX;
+                    const screenY = h - (pWorldY - camY);
+                    
+                    ctx.lineTo(screenX, screenY);
                 }
+                
+                // Draw final segment to exact rocket position
+                const rocketScreenX = worldX - camX;
+                const rocketScreenY = h - (worldY - camY);
+                ctx.lineTo(rocketScreenX, rocketScreenY);
+                
                 ctx.stroke();
         
-                // 5. Fill Area Under Graph
-                ctx.lineTo(worldX, 0); // Drop to bottom
-                ctx.lineTo(0, 0);      // Back to start
+                // 6. Gradient Fill under line
+                ctx.lineTo(rocketScreenX, h + 100); // Go down below screen
+                ctx.lineTo(0 - camX, h + 100);      // Go left below screen
                 ctx.closePath();
-                
-                ctx.save();
-                ctx.scale(1, -1); // Unflip for gradient
-                // Create gradient from top of rocket down to axis
-                const grad = ctx.createLinearGradient(0, -worldY, 0, 0);
-                grad.addColorStop(0, (this.status === 'CRASHED') ? "rgba(255, 0, 85, 0.4)" : "rgba(0, 255, 136, 0.4)");
-                grad.addColorStop(1, "rgba(0,0,0,0)");
+                const grad = ctx.createLinearGradient(0, 0, 0, h);
+                grad.addColorStop(0, "rgba(0, 255, 136, 0.2)");
+                grad.addColorStop(1, "rgba(0, 255, 136, 0)");
                 ctx.fillStyle = grad;
                 ctx.fill();
+                
                 ctx.restore();
         
-                // 6. Draw Particles (Fire Exhaust)
-                if(this.status === 'RUNNING') {
-                    // Add new particles
-                    for(let k=0; k<2; k++) {
-                        this.particles.push({
-                            x: worldX, y: worldY,
-                            vx: (Math.random()-0.5) * 20, vy: -(Math.random()*30 + 10),
-                            life: 1.0, size: Math.random() * 4 + 2
-                        });
-                    }
-                }
+                // 7. Draw Rocket / Explosion
+                const imgSize = 40;
                 
-                for(let i=this.particles.length-1; i>=0; i--) {
-                    let p = this.particles[i];
-                    p.x += p.vx; p.y += p.vy; p.life -= 0.05;
-                    if(p.life <= 0) this.particles.splice(i,1);
-                    else {
-                        ctx.fillStyle = `rgba(255, ${Math.random()*150+100}, 0, ${p.life})`;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, (p.size / zoom), 0, Math.PI*2);
-                        ctx.fill();
-                    }
-                }
-        
-                // 7. Draw Rocket or Explosion
-                ctx.translate(worldX, worldY);
-                const imgSize = 60 / zoom; // Keep size consistent relative to screen
+                ctx.save();
+                ctx.translate(rocketScreenX, rocketScreenY);
         
                 if(this.status === 'CRASHED') {
-                    ctx.scale(1, -1);
                     ctx.drawImage(this.boomImg, -imgSize/2, -imgSize/2, imgSize, imgSize);
                 } else {
-                    // Rotate based on slope
-                    const dt = 0.1;
-                    const mNext = this.getMultiplier(t + dt);
-                    const dy = ((mNext - 1) * this.scaleY) - worldY;
-                    const dx = (dt * this.scaleX);
+                    // Calculate angle based on derivative (slope)
+                    // Or simple approximation using previous point
+                    const dt = 0.05;
+                    const nextMult = this.getMultiplier(t + dt);
+                    const nextY = (nextMult - 1) * this.scaleY;
+                    const nextX = (t + dt) * this.scaleX;
+                    
+                    // Angle in canvas coordinates (Y is inverted)
+                    // dy needs to be inverted for canvas atan2
+                    const dy = (worldY - nextY); 
+                    const dx = (nextX - worldX);
                     const angle = Math.atan2(dy, dx);
                     
                     ctx.rotate(angle);
                     
-                    // Shake effect
-                    const shake = (Math.random() - 0.5) * (2 / zoom);
-                    ctx.translate(0, shake);
-        
-                    ctx.scale(1, -1); // Flip image back
-                    ctx.drawImage(this.rocketImg, -imgSize/2, -imgSize/2, imgSize, imgSize);
+                    // Jitter/Vibration Effect (Engine rumble)
+                    const jitterX = (Math.random() - 0.5) * 3;
+                    const jitterY = (Math.random() - 0.5) * 3;
+                    
+                    ctx.drawImage(this.rocketImg, (-imgSize/2) + jitterX, (-imgSize/2) + jitterY, imgSize, imgSize);
                 }
-        
                 ctx.restore();
             },
         
             drawIdle: function() {
                 const ctx = this.ctx;
+                const w = this.width;
+                const h = this.height;
+        
                 ctx.fillStyle = "#0d0d10";
-                ctx.fillRect(0,0,this.width, this.height);
+                ctx.fillRect(0,0,w,h);
                 
-                // Simple Grid
-                ctx.strokeStyle = "rgba(255,255,255,0.03)";
+                // Static Grid
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = "rgba(255,255,255,0.05)";
                 ctx.beginPath();
-                for(let i=0; i<this.width; i+=50) { ctx.moveTo(i,0); ctx.lineTo(i,this.height); }
+                for(let x=0; x<=w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
+                for(let y=0; y<=h; y+=50) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
                 ctx.stroke();
+        
+                // Text
+                ctx.fillStyle = "#444";
+                ctx.font = "bold 20px Rajdhani";
+                ctx.textAlign = "center";
+                ctx.fillText("READY TO LAUNCH", w/2, h/2);
             }
         };
         
