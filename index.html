@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* GLASS & NEON THEME (UNCHANGED) */
+        /* GLASS & NEON THEME */
         :root { --bg-color: #0f0f13; --glass-bg: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --primary: #0088cc; --accent: #ff0055; --gold: #ffd700; --success: #00ff88; --text: #ffffff; --text-secondary: #8b9bb4; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { margin: 0; padding: 0; background-color: var(--bg-color); background-image: radial-gradient(circle at 10% 20%, rgba(0, 136, 204, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.1) 0%, transparent 40%); font-family: 'Inter', sans-serif; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
@@ -183,18 +183,11 @@
         // CONFIG
         const BACKEND_URL = "https://casino.kviappsgames.workers.dev"; // Your Worker
         const WALLET_ADDR = "UQBoRkvzUelDcxR65b5J9J3KM1Ic638n1QJUo5kZTKhT3O64";
-        // Persistent Testing ID logic
+        
+        // PERSISTENT USER ID
         let savedId = localStorage.getItem('test_user_id');
-        if (!savedId) {
-            savedId = "user_" + Math.floor(Math.random()*99999);
-            localStorage.setItem('test_user_id', savedId);
-        }
-        
-        // prioritize real Telegram ID, fallback to the persistent saved ID
+        if (!savedId) { savedId = "user_" + Math.floor(Math.random()*99999); localStorage.setItem('test_user_id', savedId); }
         const USER_ID = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || savedId;
-        
-        // Update the memo in the UI immediately
-        document.getElementById('dep-memo').innerText = USER_ID;
         document.getElementById('dep-memo').innerText = USER_ID;
 
         // DATA
@@ -254,6 +247,7 @@
             const link = `ton://transfer/${WALLET_ADDR}?amount=${nano}&text=${USER_ID}`;
             window.location.href = link;
         }
+        function updateDeepLink() { /* Placeholder for real-time link update if needed */ }
         async function checkDeposit() {
             const btn=document.getElementById('check-payment-btn'); btn.disabled=true; btn.innerHTML='Checking...';
             const res = await api("/api/deposit/check", "POST");
@@ -282,20 +276,20 @@
             document.getElementById('cp-price').innerText = activeCase.price > 0 ? activeCase.price + " TON" : "FREE";
             switchView('view-case-play');
             
-            // FILTER POOL CORRECTLY
+            // FILTER POOL
             let pool = [];
-            if(id === 'daily') pool = allGifts.filter(g => g.price < 5); // Trash + Low
-            else if(id === 'starter') pool = allGifts.filter(g => g.price < 10); // Trash + Low + Mid
+            if(id === 'daily') pool = allGifts.filter(g => g.price < 5);
+            else if(id === 'starter') pool = allGifts.filter(g => g.price < 8); 
             else if(id === 'rare') pool = allGifts.filter(g => g.price > 5 && g.price < 50);
             else if(id === 'high') pool = allGifts.filter(g => g.price > 20);
             else if(id === 'god') pool = allGifts.filter(g => g.price > 100);
             
-            // If filtering makes empty (e.g. initial load error), fallback to all
-            if(pool.length < 5) pool = allGifts;
+            if(pool.length < 5) pool = allGifts; // Safety
 
-            // Render Drops (Unique)
+            // Render Drops (Unique + Sort)
             const grid = document.getElementById('case-drops-grid'); grid.innerHTML='';
             const unique = [...new Map(pool.map(item => [item['id'], item])).values()].sort((a,b)=>b.price-a.price);
+            
             unique.forEach(i => {
                 grid.innerHTML += `<div class="select-item"><img src="https://cdn.changes.tg/gifts/originals/${i.id}/Original.png"><div style="font-size:9px;">${i.price}</div></div>`;
             });
@@ -325,10 +319,10 @@
             if(!activeCase) return;
             const btn=document.getElementById('spin-btn');
             
-            // Build Pool for Verification
+            // Build Pool for Backend
             let pool = [];
             if(activeCase.id === 'daily') pool = allGifts.filter(g => g.price < 5);
-            else if(activeCase.id === 'starter') pool = allGifts.filter(g => g.price < 10);
+            else if(activeCase.id === 'starter') pool = allGifts.filter(g => g.price < 8);
             else if(activeCase.id === 'rare') pool = allGifts.filter(g => g.price > 5 && g.price < 50);
             else if(activeCase.id === 'high') pool = allGifts.filter(g => g.price > 20);
             else pool = allGifts.filter(g => g.price > 100);
