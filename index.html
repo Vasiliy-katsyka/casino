@@ -6,7 +6,7 @@
     <title>TG Casino</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Rajdhani:wght@500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <style>
         /* GLASS & NEON THEME */
         :root { --bg-color: #0f0f13; --glass-bg: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --primary: #0088cc; --accent: #ff0055; --gold: #ffd700; --success: #00ff88; --text: #ffffff; --text-secondary: #8b9bb4; }
@@ -207,6 +207,21 @@
             box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
             transition: 0.2s;
         }
+
+        /* Add to your CSS */
+        #rocket-entry {
+            position: absolute;
+            width: 100px;  /* Adjust size of animation */
+            height: 100px;
+            top: 0; 
+            left: 0;
+            z-index: 5; /* Above canvas, below text */
+            pointer-events: none;
+            display: none; /* Hidden by default */
+            /* Hardware acceleration for smooth movement */
+            will-change: transform; 
+            transform-origin: center center;
+        }
         .btn-launch:active { transform: scale(0.98); }
         .btn-launch.cashout { background: linear-gradient(90deg, #ff0055, #cc0044); box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4); }
     </style>
@@ -295,7 +310,10 @@
             <div class="crash-monitor">
                 <canvas id="crashCanvas"></canvas>
                 
-                <!-- OVERLAY UI -->
+                <!-- NEW: The Animated Rocket Container -->
+                <div id="rocket-entry"></div>
+            
+                <!-- Existing UI Overlay -->
                 <div class="crash-ui">
                     <div class="crash-multiplier" id="crash-text">1.00x</div>
                     <div class="crash-status" id="crash-status">PLACE YOUR BET</div>
@@ -592,41 +610,51 @@
         BOOM_IMG.src = "https://cdn-icons-png.flaticon.com/512/9426/9426997.png"; // Explosion
         
         // ==========================================
-        //  CRASH GAME ENGINE (FIXED & PROFESSIONAL)
+        //  CRASH GAME ENGINE (LOTTIE + CANVAS HYBRID)
         // ==========================================
         
         const RocketEngine = {
             canvas: null,
             ctx: null,
+            lottieAnim: null,
+            rocketEl: null,
             width: 0,
             height: 0,
             animId: null,
             
             // Game State
-            status: 'IDLE', // IDLE, RUNNING, CRASHED
+            status: 'IDLE',
             startTime: 0,
             multiplier: 1.00,
             crashPoint: 0,
             bet: 0,
             
             // Assets
-            rocketImg: new Image(),
             boomImg: new Image(),
             
             // Physics Configuration
-            scaleX: 120,  // Horizontal speed (pixels per second)
-            scaleY: 100,  // Vertical steepness (pixels per multiplier unit)
+            scaleX: 120,  // Horizontal speed
+            scaleY: 100,  // Vertical steepness
             
             init: function() {
                 this.canvas = document.getElementById('crashCanvas');
                 this.ctx = this.canvas.getContext('2d');
+                this.rocketEl = document.getElementById('rocket-entry');
                 
-                // 3D Rocket Icon
-                this.rocketImg.src = "https://cdn-icons-png.flaticon.com/512/1356/1356479.png"; 
-                // Explosion Icon
+                // Explosion Icon (Fallback for crash)
                 this.boomImg.src = "https://cdn-icons-png.flaticon.com/512/9426/9426997.png";
                 
-                // Initial Resize
+                // Initialize Lottie
+                this.lottieAnim = lottie.loadAnimation({
+                    container: this.rocketEl,
+                    renderer: 'svg', // SVG is sharper than canvas
+                    loop: true,
+                    autoplay: false,
+                    // The RAW link provided
+                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json' 
+                });
+        
+                // Resize Logic
                 this.resize();
                 window.addEventListener('resize', () => this.resize());
                 
@@ -652,24 +680,29 @@
                 this.status = 'RUNNING';
                 this.multiplier = 1.00;
                 
+                // Show and play rocket
+                this.rocketEl.style.display = 'block';
+                this.lottieAnim.play();
+                
                 if (this.animId) cancelAnimationFrame(this.animId);
                 this.loop();
             },
         
             cashOut: function() {
-                this.status = 'IDLE'; 
-                cancelAnimationFrame(this.animId);
+                // We don't stop the animation immediately on cashout, we just stop the betting logic
+                // But for visual clarity in this engine, we keep it running
                 return this.multiplier;
             },
         
             crash: function() {
                 this.status = 'CRASHED';
-                this.draw(this.getErrorTime()); 
+                this.rocketEl.style.display = 'none'; // Hide rocket
+                this.lottieAnim.stop(); // Stop animation
+                this.draw(this.getErrorTime()); // Draw one last frame with explosion
                 cancelAnimationFrame(this.animId);
             },
         
             // --- MATH ---
-            // Standard Exponential Curve: e^(k*t)
             getMultiplier: function(t) {
                 return Math.exp(0.065 * t); 
             },
@@ -705,147 +738,112 @@
                 const w = this.width;
                 const h = this.height;
         
-                // 1. Calculate World Coordinates (Where the rocket is in the abstract graph)
-                // X = Time * Scale
-                // Y = (Multiplier - 1) * Scale
+                // 1. Calculate World Position
                 const worldX = t * this.scaleX;
                 const worldY = (this.multiplier - 1) * this.scaleY;
         
-                // 2. Camera Logic (The core fix)
-                // We want the rocket to start at (0, h) and move to (w/2, h/2)
-                // Once it hits (w/2, h/2), the camera moves instead of the rocket.
-                
+                // 2. Camera Logic (Follow Rocket center screen)
                 const targetX = w / 2;
                 const targetY = h / 2;
         
-                // Camera Offset Calculation
-                // If world position is less than target, camera is 0 (Rocket moves).
-                // If world position is greater, camera follows rocket (Rocket stays centered).
                 let camX = 0;
                 let camY = 0;
         
-                if (worldX > targetX) {
-                    camX = worldX - targetX;
-                }
-                if (worldY > targetY) {
-                    camY = worldY - targetY;
-                }
+                // Only move camera if rocket passes center
+                if (worldX > targetX) camX = worldX - targetX;
+                if (worldY > targetY) camY = worldY - targetY;
         
                 // 3. Clear Screen
                 ctx.fillStyle = "#0d0d10";
                 ctx.fillRect(0, 0, w, h);
         
-                // 4. Draw Infinite Grid
-                // We draw lines based on the camera position modulo grid size
-                const gridSize = 50;
+                // 4. Draw Infinite Grid (Background)
+                const gridSize = 60;
                 ctx.lineWidth = 1;
                 ctx.strokeStyle = "rgba(255,255,255,0.05)";
                 ctx.beginPath();
         
-                // Vertical Lines (scrolling left)
+                // Calc grid offset based on camera
                 const offsetX = camX % gridSize;
-                for (let x = -offsetX; x <= w; x += gridSize) {
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, h);
-                }
-        
-                // Horizontal Lines (scrolling down)
                 const offsetY = camY % gridSize;
-                // We draw from bottom up visually to match graph
+        
+                // Draw Vertical
+                for (let x = -offsetX; x <= w; x += gridSize) {
+                    ctx.moveTo(x, 0); ctx.lineTo(x, h);
+                }
+                // Draw Horizontal (from bottom up)
                 for (let y = h + offsetY; y >= 0; y -= gridSize) {
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(w, y);
+                    ctx.moveTo(0, y); ctx.lineTo(w, y);
                 }
                 ctx.stroke();
         
-                // 5. Draw The Graph Line
+                // 5. Draw The Green Line
                 ctx.save();
-                
-                // Define the line style
                 ctx.lineWidth = 4;
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
                 ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#00ff88"; 
                 
-                // We need to draw the path from t=0 to current t
-                // Converted to screen coordinates: ScreenX = WorldX - CamX
-                
                 ctx.beginPath();
-                // Start exactly at bottom-left corner relative to camera
-                // World(0,0) -> Screen(0 - camX, h - (0 - camY))
-                ctx.moveTo(0 - camX, h + camY); // +camY because canvas Y is inverted
+                ctx.moveTo(0 - camX, h + camY); // Start at bottom-left corner relative to cam
         
-                const stepSize = 10; // Resolution of curve (pixels)
-                // Draw segments
+                const stepSize = 10; 
+                // Iterate to draw curve
                 for (let px = 0; px <= worldX; px += stepSize) {
-                    // Reverse calc time from X pixels
                     const pTime = px / this.scaleX;
                     const pMult = this.getMultiplier(pTime);
                     const pWorldY = (pMult - 1) * this.scaleY;
                     
-                    // Convert to Screen Coords
                     const screenX = px - camX;
-                    const screenY = h - (pWorldY - camY);
-                    
+                    const screenY = h - (pWorldY - camY); // Invert Y for canvas
                     ctx.lineTo(screenX, screenY);
                 }
                 
-                // Draw final segment to exact rocket position
+                // Final point (Rocket Position)
                 const rocketScreenX = worldX - camX;
                 const rocketScreenY = h - (worldY - camY);
                 ctx.lineTo(rocketScreenX, rocketScreenY);
-                
                 ctx.stroke();
         
-                // 6. Gradient Fill under line
-                ctx.lineTo(rocketScreenX, h + 100); // Go down below screen
-                ctx.lineTo(0 - camX, h + 100);      // Go left below screen
+                // 6. Green Gradient Fill
+                ctx.lineTo(rocketScreenX, h + 100);
+                ctx.lineTo(0 - camX, h + 100);
                 ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
                 grad.addColorStop(0, "rgba(0, 255, 136, 0.2)");
                 grad.addColorStop(1, "rgba(0, 255, 136, 0)");
                 ctx.fillStyle = grad;
                 ctx.fill();
-                
                 ctx.restore();
         
-                // 7. Draw Rocket / Explosion
-                const imgSize = 40;
-                
-                ctx.save();
-                ctx.translate(rocketScreenX, rocketScreenY);
-        
-                if(this.status === 'CRASHED') {
-                    ctx.drawImage(this.boomImg, -imgSize/2, -imgSize/2, imgSize, imgSize);
+                // 7. Update Rocket (Lottie) OR Draw Explosion
+                if (this.status === 'CRASHED') {
+                    // Draw Explosion PNG on Canvas
+                    const imgSize = 60;
+                    ctx.drawImage(this.boomImg, rocketScreenX - imgSize/2, rocketScreenY - imgSize/2, imgSize, imgSize);
                 } else {
-                    // Calculate angle based on derivative (slope)
-                    // Or simple approximation using previous point
+                    // Move Lottie Div
+                    // We calculate rotation based on the slope of the graph
                     const dt = 0.05;
                     const nextMult = this.getMultiplier(t + dt);
                     const nextY = (nextMult - 1) * this.scaleY;
                     const nextX = (t + dt) * this.scaleX;
                     
-                    // Angle in canvas coordinates (Y is inverted)
-                    // dy needs to be inverted for canvas atan2
+                    // Invert DY because screen Y is inverted vs Math Y
                     const dy = (worldY - nextY); 
                     const dx = (nextX - worldX);
-                    const angle = Math.atan2(dy, dx);
-                    
-                    ctx.rotate(angle);
-                    
-                    // Jitter/Vibration Effect (Engine rumble)
-                    const jitterX = (Math.random() - 0.5) * 3;
-                    const jitterY = (Math.random() - 0.5) * 3;
-                    
-                    ctx.drawImage(this.rocketImg, (-imgSize/2) + jitterX, (-imgSize/2) + jitterY, imgSize, imgSize);
+                    const angle = Math.atan2(dy, dx); // Radians
+        
+                    // Apply CSS Transform
+                    // -50px to center the 100x100 div
+                    this.rocketEl.style.transform = `translate(${rocketScreenX - 50}px, ${rocketScreenY - 50}px) rotate(${angle}rad)`;
                 }
-                ctx.restore();
             },
         
             drawIdle: function() {
-                const ctx = this.ctx;
                 const w = this.width;
                 const h = this.height;
+                const ctx = this.ctx;
         
                 ctx.fillStyle = "#0d0d10";
                 ctx.fillRect(0,0,w,h);
@@ -854,11 +852,12 @@
                 ctx.lineWidth = 1;
                 ctx.strokeStyle = "rgba(255,255,255,0.05)";
                 ctx.beginPath();
-                for(let x=0; x<=w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
-                for(let y=0; y<=h; y+=50) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
+                for(let x=0; x<=w; x+=60) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
+                for(let y=0; y<=h; y+=60) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
                 ctx.stroke();
         
-                // Text
+                this.rocketEl.style.display = 'none'; // Ensure rocket is hidden
+                
                 ctx.fillStyle = "#444";
                 ctx.font = "bold 20px Rajdhani";
                 ctx.textAlign = "center";
