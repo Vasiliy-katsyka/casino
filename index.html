@@ -137,15 +137,17 @@
         }
         
         /* Make Rocket Smaller */
+        /* --- PERFECT ROCKET ANCHORING --- */
         #rocket-entry { 
             position: absolute; 
-            width: 85px;  /* Smaller rocket */
-            height: 85px; /* Smaller rocket */
+            width: 65px;  
+            height: 65px; 
             z-index: 5; 
             pointer-events: none; 
             display: none; 
             will-change: transform; 
-            transform-origin: center center; 
+            /* Pivot exactly around the nozzle (tail) instead of the center */
+            transform-origin: 25% 75%; 
         }
     </style>
 </head>
@@ -605,8 +607,8 @@
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
         
                 // --- PERFECT ROCKET ANCHORING ---
+                // --- PERFECT ROCKET ANCHORING ---
                 if (this.status !== 'CRASHED') {
-                    // Predict next frame to get the exact pointing angle
                     const nextTime = t + 0.1;
                     const nextMult = this.getMultiplier(nextTime);
                     const nextWorldX = nextTime * curScaleX;
@@ -616,13 +618,15 @@
                     const dy = nextWorldY - worldY; 
                     const angle = Math.atan2(-dy, dx); 
                     
-                    // Set position EXACTLY to the tip of the line
+                    // 1. Put the top-left of the rocket container exactly at the line tip
                     this.rocketEl.style.left = `${rocketScreenX}px`;
                     this.rocketEl.style.top = `${rocketScreenY}px`;
                     
-                    // MAGIC FIX: -30% (X) and -75% (Y) physically shifts the visual Lottie box 
-                    // so the nozzle (bottom-left of the rocket) aligns flawlessly with the line tip!
-                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`;
+                    // 2. Translate shifts the anchor point to the line tip.
+                    // Because transform-origin is ALSO 25% 75%, it will pivot flawlessly 
+                    // around the tail without detaching, regardless of screen width!
+                    // (+0.785 rad tilts the Lottie animation right-side up)
+                    this.rocketEl.style.transform = `translate(-25%, -75%) rotate(${angle + 0.785}rad)`;
                 }
             },
         
