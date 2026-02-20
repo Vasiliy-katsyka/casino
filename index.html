@@ -650,8 +650,7 @@
                 messages: [
                     {
                         address: "UQBoRkvzUelDcxR65b5J9J3KM1Ic638n1QJUo5kZTKhT3O64",
-                        amount: amountInNano,
-                        payload: "" // You can add your USER_ID here if you encode it to Base64
+                        amount: amountInNano
                     }
                 ]
             };
@@ -662,6 +661,7 @@
                 closeModal('modal-deposit');
             } catch (e) {
                 alert("Payment failed or was rejected.");
+                console.log(e);
             }
         }
         
