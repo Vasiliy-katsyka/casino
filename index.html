@@ -536,20 +536,34 @@
         
             draw: function(t) {
                 const ctx = this.ctx; const w = this.width; const h = this.height;
-                
-                const worldX = t * this.scaleX; 
-                const worldY = (this.multiplier - 1) * this.scaleY;
-                
-                const baseScreenX = 30;
-                const baseScreenY = h - 30;
         
+                // --- DYNAMIC ZOOM: Prevents flying off screen! ---
+                let curScaleX = this.scaleX;
+                let curScaleY = this.scaleY;
+        
+                // As multiplier goes high, we "zoom out" so the line fits on screen forever
+                if (this.multiplier > 2.0) {
+                    const zoom = 2.0 / this.multiplier;
+                    curScaleY = this.scaleY * zoom;          // Squishes vertical curve heavily
+                    curScaleX = this.scaleX * Math.sqrt(zoom); // Squishes horizontal speed smoothly
+                }
+        
+                const worldX = t * curScaleX; 
+                const worldY = (this.multiplier - 1) * curScaleY;
+                
+                const baseScreenX = 40; // Starting position X
+                const baseScreenY = h - 40; // Starting position Y
+        
+                // Camera safely tracks the graph
                 let camX = 0; let camY = 0;
-                if (worldX > w * 0.6) camX = worldX - w * 0.6;
-                if (worldY > h * 0.6) camY = worldY - h * 0.6;
+                if (worldX > w * 0.5) camX = worldX - w * 0.5;
+                if (worldY > h * 0.5) camY = worldY - h * 0.5;
         
+                // Dark Background
                 ctx.fillStyle = "#09090b"; 
                 ctx.fillRect(0, 0, w, h);
         
+                // Infinite Grid
                 const gridSize = 50;
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
                 ctx.beginPath();
@@ -558,26 +572,29 @@
                 for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
                 ctx.stroke();
         
+                // Draw Orange Curve
                 ctx.save();
                 ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
-                
-                if(this.status === 'CRASHED') ctx.strokeStyle = "#ff0055"; 
-                else ctx.strokeStyle = "#ff9900"; // Orange line
+                ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#ff9900"; 
                 
                 ctx.beginPath();
                 ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
                 
-                for (let px = 0; px <= worldX; px += 5) {
-                    const pMult = this.getMultiplier(px / this.scaleX);
-                    const py = (pMult - 1) * this.scaleY;
+                // Map the entire historical path perfectly based on current zoom
+                for (let px = 0; px <= worldX; px += 3) {
+                    const pTime = px / curScaleX;
+                    const pMult = this.getMultiplier(pTime);
+                    const py = (pMult - 1) * curScaleY;
                     ctx.lineTo(baseScreenX + px - camX, baseScreenY - py + camY);
                 }
                 
+                // Exact tip of the line
                 const rocketScreenX = baseScreenX + worldX - camX;
                 const rocketScreenY = baseScreenY - worldY + camY;
                 ctx.lineTo(rocketScreenX, rocketScreenY);
                 ctx.stroke();
         
+                // Orange Glow underneath
                 ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
                 if(this.status === 'CRASHED') {
@@ -587,23 +604,25 @@
                 }
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
         
+                // --- PERFECT ROCKET ANCHORING ---
                 if (this.status !== 'CRASHED') {
-                    // Calculate exact angle of the flight
-                    const nextMult = this.getMultiplier(t + 0.1);
-                    const dy = ((nextMult - 1) * this.scaleY) - worldY; 
-                    const dx = ((t + 0.1) * this.scaleX) - worldX;
+                    // Predict next frame to get the exact pointing angle
+                    const nextTime = t + 0.1;
+                    const nextMult = this.getMultiplier(nextTime);
+                    const nextWorldX = nextTime * curScaleX;
+                    const nextWorldY = (nextMult - 1) * curScaleY;
+        
+                    const dx = nextWorldX - worldX;
+                    const dy = nextWorldY - worldY; 
                     const angle = Math.atan2(-dy, dx); 
                     
-                    // MATH MAGIC: Push the rocket backwards slightly along the angle of flight 
-                    // so the tail perfectly touches the line. Change '20' if it needs more/less push.
-                    const tailOffsetX = Math.cos(angle) * -20; 
-                    const tailOffsetY = Math.sin(angle) * -20;
+                    // Set position EXACTLY to the tip of the line
+                    this.rocketEl.style.left = `${rocketScreenX}px`;
+                    this.rocketEl.style.top = `${rocketScreenY}px`;
                     
-                    this.rocketEl.style.left = `${rocketScreenX + tailOffsetX}px`;
-                    this.rocketEl.style.top = `${rocketScreenY + tailOffsetY}px`;
-                    
-                    // Apply rotation (adding 0.78 rads / ~45 degrees because the Lottie rocket is drawn pointing up-right)
-                    this.rocketEl.style.transform = `translate(-50%, -50%) rotate(${angle + 0.78}rad)`;
+                    // MAGIC FIX: -30% (X) and -75% (Y) physically shifts the visual Lottie box 
+                    // so the nozzle (bottom-left of the rocket) aligns flawlessly with the line tip!
+                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`;
                 }
             },
         
