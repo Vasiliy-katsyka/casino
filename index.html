@@ -64,6 +64,11 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; } .modal-title { font-family: 'Rajdhani'; font-weight: 700; font-size: 20px; } .close-btn { background: none; border: none; color: #888; font-size: 24px; cursor: pointer; }
         .select-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; } .select-item { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; border: 1px solid transparent; } .select-item.active { border-color: var(--primary); background: rgba(0, 136, 204, 0.1); } .select-item img { width: 50px; height: 50px; margin-bottom: 5px; }
 
+        /* Add this to your CSS */
+        header.hidden {
+            display: none !important;
+        }
+        
         .wallet-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); margin-bottom: 15px; text-align: center; } .wallet-label { font-size: 10px; color: #888; margin-bottom: 5px; text-transform: uppercase; } .wallet-val { font-family: monospace; font-size: 12px; color: white; word-break: break-all; user-select: text; } .memo-box { background: rgba(0, 255, 136, 0.05); border: 1px dashed var(--success); padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 20px; } .memo-val { font-size: 24px; font-weight: 800; font-family: 'Rajdhani'; letter-spacing: 2px; color: var(--success); }
         .dep-input { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; padding: 12px; border-radius: 8px; width: 100%; font-size: 18px; text-align: center; margin-bottom: 15px; font-family: 'Rajdhani'; font-weight: bold; }
 
@@ -255,6 +260,13 @@
         <div id="view-case-play" class="game-view">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <button class="btn btn-back" onclick="openCasesMenu()"><i class="fa-solid fa-arrow-left"></i></button>
+                <div style="text-align:right;">
+                    <div style="font-family:'Rajdhani'; font-weight:bold; font-size:18px;" id="cp-name">...</div>
+                    <div style="display:flex; gap:10px; justify-content:flex-end; font-size:12px;">
+                        <span style="color:var(--gold);" id="cp-price">...</span>
+                        <span style="color:white; opacity:0.6;">Bal: <span id="case-balance-display">0.00</span></span>
+                    </div>
+                </div>
                 <div style="text-align:right;"><div style="font-family:'Rajdhani'; font-weight:bold; font-size:18px;" id="cp-name">...</div><div style="font-size:12px; color:var(--gold);" id="cp-price">...</div></div>
             </div>
             <div class="case-container"><div class="case-marker"></div><div class="case-strip" id="case-strip"></div></div>
@@ -402,9 +414,20 @@
         async function refreshUser() {
             const d = await api("/api/user");
             if(d.balance !== undefined) {
-                balance = d.balance; inventory = d.inventory;
+                balance = d.balance; 
+                inventory = d.inventory;
+                
+                // Update Global Header
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-                document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
+                
+                // Update Game Specific Headers
+                if(document.getElementById('crash-balance-display')) 
+                    document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
+                if(document.getElementById('mines-balance-display')) 
+                    document.getElementById('mines-balance-display').innerText = balance.toFixed(2);
+                if(document.getElementById('case-balance-display')) 
+                    document.getElementById('case-balance-display').innerText = balance.toFixed(2);
+                    
                 renderInventory();
             }
         }
@@ -931,12 +954,34 @@
 
         // --- UTILS ---
         function switchView(id) {
+            // 1. Handle Active View Class
             document.querySelectorAll('.game-view').forEach(e => e.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+        
+            // 2. Handle Bottom Navigation Highlighting
             document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
             if (id === 'view-home' || id.includes('case')) document.getElementById('nav-home').classList.add('active');
-            if (id === 'view-inventory') { renderInventory(); document.getElementById('nav-inv').classList.add('active'); }
-            if (id === 'view-crash') { setTimeout(() => { if (window.RocketEngine) RocketEngine.resize(); }, 50); }
+            if (id === 'view-inventory') { 
+                renderInventory(); 
+                document.getElementById('nav-inv').classList.add('active'); 
+            }
+        
+            // --- NEW: HEADER VISIBILITY LOGIC ---
+            const header = document.querySelector('header');
+            
+            // Define which views should KEEP the header visible
+            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade'];
+        
+            if (viewsWithHeader.includes(id)) {
+                header.classList.remove('hidden');
+            } else {
+                header.classList.add('hidden'); // Hides header for Crash, Mines, Case Play
+            }
+        
+            // 3. Game Specific Resizing
+            if (id === 'view-crash') { 
+                setTimeout(() => { if (window.RocketEngine) RocketEngine.resize(); }, 50); 
+            }
         }
 
         function renderInventory(){ const g=document.getElementById('main-inventory-grid'); g.innerHTML=''; if(!inventory.length){document.getElementById('empty-inv').style.display='block';return;} document.getElementById('empty-inv').style.display='none'; inventory.slice().reverse().forEach(i=>{ const d=document.createElement('div'); d.className='glass inv-card'; d.innerHTML=`<img src="https://cdn.changes.tg/gifts/originals/${i.gift_id}/Original.png"><div class="inv-info"><div class="inv-name">${i.gift_name}</div><div class="inv-price">${i.gift_price}</div></div><button class="btn sell-btn" onclick="sellItem(${i.id})">SELL</button>`; g.appendChild(d); }); }
