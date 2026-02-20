@@ -21,6 +21,7 @@
         .balance { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-weight: 600; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); cursor: pointer; }
         .ton-icon { width: 20px; height: 20px; border-radius: 50%; background: #0088cc; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; }
 
+        /* REPLACE THIS BLOCK IN YOUR CSS */
         main { 
             flex: 1; 
             position: relative; 
@@ -28,12 +29,8 @@
             padding: 20px; 
             display: flex; 
             flex-direction: column; 
-            
-            /* THE FIX: Increased from 80px to 160px to ensure nothing gets cut off */
-            padding-bottom: 160px; 
-            
-            /* Smooth scrolling for iOS */
-            -webkit-overflow-scrolling: touch; 
+            /* INCREASED from 80px to 150px to ensure nothing is hidden behind the nav */
+            padding-bottom: 150px; 
         }
         .game-view { display: none; flex-direction: column; min-height: 100%; animation: fadeIn 0.3s ease; } .game-view.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -255,76 +252,6 @@
         
         .mines-hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--glass-border); }
         .mines-multiplier { font-family: 'Rajdhani'; font-size: 32px; font-weight: 800; color: var(--success); text-shadow: 0 0 10px rgba(0,255,136,0.3); }
-
-        /* --- GLASS NAVIGATION BAR --- */
-        nav { 
-            display: flex; 
-            justify-content: space-around; 
-            align-items: center;
-            
-            /* Glass Effect */
-            background: rgba(10, 10, 15, 0.65); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            
-            /* Border & Shadow */
-            border-top: 1px solid rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
-            
-            /* Positioning */
-            position: fixed; 
-            bottom: 0; 
-            width: 100%; 
-            z-index: 100; 
-            
-            /* Spacing & Safe Areas (Crucial for iPhone) */
-            padding-top: 15px;
-            padding-bottom: calc(15px + env(safe-area-inset-bottom)); 
-        }
-        
-        .nav-item { 
-            color: #555; 
-            text-align: center; 
-            font-size: 10px; 
-            font-weight: 700;
-            cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
-            position: relative;
-            width: 60px; /* Wider touch target */
-        }
-        
-        .nav-item i { 
-            font-size: 22px; 
-            margin-bottom: 6px; 
-            display: block; 
-            transition: transform 0.2s;
-        }
-        
-        /* Active State (Glowing Blue) */
-        .nav-item.active { 
-            color: var(--primary); 
-            text-shadow: 0 0 15px rgba(0, 136, 204, 0.6);
-        }
-        
-        .nav-item.active i {
-            transform: translateY(-2px);
-            color: white; /* Icon turns white while text stays blue */
-            filter: drop-shadow(0 0 8px var(--primary));
-        }
-        
-        /* Optional: Add a small indicator dot below active item */
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary);
-        }
         
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
