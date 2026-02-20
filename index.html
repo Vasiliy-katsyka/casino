@@ -131,6 +131,22 @@
         .btn-crash { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 10px 20px rgba(0, 114, 255, 0.2); color: white; border: none; }
         .menu-btn-bg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 90px; opacity: 0.15; z-index: 1; }
 
+        /* BULLETPROOF MOBILE SCROLL FIX */
+        .game-view::after {
+            content: "";
+            display: block;
+            height: 140px; /* Massive empty space */
+            min-height: 140px;
+            width: 100%;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        
+        /* Also ensure the grids don't cut off their own shadows */
+        .inventory-grid, .cases-list, .select-grid {
+            padding-bottom: 20px;
+        }
+        
         /* Cases & General Views */
         .cases-list { display: flex; flex-direction: column; gap: 15px; }
         .case-select-card { display: flex; align-items: center; padding: 15px; gap: 15px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; }
