@@ -22,6 +22,8 @@
         .ton-icon { width: 20px; height: 20px; border-radius: 50%; background: #0088cc; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; }
 
         /* REPLACE THIS BLOCK IN YOUR CSS */
+        /* REPLACE YOUR EXISTING "main" AND "nav" CSS WITH THIS: */
+
         main { 
             flex: 1; 
             position: relative; 
@@ -29,8 +31,24 @@
             padding: 20px; 
             display: flex; 
             flex-direction: column; 
-            /* INCREASED from 80px to 150px to ensure nothing is hidden behind the nav */
-            padding-bottom: 150px; 
+            /* Massively increased bottom padding to clear the navigation bar */
+            padding-bottom: calc(130px + env(safe-area-inset-bottom)); 
+        }
+        
+        nav { 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 12px 0; 
+            /* Safe-area fixes the layout on modern phones with bottom swipe bars */
+            padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
+            background: rgba(15, 15, 19, 0.95); 
+            border-top: 1px solid var(--glass-border); 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            z-index: 100; 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         .game-view { display: none; flex-direction: column; min-height: 100%; animation: fadeIn 0.3s ease; } .game-view.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
