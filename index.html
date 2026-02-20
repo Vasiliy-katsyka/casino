@@ -476,27 +476,40 @@
     <div class="modal-overlay" id="modal-deposit">
         <div class="modal-sheet">
             <div class="modal-header">
-                <div class="modal-title">Deposit TON</div>
+                <div class="modal-title"><i class="fa-solid fa-gem" style="color:var(--primary); margin-right:10px;"></i>Top Up</div>
                 <button class="close-btn" onclick="closeModal('modal-deposit')">&times;</button>
             </div>
+    
+            <!-- 1. The TonConnect Universal Button -->
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 10px; color: #888; text-align: center; margin-bottom: 10px; text-transform: uppercase;">Step 1: Connect your Wallet</div>
+                <div id="ton-connect-button" style="display: flex; justify-content: center;"></div>
+            </div>
+    
+            <div style="border-top: 1px solid #333; margin: 20px 0;"></div>
+    
+            <!-- 2. The Amount Input and Send Button -->
+            <div style="font-size: 10px; color: #888; text-align: center; margin-bottom: 10px; text-transform: uppercase;">Step 2: Enter Amount</div>
+            <input type="number" id="dep-amount" value="5" class="dep-input" placeholder="Amount (TON)">
             
-            <input type="number" id="dep-amount" value="5" class="dep-input">
-        
-            <!-- This div will automatically turn into a "Connect Wallet" button -->
-            <div id="ton-connect-button" style="display: flex; justify-content: center; margin-bottom: 15px;"></div>
-        
-            <!-- This button only shows if wallet is connected -->
+            <!-- This button will be enabled only when wallet is connected -->
             <button class="btn" id="send-tx-btn" onclick="sendTonTransaction()" style="display:none; background:var(--success); margin-bottom:15px;">
-                <i class="fa-solid fa-paper-plane"></i> CONFIRM DEPOSIT
+                <i class="fa-solid fa-paper-plane"></i> CONFIRM & SEND
             </button>
-        
-            <div style="border-top:1px solid #333; margin:15px 0;"></div>
-            
-            <!-- Manual backup -->
+    
+            <!-- Fallback Button if TonConnect isn't used -->
+            <button class="btn" id="manual-dep-btn" onclick="openTonWallet()" style="background:var(--primary); margin-bottom:15px;">
+                <i class="fa-solid fa-external-link"></i> OPEN WALLET APP
+            </button>
+    
             <div class="memo-box">
-                <div class="wallet-label">MEMO / COMMENT</div>
+                <div class="wallet-label" style="color:var(--success)">REQUIRED COMMENT (MEMO)</div>
                 <div class="memo-val" id="dep-memo">...</div>
             </div>
+            
+            <button class="btn" id="check-payment-btn" onclick="checkDeposit()" style="background: #222;">
+                <i class="fa-solid fa-rotate"></i> CHECK PAYMENT
+            </button>
         </div>
     </div>
 
@@ -511,13 +524,17 @@
         
         // Watch for wallet connection status
         tonConnectUI.onStatusChange(wallet => {
+            const sendBtn = document.getElementById('send-tx-btn');
+            const manualBtn = document.getElementById('manual-dep-btn');
+            
             if (wallet) {
-                console.log('Wallet connected:', wallet);
-                document.getElementById('open-wallet-btn').style.display = 'none';
-                document.getElementById('send-tx-btn').style.display = 'block';
+                // User is connected! Show the "Live" confirm button
+                sendBtn.style.display = 'flex';
+                manualBtn.style.display = 'none';
             } else {
-                document.getElementById('open-wallet-btn').style.display = 'block';
-                document.getElementById('send-tx-btn').style.display = 'none';
+                // User is not connected. Show the manual redirect button
+                sendBtn.style.display = 'none';
+                manualBtn.style.display = 'flex';
             }
         });
         
@@ -626,32 +643,25 @@
 
         async function sendTonTransaction() {
             const amt = document.getElementById('dep-amount').value || 5;
-            const amountInNano = (parseFloat(amt) * 1000000000).toString(); // Convert to Nanotons
+            const amountInNano = (parseFloat(amt) * 1000000000).toString(); 
             
             const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600, // 10 minutes
+                validUntil: Math.floor(Date.now() / 1000) + 300, 
                 messages: [
                     {
-                        address: WALLET_ADDR,
+                        address: "UQBoRkvzUelDcxR65b5J9J3KM1Ic638n1QJUo5kZTKhT3O64",
                         amount: amountInNano,
-                        payload: "" // Optional: You can encode your USER_ID as a payload here
+                        payload: "" // You can add your USER_ID here if you encode it to Base64
                     }
                 ]
             };
         
             try {
-                const result = await tonConnectUI.sendTransaction(transaction);
-                
-                // If we reach here, the user signed the transaction in their wallet
-                alert("Transaction sent! It will take ~1 minute to appear in your balance.");
+                await tonConnectUI.sendTransaction(transaction);
+                alert("Transaction sent! Check your balance in a minute.");
                 closeModal('modal-deposit');
-                
-                // Automatically check for the deposit after 20 seconds
-                setTimeout(() => { checkDeposit(); }, 20000);
-        
             } catch (e) {
-                console.error("Transaction failed", e);
-                alert("Transaction cancelled or failed.");
+                alert("Payment failed or was rejected.");
             }
         }
         
