@@ -77,13 +77,6 @@
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8); margin-top: 15px;
         }
         canvas { width: 100%; height: 100%; display: block; }
-        
-        .crash-ui { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; z-index: 10; width: 100%; }
-        .crash-multiplier {
-            font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 72px; 
-            color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
-            font-variant-numeric: tabular-nums; line-height: 1; transition: color 0.3s;
-        }
         .crash-status { font-size: 14px; letter-spacing: 2px; color: #8b9bb4; font-weight: 700; margin-top: 10px; }
         .crash-win-msg { font-family: 'Rajdhani'; font-size: 24px; color: #00ff88; font-weight: bold; margin-top: 5px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); height: 30px; }
         
@@ -113,17 +106,45 @@
             min-width: 110px; height: 130px; margin: 0 4px; display: flex; 
             flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; 
         }
-        
-        /* --- ROCKET ALIGNMENT FIX --- */
-        #rocket-entry { 
-            position: absolute; width: 100px; height: 100px; z-index: 5; 
-            pointer-events: none; display: none; will-change: transform; 
-            /* Rocket center will now act as the exact anchor point */
-            transform-origin: center center; 
-        }
         #boom-anim { 
             position: absolute; width: 150px; height: 150px; z-index: 6; 
             pointer-events: none; display: none; transform: translate(-50%, -50%); 
+            transform-origin: center center; 
+        }
+
+        /* Move UI to Top-Left and Left-Align text */
+        .crash-ui { 
+            position: absolute; 
+            top: 20px;       /* Pinned to top */
+            left: 25px;      /* Pinned to left */
+            transform: none; /* Remove centering */
+            text-align: left; 
+            pointer-events: none; 
+            z-index: 10; 
+            width: auto;
+        }
+        
+        /* Make text smaller and ALWAYS green */
+        .crash-multiplier {
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: 800; 
+            font-size: 52px; /* Smaller */
+            color: #00ff88 !important; /* Forces green always */
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            font-variant-numeric: tabular-nums; 
+            line-height: 1; 
+            transition: color 0.3s;
+        }
+        
+        /* Make Rocket Smaller */
+        #rocket-entry { 
+            position: absolute; 
+            width: 65px;  /* Smaller rocket */
+            height: 65px; /* Smaller rocket */
+            z-index: 5; 
+            pointer-events: none; 
+            display: none; 
+            will-change: transform; 
             transform-origin: center center; 
         }
     </style>
@@ -519,11 +540,9 @@
                 const worldX = t * this.scaleX; 
                 const worldY = (this.multiplier - 1) * this.scaleY;
                 
-                // Starting coordinates inside canvas
                 const baseScreenX = 30;
                 const baseScreenY = h - 30;
         
-                // Camera smoothly follows rocket after passing 60% of screen
                 let camX = 0; let camY = 0;
                 if (worldX > w * 0.6) camX = worldX - w * 0.6;
                 if (worldY > h * 0.6) camY = worldY - h * 0.6;
@@ -531,7 +550,6 @@
                 ctx.fillStyle = "#09090b"; 
                 ctx.fillRect(0, 0, w, h);
         
-                // Draw Grid
                 const gridSize = 50;
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
                 ctx.beginPath();
@@ -540,18 +558,15 @@
                 for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
                 ctx.stroke();
         
-                // Draw Beautiful Curved Path
                 ctx.save();
-                ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.lineJoin = "round";
+                ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
                 
-                // Orange when running, Red when crashed
                 if(this.status === 'CRASHED') ctx.strokeStyle = "#ff0055"; 
-                else ctx.strokeStyle = "#ff9900"; 
+                else ctx.strokeStyle = "#ff9900"; // Orange line
                 
                 ctx.beginPath();
                 ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
                 
-                // Render segments to form curve
                 for (let px = 0; px <= worldX; px += 5) {
                     const pMult = this.getMultiplier(px / this.scaleX);
                     const py = (pMult - 1) * this.scaleY;
@@ -563,7 +578,6 @@
                 ctx.lineTo(rocketScreenX, rocketScreenY);
                 ctx.stroke();
         
-                // Gradient Glow Under Path
                 ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
                 if(this.status === 'CRASHED') {
@@ -573,18 +587,23 @@
                 }
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
         
-                // Pinpoint exact location of the rocket
                 if (this.status !== 'CRASHED') {
+                    // Calculate exact angle of the flight
                     const nextMult = this.getMultiplier(t + 0.1);
                     const dy = ((nextMult - 1) * this.scaleY) - worldY; 
                     const dx = ((t + 0.1) * this.scaleX) - worldX;
-                    // Negative dy because screen Y axis draws downward
                     const angle = Math.atan2(-dy, dx); 
                     
-                    // Fixed anchor: center of div connects exactly to end of line
-                    this.rocketEl.style.left = `${rocketScreenX}px`;
-                    this.rocketEl.style.top = `${rocketScreenY}px`;
-                    this.rocketEl.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
+                    // MATH MAGIC: Push the rocket backwards slightly along the angle of flight 
+                    // so the tail perfectly touches the line. Change '20' if it needs more/less push.
+                    const tailOffsetX = Math.cos(angle) * -20; 
+                    const tailOffsetY = Math.sin(angle) * -20;
+                    
+                    this.rocketEl.style.left = `${rocketScreenX + tailOffsetX}px`;
+                    this.rocketEl.style.top = `${rocketScreenY + tailOffsetY}px`;
+                    
+                    // Apply rotation (adding 0.78 rads / ~45 degrees because the Lottie rocket is drawn pointing up-right)
+                    this.rocketEl.style.transform = `translate(-50%, -50%) rotate(${angle + 0.78}rad)`;
                 }
             },
         
@@ -626,9 +645,6 @@
                 
                 btn.innerHTML = "LAUNCH ROCKET"; btn.classList.remove('cashout');
                 
-                // Keep neon color, remove status text
-                uiMult.style.color = "#00ff88"; 
-                uiMult.style.textShadow = "0 0 20px rgba(0,255,136,0.6)";
                 msg.innerText = ""; // Hide text
                 winMsg.innerText = `+${winAmt.toFixed(2)} TON`;
                 return;
