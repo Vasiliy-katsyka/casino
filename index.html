@@ -546,7 +546,29 @@
         function openDepositModal() { document.getElementById('modal-deposit').classList.add('open'); }
         function openTonWallet() {
             const amt = document.getElementById('dep-amount').value || 5;
-            window.location.href = `ton://transfer/${WALLET_ADDR}?amount=${amt * 1000000000}&text=${USER_ID}`;
+            const address = WALLET_ADDR;
+            const amountNano = amt * 1000000000;
+            const comment = USER_ID;
+        
+            // 1. Standard Deep Link (Works if a wallet is installed)
+            const deepLink = `ton://transfer/${address}?amount=${amountNano}&text=${comment}`;
+            
+            // 2. Universal Link (Safest fallback, opens Tonkeeper or a web-selector)
+            const universalLink = `https://app.tonkeeper.com/transfer/${address}?amount=${amountNano}&text=${comment}`;
+        
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                // This is the "Magic Fix" for Telegram Mini Apps
+                // It tells Telegram to handle the protocol properly
+                window.Telegram.WebApp.openLink(universalLink);
+            } else {
+                // Fallback for standard PC browsers
+                window.location.href = deepLink;
+                
+                // If the deep link fails to trigger after 500ms, try the universal link
+                setTimeout(() => {
+                    window.open(universalLink, '_blank');
+                }, 500);
+            }
         }
         function updateDeepLink() {}
         async function checkDeposit() {
