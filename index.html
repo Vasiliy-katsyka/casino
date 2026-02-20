@@ -53,10 +53,8 @@
         .case-info { flex: 1; } .case-name { font-family: 'Rajdhani'; font-weight: 700; font-size: 18px; } .case-price { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
         .timer-badge { font-size: 10px; background: #333; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; }
 
-        .case-container { position: relative; width: 100%; height: 160px; overflow: hidden; margin: 20px 0; border-radius: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); }
         .case-marker { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 3px; height: 100%; background: var(--gold); z-index: 5; box-shadow: 0 0 10px var(--gold); }
         .case-strip { display: flex; height: 100%; align-items: center; will-change: transform; }
-        .case-item { min-width: 110px; height: 130px; margin: 0 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
         .case-item img { width: 70px; height: 70px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
         .price-tag { font-size: 10px; color: #aaa; margin-top: 4px; font-family: 'Rajdhani'; }
 
@@ -102,8 +100,32 @@
         .btn-launch:active { transform: scale(0.98); }
         .btn-launch.cashout { background: linear-gradient(90deg, #ff0055, #cc0044); box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4); }
 
-        #rocket-entry { position: absolute; width: 100px; height: 100px; top: 0; left: 0; z-index: 5; pointer-events: none; display: none; will-change: transform; transform-origin: center center; }
-        #boom-anim { position: absolute; width: 140px; height: 140px; z-index: 6; pointer-events: none; display: none; transform: translate(-50%, -50%); }
+        /* --- CASES ROULETTE FIX --- */
+        .case-container { 
+            position: relative; width: 100%; height: 160px; min-height: 160px; flex-shrink: 0; 
+            overflow: hidden; margin: 20px 0; border-radius: 16px; 
+            background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); 
+            /* Changed black to rgba(0,0,0,1) which fixes mask rendering on mobile */
+            mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); 
+            -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); 
+        }
+        .case-item { 
+            min-width: 110px; height: 130px; margin: 0 4px; display: flex; 
+            flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; 
+        }
+        
+        /* --- ROCKET ALIGNMENT FIX --- */
+        #rocket-entry { 
+            position: absolute; width: 100px; height: 100px; z-index: 5; 
+            pointer-events: none; display: none; will-change: transform; 
+            /* Rocket center will now act as the exact anchor point */
+            transform-origin: center center; 
+        }
+        #boom-anim { 
+            position: absolute; width: 150px; height: 150px; z-index: 6; 
+            pointer-events: none; display: none; transform: translate(-50%, -50%); 
+            transform-origin: center center; 
+        }
     </style>
 </head>
 <body>
@@ -382,16 +404,12 @@
             }, 4100);
         }
 
-        // ==========================================
-        //  PROFESSIONAL CRASH ENGINE & LOGIC FIXES
-        // ==========================================
-        
         const RocketEngine = {
             canvas: null, ctx: null, lottieAnim: null, boomLottie: null,
             rocketEl: null, boomEl: null, width: 0, height: 0, animId: null,
             
             status: 'IDLE', startTime: 0, multiplier: 1.00, crashPoint: 0, bet: 0,
-            hasCashedOut: false, scaleX: 120, scaleY: 100,
+            hasCashedOut: false, scaleX: 45, scaleY: 80, // Tuned for beautiful curve
             
             init: function() {
                 this.canvas = document.getElementById('crashCanvas');
@@ -399,13 +417,11 @@
                 this.rocketEl = document.getElementById('rocket-entry');
                 this.boomEl = document.getElementById('boom-anim');
                 
-                // ROCKET LOTTIE
                 this.lottieAnim = lottie.loadAnimation({
                     container: this.rocketEl, renderer: 'svg', loop: true, autoplay: false,
                     path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json' 
                 });
-
-                // NEW EXPLOSION LOTTIE
+        
                 this.boomLottie = lottie.loadAnimation({
                     container: this.boomEl, renderer: 'svg', loop: false, autoplay: false,
                     path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5242579622872256599.json'
@@ -453,28 +469,31 @@
                 this.rocketEl.style.display = 'none'; 
                 this.lottieAnim.stop(); 
                 
-                // Calculate final point to attach Explosion
+                // Exact Explosion Coordinates
                 const t = this.getErrorTime();
                 const worldX = t * this.scaleX;
                 const worldY = (this.multiplier - 1) * this.scaleY;
                 const w = this.width, h = this.height;
+                const baseScreenX = 30, baseScreenY = h - 30;
+        
                 let camX = 0, camY = 0;
-                if (worldX > w/2) camX = worldX - w/2;
-                if (worldY > h/2) camY = worldY - h/2;
+                if (worldX > w * 0.6) camX = worldX - w * 0.6;
+                if (worldY > h * 0.6) camY = worldY - h * 0.6;
                 
-                const finalX = worldX - camX;
-                const finalY = h - (worldY - camY);
-
+                const finalX = baseScreenX + worldX - camX;
+                const finalY = baseScreenY - worldY + camY;
+        
                 this.boomEl.style.display = 'block';
                 this.boomEl.style.left = `${finalX}px`;
                 this.boomEl.style.top = `${finalY}px`;
                 this.boomLottie.goToAndPlay(0, true);
-
-                this.draw(t); // Draw final static frame
+        
+                this.draw(t);
                 cancelAnimationFrame(this.animId);
             },
         
-            getMultiplier: function(t) { return Math.exp(0.065 * t); },
+            // A real exponential curve function
+            getMultiplier: function(t) { return Math.max(1, Math.pow(1.15, t)); },
             getErrorTime: function() { return (Date.now() - this.startTime) / 1000; },
         
             loop: function() {
@@ -482,7 +501,6 @@
                 const t = this.getErrorTime();
                 this.multiplier = this.getMultiplier(t);
         
-                // Continuously update text, even if cashed out, to show the FOMO
                 document.getElementById('crash-text').innerText = this.multiplier.toFixed(2) + "x";
         
                 if(this.multiplier >= this.crashPoint) {
@@ -497,53 +515,76 @@
         
             draw: function(t) {
                 const ctx = this.ctx; const w = this.width; const h = this.height;
-                const worldX = t * this.scaleX; const worldY = (this.multiplier - 1) * this.scaleY;
-                let camX = 0; let camY = 0;
-                if (worldX > w/2) camX = worldX - w/2;
-                if (worldY > h/2) camY = worldY - h/2;
+                
+                const worldX = t * this.scaleX; 
+                const worldY = (this.multiplier - 1) * this.scaleY;
+                
+                // Starting coordinates inside canvas
+                const baseScreenX = 30;
+                const baseScreenY = h - 30;
         
-                ctx.fillStyle = "#09090b"; // Super dark background
+                // Camera smoothly follows rocket after passing 60% of screen
+                let camX = 0; let camY = 0;
+                if (worldX > w * 0.6) camX = worldX - w * 0.6;
+                if (worldY > h * 0.6) camY = worldY - h * 0.6;
+        
+                ctx.fillStyle = "#09090b"; 
                 ctx.fillRect(0, 0, w, h);
         
-                // Dark Background Grid
-                const gridSize = 60;
+                // Draw Grid
+                const gridSize = 50;
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
                 ctx.beginPath();
                 const offsetX = camX % gridSize; const offsetY = camY % gridSize;
-                for (let x = -offsetX; x <= w; x += gridSize) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
-                for (let y = h + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+                for (let x = baseScreenX - offsetX; x <= w; x += gridSize) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+                for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
                 ctx.stroke();
         
-                // Draw Neon Path
+                // Draw Beautiful Curved Path
                 ctx.save();
-                ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
-                // Color path based on status
+                ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.lineJoin = "round";
+                
+                // Orange when running, Red when crashed
                 if(this.status === 'CRASHED') ctx.strokeStyle = "#ff0055"; 
-                else ctx.strokeStyle = "#00ff88"; 
+                else ctx.strokeStyle = "#ff9900"; 
                 
                 ctx.beginPath();
-                ctx.moveTo(0 - camX, h + camY); 
-                for (let px = 0; px <= worldX; px += 10) {
+                ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
+                
+                // Render segments to form curve
+                for (let px = 0; px <= worldX; px += 5) {
                     const pMult = this.getMultiplier(px / this.scaleX);
-                    ctx.lineTo(px - camX, h - ((pMult - 1) * this.scaleY - camY));
+                    const py = (pMult - 1) * this.scaleY;
+                    ctx.lineTo(baseScreenX + px - camX, baseScreenY - py + camY);
                 }
-                const rocketScreenX = worldX - camX;
-                const rocketScreenY = h - (worldY - camY);
+                
+                const rocketScreenX = baseScreenX + worldX - camX;
+                const rocketScreenY = baseScreenY - worldY + camY;
                 ctx.lineTo(rocketScreenX, rocketScreenY);
                 ctx.stroke();
         
-                // Fill Under Path
-                ctx.lineTo(rocketScreenX, h + 100); ctx.lineTo(0 - camX, h + 100); ctx.closePath();
+                // Gradient Glow Under Path
+                ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
-                grad.addColorStop(0, "rgba(0, 255, 136, 0.15)"); grad.addColorStop(1, "rgba(0, 255, 136, 0)");
+                if(this.status === 'CRASHED') {
+                    grad.addColorStop(0, "rgba(255, 0, 85, 0.2)"); grad.addColorStop(1, "rgba(255, 0, 85, 0)");
+                } else {
+                    grad.addColorStop(0, "rgba(255, 153, 0, 0.25)"); grad.addColorStop(1, "rgba(255, 153, 0, 0)");
+                }
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
         
+                // Pinpoint exact location of the rocket
                 if (this.status !== 'CRASHED') {
-                    const nextMult = this.getMultiplier(t + 0.05);
-                    const dy = (worldY - ((nextMult - 1) * this.scaleY)); 
-                    const dx = (((t + 0.05) * this.scaleX) - worldX);
-                    const angle = Math.atan2(dy, dx); 
-                    this.rocketEl.style.transform = `translate(${rocketScreenX + 7}px, ${rocketScreenY - 50}px) rotate(${angle}rad)`;
+                    const nextMult = this.getMultiplier(t + 0.1);
+                    const dy = ((nextMult - 1) * this.scaleY) - worldY; 
+                    const dx = ((t + 0.1) * this.scaleX) - worldX;
+                    // Negative dy because screen Y axis draws downward
+                    const angle = Math.atan2(-dy, dx); 
+                    
+                    // Fixed anchor: center of div connects exactly to end of line
+                    this.rocketEl.style.left = `${rocketScreenX}px`;
+                    this.rocketEl.style.top = `${rocketScreenY}px`;
+                    this.rocketEl.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`;
                 }
             },
         
@@ -551,8 +592,8 @@
                 const w = this.width; const h = this.height; const ctx = this.ctx;
                 ctx.fillStyle = "#09090b"; ctx.fillRect(0,0,w,h);
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20"; ctx.beginPath();
-                for(let x=0; x<=w; x+=60) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
-                for(let y=0; y<=h; y+=60) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
+                for(let x=0; x<=w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
+                for(let y=0; y<=h; y+=50) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
                 ctx.stroke();
                 this.rocketEl.style.display = 'none'; 
             }
@@ -575,22 +616,20 @@
                 
                 btn.innerHTML = "SYNCING..."; btn.disabled = true;
                 
-                // Add Win amount strictly on backend
                 const res = await api("/api/game/crash/cashout", "POST", { winAmt: winAmt });
                 btn.disabled = false;
-                
                 if(res.error) { alert(res.error); return; }
-
-                balance += winAmt; // Sync local
+        
+                balance += winAmt;
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
                 document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
                 
                 btn.innerHTML = "LAUNCH ROCKET"; btn.classList.remove('cashout');
                 
-                // Keep text green but mark victory
+                // Keep neon color, remove status text
                 uiMult.style.color = "#00ff88"; 
                 uiMult.style.textShadow = "0 0 20px rgba(0,255,136,0.6)";
-                msg.innerText = "VICTORY!";
+                msg.innerText = ""; // Hide text
                 winMsg.innerText = `+${winAmt.toFixed(2)} TON`;
                 return;
             }
@@ -601,20 +640,18 @@
                 if(balance < betAmt) { alert("Insufficient funds!"); return; }
         
                 btn.innerHTML = "PREPARING..."; btn.disabled = true;
-
-                // Deduct on backend strictly before starting animation
+        
                 const res = await api("/api/game/crash/start", "POST", { bet: betAmt });
                 btn.disabled = false;
-                
                 if (res.error) { alert(res.error); return; }
-
-                balance = res.balance; // Sync exactly to backend
+        
+                balance = res.balance; 
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
                 document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
         
-                uiMult.style.color = "#00ff88"; 
-                uiMult.style.textShadow = "0 0 20px rgba(0, 255, 136, 0.6)";
-                msg.innerText = "ROCKET IN FLIGHT";
+                uiMult.style.color = "#ff9900"; // Orange while running
+                uiMult.style.textShadow = "0 0 20px rgba(255, 153, 0, 0.6)";
+                msg.innerText = ""; // Empty string, no more "Rocket in flight"
                 winMsg.innerText = "";
                 btn.innerHTML = "EJECT NOW"; btn.classList.add('cashout');
         
@@ -633,18 +670,14 @@
             const btn = document.getElementById('crash-action-btn');
             btn.innerHTML = "TRY AGAIN"; btn.classList.remove('cashout');
             
-            // Note: We don't need to send an API call for 'Lost', because the bet was already deducted on launch.
-            
             if (RocketEngine.hasCashedOut) {
-                // User already cashed out, Rocket explodes but keep them safe
-                document.getElementById('crash-status').innerText = `CRASHED AT ${RocketEngine.crashPoint.toFixed(2)}x`;
-                document.getElementById('crash-text').style.color = "#8b9bb4"; // Gray it out slightly
+                document.getElementById('crash-status').innerText = ""; 
+                document.getElementById('crash-text').style.color = "#8b9bb4"; 
                 document.getElementById('crash-text').style.textShadow = "none";
             } else {
-                // True Loss
                 document.getElementById('crash-text').style.color = "#ff0055"; 
                 document.getElementById('crash-text').style.textShadow = "0 0 20px rgba(255, 0, 85, 0.6)";
-                document.getElementById('crash-status').innerText = "ROCKET EXPLODED";
+                document.getElementById('crash-status').innerText = ""; // Removed "ROCKET EXPLODED"
                 document.getElementById('crash-win-msg').innerText = "";
             }
         }
