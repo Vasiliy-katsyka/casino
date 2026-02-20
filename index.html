@@ -147,6 +147,67 @@
             will-change: transform; 
             transform-origin: center center; 
         }
+
+        /* MINES THEME */
+        .btn-mines { 
+            background: linear-gradient(135deg, #FFC107, #FF9800); 
+            box-shadow: 0 10px 20px rgba(255, 152, 0, 0.2); 
+            color: white; border: none; 
+        }
+        
+        .mines-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+            aspect-ratio: 1/1; /* Keeps it square */
+        }
+        
+        .mine-tile {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mine-tile:active { transform: scale(0.95); }
+        .mine-tile.disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* States */
+        .mine-tile.gem { 
+            background: rgba(0, 255, 136, 0.2); 
+            border-color: #00ff88; 
+            box-shadow: 0 0 15px rgba(0,255,136,0.3);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .mine-tile.boom { 
+            background: rgba(255, 0, 85, 0.2); 
+            border-color: #ff0055; 
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+            animation: shake 0.4s;
+        }
+        .mine-tile.revealed { opacity: 0.3; } /* For revealing bombs after game ends */
+        
+        .mines-btn {
+            background: linear-gradient(90deg, #FFC107, #FF9800);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+            color: #000; /* Black text for contrast on yellow */
+        }
+        .mines-btn.cashout {
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+            color: #003311;
+        }
+        
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
     </style>
 </head>
 <body>
@@ -166,7 +227,7 @@
             <div style="margin-bottom: 5px;"><h2 style="margin:0; font-family:'Rajdhani'; font-size:32px;">CASINO FLOOR</h2><span style="color:var(--text-secondary); font-size: 14px;">Select a mode to play</span></div>
             
             <div class="menu-list">
-                <!-- INVENTORY (TOP) -->
+                <!-- INVENTORY (TRANSPARENT) -->
                 <div class="menu-btn btn-inventory" onclick="switchView('view-inventory')">
                     <div class="menu-btn-text">
                         <div class="menu-btn-title">INVENTORY</div>
@@ -176,7 +237,7 @@
                     <i class="fa-solid fa-wallet menu-btn-bg"></i>
                 </div>
                 
-                <!-- CASES (MIDDLE, GREEN) -->
+                <!-- CASES (GREEN) -->
                 <div class="menu-btn btn-cases" onclick="openCasesMenu()">
                     <div class="menu-btn-text">
                         <div class="menu-btn-title">CASES</div>
@@ -186,7 +247,7 @@
                     <i class="fa-solid fa-box-open menu-btn-bg"></i>
                 </div>
 
-                <!-- CRASH (BOTTOM, LIGHT BLUE) -->
+                <!-- CRASH (LIGHT BLUE) -->
                 <div class="menu-btn btn-crash" onclick="switchView('view-crash')">
                     <div class="menu-btn-text">
                         <div class="menu-btn-title">CRASH</div>
@@ -194,6 +255,16 @@
                     </div>
                     <i class="fa-solid fa-rocket menu-btn-icon" style="color:white"></i>
                     <i class="fa-solid fa-rocket menu-btn-bg"></i>
+                </div>
+
+                <!-- MINES (AMBER) -->
+                <div class="menu-btn btn-mines" onclick="switchView('view-mines')">
+                    <div class="menu-btn-text">
+                        <div class="menu-btn-title">MINES</div>
+                        <div class="menu-btn-sub">Find Gems, Avoid Bombs</div>
+                    </div>
+                    <i class="fa-solid fa-gem menu-btn-icon" style="color:white"></i>
+                    <i class="fa-solid fa-bomb menu-btn-bg"></i>
                 </div>
             </div>
         </div>
@@ -250,6 +321,36 @@
             </div>
         </div>
 
+        <!-- MINES GAME VIEW -->
+        <div id="view-mines" class="game-view">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <div><h2 style="margin:0; font-family:'Rajdhani'; font-size: 32px;">MINES</h2><span style="color:var(--text-secondary); font-size: 12px;">Don't blow up.</span></div>
+                <div class="balance-pill"><span style="font-size:10px; color:#aaa;">WIN:</span> <span id="mines-next-win" style="color:#00ff88; font-weight:bold;">0.00</span></div>
+            </div>
+        
+            <!-- The 5x5 Grid -->
+            <div class="mines-grid" id="mines-grid">
+                <!-- Generated by JS -->
+            </div>
+        
+            <!-- Controls -->
+            <div class="mines-controls">
+                <div class="bet-row">
+                    <div class="bet-selector" style="flex:1;">
+                        <span class="input-label">BET</span>
+                        <input type="number" id="mines-bet" value="1.0" step="0.5" class="bet-input">
+                    </div>
+                    <div class="bet-selector" style="flex:1;">
+                        <span class="input-label">BOMBS</span>
+                        <select id="mines-count" class="bet-input" style="background:transparent; border:none; width:100%; text-align:right;">
+                            <option value="1">1</option><option value="3" selected>3</option><option value="5">5</option><option value="10">10</option><option value="20">20</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-launch mines-btn" id="mines-action-btn" onclick="minesAction()">BET & START</button>
+            </div>
+        </div>
+        
         <!-- INVENTORY -->
         <div id="view-inventory" class="game-view">
             <div style="margin-bottom: 20px;"><h2 style="margin:0; font-family:'Rajdhani'">INVENTORY</h2></div>
@@ -425,6 +526,119 @@
             }, 4100);
         }
 
+        // --- MINES LOGIC ---
+        let activeMinesId = null;
+        let isMinesActive = false;
+        
+        function initMinesGrid() {
+            const g = document.getElementById('mines-grid');
+            g.innerHTML = '';
+            for(let i=0; i<25; i++) {
+                const t = document.createElement('div');
+                t.className = 'mine-tile glass';
+                t.dataset.index = i;
+                t.onclick = () => clickMineTile(i);
+                g.appendChild(t);
+            }
+        }
+        
+        // Ensure init is called when view switches
+        const originalSwitch = switchView;
+        switchView = (id) => {
+            originalSwitch(id);
+            if(id === 'view-mines') initMinesGrid();
+        }
+        
+        async function minesAction() {
+            const btn = document.getElementById('mines-action-btn');
+            
+            // 1. CASHOUT
+            if(isMinesActive) {
+                btn.disabled = true;
+                const res = await api("/api/game/mines/cashout", "POST", { gameId: activeMinesId });
+                if(res.error) { alert(res.error); btn.disabled=false; return; }
+                
+                endMinesGame(true, res.winAmount, res.fullGrid);
+                return;
+            }
+        
+            // 2. START GAME
+            const bet = parseFloat(document.getElementById('mines-bet').value);
+            const mines = parseInt(document.getElementById('mines-count').value);
+            
+            if(balance < bet) { alert("Insufficient funds"); return; }
+            
+            btn.disabled = true;
+            const res = await api("/api/game/mines/start", "POST", { bet: bet, mines: mines });
+            btn.disabled = false;
+            
+            if(res.error) { alert(res.error); return; }
+            
+            activeMinesId = res.gameId;
+            isMinesActive = true;
+            
+            // UI Updates
+            balance = res.newBalance;
+            document.getElementById('user-balance').innerText = balance.toFixed(2);
+            btn.innerHTML = `CASHOUT <span style="font-size:14px;">(0.00)</span>`;
+            btn.classList.add('cashout');
+            
+            // Reset Grid
+            document.querySelectorAll('.mine-tile').forEach(t => {
+                t.className = 'mine-tile glass';
+                t.innerHTML = '';
+            });
+        }
+        
+        async function clickMineTile(index) {
+            if(!isMinesActive) return;
+            const tile = document.querySelector(`.mine-tile[data-index="${index}"]`);
+            if(tile.classList.contains('gem')) return; // Already clicked
+        
+            const res = await api("/api/game/mines/click", "POST", { gameId: activeMinesId, index: index });
+            
+            if(res.status === 'BOOM') {
+                tile.className = 'mine-tile boom';
+                tile.innerHTML = '<i class="fa-solid fa-bomb"></i>';
+                endMinesGame(false, 0, res.fullGrid);
+            } else {
+                tile.className = 'mine-tile gem';
+                tile.innerHTML = '<i class="fa-solid fa-gem" style="color:#00ff88"></i>';
+                
+                // Update Cashout Button
+                const btn = document.getElementById('mines-action-btn');
+                btn.innerHTML = `CASHOUT <span style="font-size:14px;">(${res.currentWin.toFixed(2)})</span>`;
+                document.getElementById('mines-next-win').innerText = res.nextWin.toFixed(2);
+            }
+        }
+        
+        function endMinesGame(win, amount, grid) {
+            isMinesActive = false;
+            activeMinesId = null;
+            
+            const btn = document.getElementById('mines-action-btn');
+            btn.innerHTML = "BET & START";
+            btn.classList.remove('cashout');
+            btn.disabled = false;
+            
+            if(win) {
+                balance += amount;
+                document.getElementById('user-balance').innerText = balance.toFixed(2);
+                showResult(true, { id: 'cash', name: 'Mines Cashout', price: amount.toFixed(2) });
+            }
+        
+            // Reveal Grid
+            grid.forEach((isMine, idx) => {
+                const t = document.querySelector(`.mine-tile[data-index="${idx}"]`);
+                if(isMine && !t.classList.contains('boom')) {
+                    t.innerHTML = '<i class="fa-solid fa-bomb" style="color:white"></i>';
+                    t.classList.add('revealed');
+                } else if (!isMine && !t.classList.contains('gem')) {
+                    t.style.opacity = '0.2';
+                }
+            });
+        }
+        
         const RocketEngine = {
             canvas: null, ctx: null, lottieAnim: null, boomLottie: null,
             rocketEl: null, boomEl: null, width: 0, height: 0, animId: null,
