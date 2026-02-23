@@ -182,25 +182,29 @@
         #result-modal { align-items: center; } .result-card { background: #1a1a20; padding: 30px; border-radius: 20px; text-align: center; width: 80%; border: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.5); transform: scale(0.9); transition: 0.3s; } .result-card.pop { transform: scale(1); }
         
         /* --- CRASH GAME STYLES --- */
+        /* --- CRASH GAME STYLES --- */
         .crash-monitor {
-            position: relative; /* Locks absolute children (Rocket) inside */
-            width: 100%; 
-            height: 320px; 
-            min-height: 320px;
-            background: #09090b; 
-            border-radius: 16px; 
-            border: 1px solid #1a1a20; 
-            overflow: hidden; /* Cuts off anything that tries to fly out */
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8); 
+            position: relative;
+            width: 100%;
+            height: 320px;
+            background: #09090b;
+            border-radius: 16px;
+            border: 1px solid #1a1a20;
+            overflow: hidden; 
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
             margin-top: 15px;
-            isolation: isolate; /* Creates a new stacking context */
         }
         
-        /* Force canvas to fit exactly */
         canvas { 
             width: 100%; 
             height: 100%; 
             display: block; 
+        }
+        
+        /* Force Lottie SVG to fit container */
+        #rocket-entry svg, #boom-anim svg {
+            width: 100% !important;
+            height: 100% !important;
         }
 
         /* Ensure Lotties are ignored by mouse and sit on top 
@@ -431,7 +435,8 @@
             <div class="crash-monitor">
                 <canvas id="crashCanvas"></canvas>
                 <div id="rocket-entry"></div>
-                <div id="boom-anim"></div> <!-- Custom Explosion Lottie Container -->
+                <div id="boom-anim"></div>
+                
                 <div class="crash-ui">
                     <div class="crash-multiplier" id="crash-text">1.00x</div>
                     <div class="crash-status" id="crash-status">PLACE YOUR BET</div>
@@ -1033,53 +1038,49 @@
                 this.canvas = document.getElementById('crashCanvas');
                 this.rocketEl = document.getElementById('rocket-entry');
                 this.boomEl = document.getElementById('boom-anim');
-                
-                // Get context with alpha false for better performance
                 this.ctx = this.canvas.getContext('2d', { alpha: false });
-
-                // Load Lottie - Rocket
+        
+                // 1. Load User's RAW Rocket JSON
                 this.lottieAnim = lottie.loadAnimation({
-                    container: this.rocketEl, renderer: 'svg', loop: true, autoplay: false,
-                    path: 'https://lottie.host/801a200f-356b-4e8b-8012-78cf5ba6783d/2w45d625.json' // Backup URL if yours fails
+                    container: this.rocketEl,
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: false,
+                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json'
                 });
         
-                // Load Lottie - Boom
+                // 2. Load User's RAW Boom JSON
                 this.boomLottie = lottie.loadAnimation({
-                    container: this.boomEl, renderer: 'svg', loop: false, autoplay: false,
-                    path: 'https://lottie.host/5a0c1020-5c1a-4286-8d6f-7065963e6a41/8u12h41.json' // Backup URL
+                    container: this.boomEl,
+                    renderer: 'svg',
+                    loop: false,
+                    autoplay: false,
+                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5242579622872256599.json'
                 });
         
-                // Add resize listener
                 window.addEventListener('resize', () => this.resize());
-                
-                // Initial resize attempt (might fail if hidden)
-                this.resize();
+                setTimeout(() => this.resize(), 100);
             },
         
             resize: function() {
                 if(!this.canvas) return;
                 const parent = this.canvas.parentElement;
-                
-                // 1. Get exact display size
                 const rect = parent.getBoundingClientRect();
-                if(rect.width === 0) return; // Tab is hidden, skip resize
-                
+                if(rect.width === 0) return; 
+        
                 this.width = rect.width;
                 this.height = rect.height;
                 
-                // 2. Fix Blurry Canvas on Mobile (High DPI)
                 const dpr = window.devicePixelRatio || 1;
                 this.canvas.width = this.width * dpr;
                 this.canvas.height = this.height * dpr;
-                
-                // Scale context to match
                 this.ctx.scale(dpr, dpr);
                 
                 if(this.status === 'IDLE') this.drawIdle();
             },
         
             startGame: function(betAmount, finalCrashPoint) {
-                this.resize(); // Force resize right before start to be safe
+                this.resize();
                 this.bet = betAmount;
                 this.crashPoint = finalCrashPoint;
                 this.startTime = Date.now();
@@ -1087,10 +1088,12 @@
                 this.hasCashedOut = false;
                 this.multiplier = 1.00;
                 
+                // Show Rocket, Hide Boom
                 this.rocketEl.style.display = 'block';
                 this.boomEl.style.display = 'none';
-                this.boomLottie.stop();
+                
                 this.lottieAnim.play();
+                this.boomLottie.stop();
                 
                 if (this.animId) cancelAnimationFrame(this.animId);
                 this.loop();
@@ -1103,22 +1106,24 @@
         
             crash: function() {
                 this.status = 'CRASHED';
+                
+                // Hide Rocket
                 this.rocketEl.style.display = 'none'; 
-                this.lottieAnim.stop(); 
-                
-                // Draw one last frame to ensure explosion is at exact point
-                const t = this.getErrorTime();
-                this.draw(t);
-                
+                this.lottieAnim.stop();
+        
                 // Position Boom exactly where Rocket was
                 this.boomEl.style.left = this.rocketEl.style.left;
                 this.boomEl.style.top = this.rocketEl.style.top;
-                this.boomEl.style.transform = "translate(-50%, -50%) scale(1.5)"; // Center explosion
                 
+                // Center the explosion on the coordinates
+                this.boomEl.style.transform = "translate(-50%, -50%) scale(1.5)"; 
+                
+                // Play Boom
                 this.boomEl.style.display = 'block';
                 this.boomLottie.goToAndPlay(0, true);
         
                 cancelAnimationFrame(this.animId);
+                this.draw(this.getErrorTime());
             },
         
             getMultiplier: function(t) { return Math.max(1, Math.pow(1.15, t)); },
@@ -1142,11 +1147,14 @@
             },
         
             draw: function(t) {
+                if(!this.ctx || this.width === 0) return; 
+        
                 const ctx = this.ctx; const w = this.width; const h = this.height;
         
-                // Zoom Logic
                 let curScaleX = this.scaleX;
                 let curScaleY = this.scaleY;
+                
+                // Zoom Logic
                 if (this.multiplier > 2.0) {
                     const zoom = 2.0 / this.multiplier;
                     curScaleY = this.scaleY * zoom;
@@ -1163,11 +1171,8 @@
                 if (worldX > w * 0.5) camX = worldX - w * 0.5;
                 if (worldY > h * 0.5) camY = worldY - h * 0.5;
         
-                // Clear Screen
-                ctx.fillStyle = "#09090b"; 
-                ctx.fillRect(0, 0, w, h);
-        
-                // Grid
+                // Draw Background & Grid
+                ctx.fillStyle = "#09090b"; ctx.fillRect(0, 0, w, h);
                 const gridSize = 50;
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
                 ctx.beginPath();
@@ -1176,53 +1181,49 @@
                 for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
                 ctx.stroke();
         
-                // Graph Curve
+                // Draw Line
                 ctx.save();
                 ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
                 ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#ff9900"; 
-                
                 ctx.beginPath();
                 ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
                 
-                for (let px = 0; px <= worldX; px += 3) {
-                    const pTime = px / curScaleX;
-                    const pMult = this.getMultiplier(pTime);
-                    const py = (pMult - 1) * curScaleY;
-                    ctx.lineTo(baseScreenX + px - camX, baseScreenY - py + camY);
-                }
-                
                 const rocketScreenX = baseScreenX + worldX - camX;
                 const rocketScreenY = baseScreenY - worldY + camY;
+                
                 ctx.lineTo(rocketScreenX, rocketScreenY);
                 ctx.stroke();
-        
-                // Gradient Fill
+                
+                // Fill Gradient
                 ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
-                if(this.status === 'CRASHED') {
-                    grad.addColorStop(0, "rgba(255, 0, 85, 0.2)"); grad.addColorStop(1, "rgba(255, 0, 85, 0)");
-                } else {
-                    grad.addColorStop(0, "rgba(255, 153, 0, 0.25)"); grad.addColorStop(1, "rgba(255, 153, 0, 0)");
-                }
+                grad.addColorStop(0, this.status === 'CRASHED' ? "rgba(255, 0, 85, 0.2)" : "rgba(255, 153, 0, 0.25)"); 
+                grad.addColorStop(1, "rgba(0,0,0,0)");
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
         
-                // Rocket Positioning (DOM Elements)
+                // --- POSITION THE LOTTIE CONTAINER ---
                 if (this.status !== 'CRASHED') {
-                    // Calculate Rotation Angle
                     const nextTime = t + 0.1;
                     const nextMult = this.getMultiplier(nextTime);
                     const nextWorldX = nextTime * curScaleX;
                     const nextWorldY = (nextMult - 1) * curScaleY;
-                    const angle = Math.atan2(-(nextWorldY - worldY), nextWorldX - worldX); 
                     
-                    // Position Rocket
+                    // Calculate angle
+                    let angle = Math.atan2(-(nextWorldY - worldY), nextWorldX - worldX); 
+                    
+                    // Move container
                     this.rocketEl.style.left = `${rocketScreenX}px`;
                     this.rocketEl.style.top = `${rocketScreenY}px`;
-                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`; // Manual offset adjustment
+                    
+                    // Translate (-50%) centers the div on the line tip.
+                    // If your rocket flies sideways, remove "rotate". 
+                    // If it flies up, add "+ 1.57" to angle.
+                    this.rocketEl.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`; 
                 }
             },
         
             drawIdle: function() {
+                if(!this.ctx) return;
                 const w = this.width; const h = this.height; const ctx = this.ctx;
                 ctx.fillStyle = "#09090b"; ctx.fillRect(0,0,w,h);
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20"; ctx.beginPath();
