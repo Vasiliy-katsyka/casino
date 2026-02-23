@@ -22,6 +22,9 @@
         .balance { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-weight: 600; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); cursor: pointer; }
         .ton-icon { width: 20px; height: 20px; border-radius: 50%; background: #0088cc; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; }
 
+        /* REPLACE THIS BLOCK IN YOUR CSS */
+        /* REPLACE YOUR EXISTING "main" AND "nav" CSS WITH THIS: */
+
         main { 
             flex: 1; 
             position: relative; 
@@ -29,6 +32,7 @@
             padding: 20px; 
             display: flex; 
             flex-direction: column; 
+            /* Massively increased bottom padding to clear the navigation bar */
             padding-bottom: calc(130px + env(safe-area-inset-bottom)); 
         }
         
@@ -36,6 +40,7 @@
             display: flex; 
             justify-content: space-around; 
             padding: 12px 0; 
+            /* Safe-area fixes the layout on modern phones with bottom swipe bars */
             padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
             background: rgba(15, 15, 19, 0.95); 
             border-top: 1px solid var(--glass-border); 
@@ -49,7 +54,9 @@
         .game-view { display: none; flex-direction: column; min-height: 100%; animation: fadeIn 0.3s ease; } .game-view.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* --- NEW PREMIUM MENU STYLES --- */
         .menu-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        
         .menu-btn { 
             width: 100%; height: 110px; border-radius: 20px; 
             display: flex; align-items: center; justify-content: space-between; 
@@ -58,9 +65,12 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .menu-btn:active { transform: scale(0.98); }
+        
+        /* Text Layout */
         .menu-btn-text { 
             display: flex; flex-direction: column; align-items: flex-start; 
-            z-index: 3; max-width: 60%; text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            z-index: 3; max-width: 60%; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
         }
         .menu-btn-title { 
             font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 32px; 
@@ -71,22 +81,74 @@
             font-size: 11px; font-weight: 600; opacity: 0.8; 
             text-transform: uppercase; letter-spacing: 1px; color: #ccc;
         }
+        
+        /* The NFT Image */
         .menu-btn-img {
-            position: absolute; right: -15px; bottom: -15px;
-            width: 130px; height: 130px; object-fit: contain;
-            transform: rotate(-10deg); filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
-            z-index: 2; transition: transform 0.3s ease;
+            position: absolute;
+            right: -15px;
+            bottom: -15px;
+            width: 130px; 
+            height: 130px;
+            object-fit: contain;
+            transform: rotate(-10deg);
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+            z-index: 2;
+            transition: transform 0.3s ease;
         }
         .menu-btn:hover .menu-btn-img { transform: rotate(0deg) scale(1.05); }
         
-        .btn-inventory { background: radial-gradient(circle at 90% 50%, rgba(255, 255, 255, 0.15) 0%, rgba(15, 15, 20, 1) 70%); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
-        .btn-cases { background: radial-gradient(circle at 90% 50%, rgba(0, 255, 136, 0.25) 0%, rgba(10, 25, 15, 1) 70%); border-color: rgba(0, 255, 136, 0.2); box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1); }
-        .btn-crash { background: radial-gradient(circle at 90% 50%, rgba(0, 198, 255, 0.25) 0%, rgba(10, 20, 30, 1) 70%); border-color: rgba(0, 198, 255, 0.2); box-shadow: 0 4px 20px rgba(0, 198, 255, 0.1); }
-        .btn-mines { background: radial-gradient(circle at 90% 50%, rgba(255, 152, 0, 0.25) 0%, rgba(30, 15, 5, 1) 70%); border-color: rgba(255, 152, 0, 0.2); box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); }
+        /* --- SPECIFIC THEMES (Glows) --- */
         
-        .game-view::after { content: ""; display: block; height: 140px; min-height: 140px; width: 100%; flex-shrink: 0; pointer-events: none; }
-        .inventory-grid, .cases-list, .select-grid { padding-bottom: 20px; }
+        /* 1. Inventory (White/Glass Glow) */
+        .btn-inventory { 
+            background: radial-gradient(circle at 90% 50%, rgba(255, 255, 255, 0.15) 0%, rgba(15, 15, 20, 1) 70%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
         
+        /* 2. Cases (Green Glow) */
+        .btn-cases { 
+            background: radial-gradient(circle at 90% 50%, rgba(0, 255, 136, 0.25) 0%, rgba(10, 25, 15, 1) 70%);
+            border-color: rgba(0, 255, 136, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+        }
+        
+        /* 3. Crash (Blue/Cyan Glow) */
+        .btn-crash { 
+            background: radial-gradient(circle at 90% 50%, rgba(0, 198, 255, 0.25) 0%, rgba(10, 20, 30, 1) 70%);
+            border-color: rgba(0, 198, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 198, 255, 0.1);
+        }
+        
+        /* 4. Mines (Orange/Yellow Glow) */
+        .btn-mines { 
+            background: radial-gradient(circle at 90% 50%, rgba(255, 152, 0, 0.25) 0%, rgba(30, 15, 5, 1) 70%);
+            border-color: rgba(255, 152, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1);
+        }
+        
+        /* Menu Types */
+        .btn-inventory { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); color: white; }
+        .btn-cases { background: linear-gradient(135deg, #00b09b, #96c93d); box-shadow: 0 10px 20px rgba(150, 201, 61, 0.2); color: white; border: none; }
+        .btn-crash { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 10px 20px rgba(0, 114, 255, 0.2); color: white; border: none; }
+        .menu-btn-bg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 90px; opacity: 0.15; z-index: 1; }
+
+        /* BULLETPROOF MOBILE SCROLL FIX */
+        .game-view::after {
+            content: "";
+            display: block;
+            height: 140px; /* Massive empty space */
+            min-height: 140px;
+            width: 100%;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        
+        /* Also ensure the grids don't cut off their own shadows */
+        .inventory-grid, .cases-list, .select-grid {
+            padding-bottom: 20px;
+        }
+        
+        /* Cases & General Views */
         .cases-list { display: flex; flex-direction: column; gap: 15px; }
         .case-select-card { display: flex; align-items: center; padding: 15px; gap: 15px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; }
         .case-select-card.daily { border: 1px solid var(--primary); background: rgba(0, 136, 204, 0.1); }
@@ -105,23 +167,41 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; } .modal-title { font-family: 'Rajdhani'; font-weight: 700; font-size: 20px; } .close-btn { background: none; border: none; color: #888; font-size: 24px; cursor: pointer; }
         .select-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; } .select-item { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; border: 1px solid transparent; } .select-item.active { border-color: var(--primary); background: rgba(0, 136, 204, 0.1); } .select-item img { width: 50px; height: 50px; margin-bottom: 5px; }
 
-        header.hidden { display: none !important; }
+        /* Add this to your CSS */
+        header.hidden {
+            display: none !important;
+        }
         
+        .wallet-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); margin-bottom: 15px; text-align: center; } .wallet-label { font-size: 10px; color: #888; margin-bottom: 5px; text-transform: uppercase; } .wallet-val { font-family: monospace; font-size: 12px; color: white; word-break: break-all; user-select: text; } .memo-box { background: rgba(0, 255, 136, 0.05); border: 1px dashed var(--success); padding: 10px; border-radius: 12px; text-align: center; margin-bottom: 20px; } .memo-val { font-size: 24px; font-weight: 800; font-family: 'Rajdhani'; letter-spacing: 2px; color: var(--success); }
         .dep-input { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; padding: 12px; border-radius: 8px; width: 100%; font-size: 18px; text-align: center; margin-bottom: 15px; font-family: 'Rajdhani'; font-weight: bold; }
 
-        .nav-item { color: #666; text-align: center; font-size: 10px; cursor: pointer; transition: 0.3s; } .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; } .nav-item.active { color: var(--primary); }
+        nav { display: flex; justify-content: space-around; padding: 12px 0; background: rgba(15, 15, 19, 0.95); border-top: 1px solid var(--glass-border); position: fixed; bottom: 0; width: 100%; z-index: 100; } .nav-item { color: #666; text-align: center; font-size: 10px; cursor: pointer; transition: 0.3s; } .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; } .nav-item.active { color: var(--primary); }
         #result-modal { align-items: center; } .result-card { background: #1a1a20; padding: 30px; border-radius: 20px; text-align: center; width: 80%; border: 1px solid var(--glass-border); box-shadow: 0 0 50px rgba(0,0,0,0.5); transform: scale(0.9); transition: 0.3s; } .result-card.pop { transform: scale(1); }
         
-        /* --- CRASH & MINES STYLES --- */
-        .crash-monitor { position: relative; width: 100%; height: 320px; min-height: 320px; flex-shrink: 0; background: #09090b; border-radius: 16px; border: 1px solid #1a1a20; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); margin-top: 15px; }
+        /* --- CRASH GAME STYLES --- */
+        .crash-monitor {
+            position: relative; 
+            width: 100%; 
+            height: 320px; 
+            min-height: 320px; /* Forces it to stay this height */
+            flex-shrink: 0;    /* Prevents flexbox from squeezing it */
+            background: #09090b; 
+            border-radius: 16px; 
+            border: 1px solid #1a1a20; 
+            overflow: hidden; 
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8); 
+            margin-top: 15px;
+        }
         canvas { width: 100%; height: 100%; display: block; }
         .crash-status { font-size: 14px; letter-spacing: 2px; color: #8b9bb4; font-weight: 700; margin-top: 10px; }
         .crash-win-msg { font-family: 'Rajdhani'; font-size: 24px; color: #00ff88; font-weight: bold; margin-top: 5px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); height: 30px; }
+        
         .crash-controls-area { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .bet-selector { display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0 15px; height: 50px; }
         .input-label { color: #8b9bb4; font-size: 10px; font-weight: 700; width: 50px; }
         .bet-input { background: transparent; border: none; color: white; font-family: 'Rajdhani'; font-size: 22px; font-weight: bold; width: 100%; text-align: right; margin-right: 10px; }
         .ton-badge { color: var(--primary); font-weight: bold; font-size: 12px; }
+        
         .button-group { display: flex; gap: 10px; }
         .btn-half { flex: 1; background: rgba(255,255,255,0.05); border: none; color: #888; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-half:active { background: rgba(255,255,255,0.1); }
@@ -129,21 +209,82 @@
         .btn-launch:active { transform: scale(0.98); }
         .btn-launch.cashout { background: linear-gradient(90deg, #ff0055, #cc0044); box-shadow: 0 4px 15px rgba(255, 0, 85, 0.4); }
 
-        .case-container { position: relative; width: 100%; height: 160px; min-height: 160px; flex-shrink: 0; overflow: hidden; margin: 20px 0; border-radius: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); }
-        .case-item { min-width: 110px; height: 130px; margin: 0 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-        #boom-anim { position: absolute; width: 150px; height: 150px; z-index: 6; pointer-events: none; display: none; transform: translate(-50%, -50%); transform-origin: center center; }
+        /* --- CASES ROULETTE FIX --- */
+        .case-container { 
+            position: relative; width: 100%; height: 160px; min-height: 160px; flex-shrink: 0; 
+            overflow: hidden; margin: 20px 0; border-radius: 16px; 
+            background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); 
+            /* Changed black to rgba(0,0,0,1) which fixes mask rendering on mobile */
+            mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); 
+            -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); 
+        }
+        .case-item { 
+            min-width: 110px; height: 130px; margin: 0 4px; display: flex; 
+            flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; 
+        }
+        #boom-anim { 
+            position: absolute; width: 150px; height: 150px; z-index: 6; 
+            pointer-events: none; display: none; transform: translate(-50%, -50%); 
+            transform-origin: center center; 
+        }
 
-        .crash-ui { position: absolute; top: 20px; left: 25px; transform: none; text-align: left; pointer-events: none; z-index: 10; width: auto; }
-        .crash-multiplier { font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 52px; color: #00ff88 !important; text-shadow: 0 0 15px rgba(0, 255, 136, 0.5); font-variant-numeric: tabular-nums; line-height: 1; transition: color 0.3s; }
-        #rocket-entry { position: absolute; width: 85px; height: 85px; z-index: 5; pointer-events: none; display: none; will-change: transform; transform-origin: center center; }
+        /* Move UI to Top-Left and Left-Align text */
+        .crash-ui { 
+            position: absolute; 
+            top: 20px;       /* Pinned to top */
+            left: 25px;      /* Pinned to left */
+            transform: none; /* Remove centering */
+            text-align: left; 
+            pointer-events: none; 
+            z-index: 10; 
+            width: auto;
+        }
+        
+        /* Make text smaller and ALWAYS green */
+        .crash-multiplier {
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: 800; 
+            font-size: 52px; /* Smaller */
+            color: #00ff88 !important; /* Forces green always */
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            font-variant-numeric: tabular-nums; 
+            line-height: 1; 
+            transition: color 0.3s;
+        }
+        
+        /* Make Rocket Smaller */
+        #rocket-entry { 
+            position: absolute; 
+            width: 85px;  /* Smaller rocket */
+            height: 85px; /* Smaller rocket */
+            z-index: 5; 
+            pointer-events: none; 
+            display: none; 
+            will-change: transform; 
+            transform-origin: center center; 
+        }
 
+        /* --- MINES GAME STYLES --- */
+        .btn-mines { background: linear-gradient(135deg, #ff9800, #f44336); box-shadow: 0 10px 20px rgba(255, 152, 0, 0.2); color: white; border: none; }
+        
         .mines-setup { display: flex; gap: 10px; margin-bottom: 15px; }
         .mines-input-group { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; }
         .mines-input-group label { font-size: 10px; color: #8b9bb4; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
         .mines-input-group input, .mines-input-group select { background: transparent; border: none; color: white; font-family: 'Rajdhani'; font-size: 20px; font-weight: bold; width: 100%; outline: none; }
         .mines-input-group select option { background: #1a1a20; color: white; }
+        
         .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; perspective: 1000px; }
-        .mine-tile { aspect-ratio: 1 / 1; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+        .mine-tile { 
+            aspect-ratio: 1 / 1; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 8px; 
+            cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 24px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
         .mine-tile:active { transform: scale(0.9); }
         .mine-tile.disabled { pointer-events: none; opacity: 0.8; }
         .mine-tile.gem { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; box-shadow: inset 0 0 15px rgba(0, 255, 136, 0.2); transform: rotateY(180deg); }
@@ -151,30 +292,29 @@
         .mine-tile.bomb { background: rgba(255, 0, 85, 0.1); border-color: #ff0055; box-shadow: inset 0 0 20px rgba(255, 0, 85, 0.4); transform: rotateY(180deg); animation: shake 0.4s; }
         .mine-tile.bomb::before { content: '\f1e2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #ff0055; transform: rotateY(180deg); text-shadow: 0 0 15px #ff0055; }
         .mine-tile.dimmed { opacity: 0.3; filter: grayscale(1); }
+        
         .mines-hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--glass-border); }
         .mines-multiplier { font-family: 'Rajdhani'; font-size: 32px; font-weight: 800; color: var(--success); text-shadow: 0 0 10px rgba(0,255,136,0.3); }
-        @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
 
-        /* --- NEW: PROFILE & LEADERBOARD STYLES --- */
-        .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; text-align: center; }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 15px; object-fit: cover; background: rgba(255,255,255,0.05); }
-        .profile-name { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 800; color: white; line-height: 1; margin-bottom: 5px; }
-        .profile-username { font-size: 14px; color: var(--text-secondary); margin-bottom: 25px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .stat-label { color: #8b9bb4; font-size: 12px; font-weight: bold; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-        .stat-value { font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: bold; color: var(--success); }
-        .wallet-box-wrap { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
+        /* Profile & Leaderboard Styles */
+        .profile-header { display: flex; align-items: center; gap: 15px; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+        .profile-header img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .profile-stats { display: flex; gap: 10px; }
+        .stat-box { flex: 1; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; text-align: center; }
+        .stat-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 5px; font-weight: bold; }
+        .stat-val { font-family: 'Rajdhani'; font-size: 20px; font-weight: bold; color: var(--gold); }
         
-        .lb-item { display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px 15px; margin-bottom: 10px; }
-        .lb-rank { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 800; width: 40px; text-align: center; color: #8b9bb4; }
-        .lb-rank.gold { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.5); font-size: 26px; }
-        .lb-rank.silver { color: #c0c0c0; text-shadow: 0 0 10px rgba(192,192,192,0.5); font-size: 24px; }
-        .lb-rank.bronze { color: #cd7f32; text-shadow: 0 0 10px rgba(205,127,50,0.5); font-size: 22px; }
-        .lb-avatar { width: 45px; height: 45px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); background: #1a1a20; }
-        .lb-details { flex: 1; overflow: hidden; }
-        .lb-name { font-weight: bold; font-size: 15px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .lb-vol { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: bold; color: var(--primary); }
+        .leader-card { display: flex; align-items: center; padding: 12px 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 12px; }
+        .leader-rank { font-family: 'Rajdhani'; font-size: 18px; font-weight: bold; width: 30px; color: #888; }
+        .leader-rank.rank-1 { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        .leader-rank.rank-2 { color: #c0c0c0; }
+        .leader-rank.rank-3 { color: #cd7f32; }
+        .leader-avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
+        .leader-info { flex: 1; }
+        .leader-name { font-weight: bold; font-size: 14px; }
+        .leader-vol { font-family: 'Rajdhani'; color: var(--success); font-weight: bold; }
+        
+        @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
 </head>
 <body>
@@ -189,11 +329,12 @@
     </header>
 
     <main>
-        <!-- HOME MENU -->
+        <!-- REDESIGNED HOME MENU -->
         <div id="view-home" class="game-view active">
             <div style="margin-bottom: 5px;"><h2 style="margin:0; font-family:'Rajdhani'; font-size:32px;">CASINO FLOOR</h2><span style="color:var(--text-secondary); font-size: 14px;">Select a mode to play</span></div>
             
             <div class="menu-list">
+                <!-- INVENTORY (White Glow + Original NFT) -->
                 <div class="menu-btn btn-inventory" onclick="switchView('view-inventory')">
                     <div class="menu-btn-text">
                         <div class="menu-btn-title">INVENTORY</div>
@@ -202,6 +343,7 @@
                     <img src="https://cdn.changes.tg/gifts/originals/5818708013426410448/Original.png" class="menu-btn-img">
                 </div>
                 
+                <!-- CASES (Green Glow + Precious Peach) -->
                 <div class="menu-btn btn-cases" onclick="openCasesMenu()">
                     <div class="menu-btn-text">
                         <div class="menu-btn-title">CASES</div>
@@ -210,6 +352,7 @@
                     <img src="https://cdn.changes.tg/gifts/models/Precious%20Peach/png/Rich%20Green.png" class="menu-btn-img">
                 </div>
             
+                <!-- CRASH (Blue Glow + Astral Shard) -->
                 <div class="menu-btn btn-crash" onclick="switchView('view-crash')">
                     <div class="menu-btn-text">
                         <div class="menu-btn-title">CRASH</div>
@@ -218,42 +361,13 @@
                     <img src="https://cdn.changes.tg/gifts/models/Astral%20Shard/png/Arctite.png" class="menu-btn-img">
                 </div>
             
+                <!-- MINES (Orange Glow + Gem Signet) -->
                 <div class="menu-btn btn-mines" onclick="switchView('view-mines')">
                     <div class="menu-btn-text">
                         <div class="menu-btn-title">MINES</div>
                         <div class="menu-btn-sub">Clear the Grid</div>
                     </div>
                     <img src="https://cdn.changes.tg/gifts/models/Gem%20Signet/png/Fire%20Stone.png" class="menu-btn-img">
-                </div>
-            </div>
-        </div>
-
-        <!-- NEW: LEADERBOARD -->
-        <div id="view-leaderboard" class="game-view">
-            <div style="margin-bottom: 20px;">
-                <h2 style="margin:0; font-family:'Rajdhani'; font-size:32px;">LEADERBOARD</h2>
-                <span style="color:var(--text-secondary); font-size: 14px;">Top Players by Volume</span>
-            </div>
-            <div id="leaderboard-list">
-                <div style="text-align:center; padding: 20px; color: var(--text-secondary);"><i class="fa-solid fa-spinner fa-spin"></i> Loading ranks...</div>
-            </div>
-        </div>
-
-        <!-- NEW: PROFILE -->
-        <div id="view-profile" class="game-view">
-            <div class="profile-header">
-                <img id="profile-avatar" class="profile-avatar" src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Avatar">
-                <div id="profile-name" class="profile-name">Player</div>
-                <div id="profile-username" class="profile-username">@user</div>
-                
-                <!-- Official TonConnect Button Lives Here Now -->
-                <div class="wallet-box-wrap" id="ton-connect-button"></div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label"><i class="fa-solid fa-chart-line"></i> All-Time Volume</div>
-                    <div class="stat-value" id="profile-volume">0.00 TON</div>
                 </div>
             </div>
         </div>
@@ -285,31 +399,30 @@
             <div class="select-grid" id="case-drops-grid"></div>
         </div>
 
-        <!-- INVENTORY -->
-        <div id="view-inventory" class="game-view">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
-                <button class="btn btn-back" onclick="switchView('view-home')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 style="margin:0; font-family:'Rajdhani'">INVENTORY</h2>
-            </div>
-            <div class="inventory-grid" id="main-inventory-grid"></div>
-            <div id="empty-inv" style="text-align:center; margin-top:50px; color:#555; display:none;">No items found.</div>
+        <!-- UPGRADER -->
+        <div id="view-upgrade" class="game-view">
+            <div style="margin-bottom: 10px;"><h2 style="margin:0; font-family:'Rajdhani'">FUSION LAB</h2><span style="color:var(--text-secondary); font-size: 13px;">Combine to upgrade</span></div>
+            <!-- Standard Upgrade layout unchanged -->
         </div>
 
         <!-- CRASH GAME -->
         <div id="view-crash" class="game-view">
             <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 5px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <button class="btn btn-back" onclick="switchView('view-home')" style="padding: 8px 12px;"><i class="fa-solid fa-arrow-left"></i></button>
-                    <div><h2 style="margin:0; font-family:'Rajdhani'; font-size: 32px;">CRASH</h2><span style="color:var(--text-secondary); font-size: 12px;">Eject before explosion</span></div>
-                </div>
+                <div><h2 style="margin:0; font-family:'Rajdhani'; font-size: 32px;">CRASH</h2><span style="color:var(--text-secondary); font-size: 12px;">Eject before explosion</span></div>
                 <div style="text-align:right;"><div style="font-size:10px; color:#8b9bb4;">BALANCE</div><div id="crash-balance-display" style="font-family:'Rajdhani'; font-size:18px; color:white;">0.00</div></div>
             </div>
+        
             <div class="crash-monitor">
                 <canvas id="crashCanvas"></canvas>
                 <div id="rocket-entry"></div>
-                <div id="boom-anim"></div>
-                <div class="crash-ui"><div class="crash-multiplier" id="crash-text">1.00x</div><div class="crash-status" id="crash-status">PLACE YOUR BET</div><div class="crash-win-msg" id="crash-win-msg"></div></div>
+                <div id="boom-anim"></div> <!-- Custom Explosion Lottie Container -->
+                <div class="crash-ui">
+                    <div class="crash-multiplier" id="crash-text">1.00x</div>
+                    <div class="crash-status" id="crash-status">PLACE YOUR BET</div>
+                    <div class="crash-win-msg" id="crash-win-msg"></div>
+                </div>
             </div>
+        
             <div class="crash-controls-area">
                 <div class="bet-selector"><span class="input-label">AMOUNT</span><input type="number" id="crash-bet" value="1.0" step="0.5" min="0.5" class="bet-input"><span class="ton-badge">TON</span></div>
                 <div class="button-group"><button class="btn-half" onclick="setHalfBet()">1/2</button><button class="btn-half" onclick="setDoubleBet()">x2</button></div>
@@ -317,29 +430,92 @@
             </div>
         </div>
 
+        <!-- LEADERBOARD -->
+        <div id="view-leaderboard" class="game-view">
+            <div style="margin-bottom: 20px;"><h2 style="margin:0; font-family:'Rajdhani'">LEADERBOARD</h2><span style="color:var(--text-secondary); font-size: 13px;">Top players by volume</span></div>
+            <div id="leaderboard-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="view-profile" class="game-view">
+            <div class="profile-header glass">
+                <img id="profile-avatar" src="" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0088cc&color=fff'">
+                <div>
+                    <div id="profile-name" style="font-family:'Rajdhani'; font-size:24px; font-weight:bold;">Name</div>
+                    <div id="profile-username" style="color:var(--primary); font-size:14px;">@username</div>
+                </div>
+            </div>
+
+            <div class="profile-stats glass">
+                <div class="stat-box">
+                    <div class="stat-label">TOTAL VOLUME</div>
+                    <div class="stat-val" id="profile-volume">0.00 TON</div>
+                </div>
+            </div>
+
+            <!-- TonConnect Button Moved Here -->
+            <div style="margin-top:20px; display:flex; justify-content:center;">
+                <div id="ton-connect-button"></div>
+            </div>
+
+            <div style="margin-top: 30px;"><h3 style="font-family:'Rajdhani'; margin-bottom:10px;">SETTINGS</h3></div>
+            <div class="glass" style="padding:15px; color:#888; text-align:center; font-size:12px;">No settings available yet.</div>
+        </div>
+        
         <!-- MINES GAME -->
         <div id="view-mines" class="game-view">
             <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 15px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <button class="btn btn-back" onclick="switchView('view-home')" style="padding: 8px 12px;"><i class="fa-solid fa-arrow-left"></i></button>
-                    <div><h2 style="margin:0; font-family:'Rajdhani'; font-size: 32px;">MINES</h2><span style="color:var(--text-secondary); font-size: 12px;">Find gems, avoid bombs</span></div>
-                </div>
+                <div><h2 style="margin:0; font-family:'Rajdhani'; font-size: 32px;">MINES</h2><span style="color:var(--text-secondary); font-size: 12px;">Find gems, avoid bombs</span></div>
                 <div style="text-align:right;"><div style="font-size:10px; color:#8b9bb4;">BALANCE</div><div id="mines-balance-display" style="font-family:'Rajdhani'; font-size:18px; color:white;">0.00</div></div>
             </div>
+        
+            <!-- Setup Area -->
             <div class="mines-setup" id="mines-setup-area">
-                <div class="mines-input-group"><label>Bet Amount</label><div style="display:flex; align-items:center;"><input type="number" id="mines-bet" value="1.0" step="0.5" min="0.5"><span class="ton-badge" style="font-size:10px;">TON</span></div></div>
-                <div class="mines-input-group"><label>Mines</label><select id="mines-count"><option value="3" selected>3 Mines</option><option value="5">5 Mines</option><option value="10">10 Mines</option><option value="24">24 Mines</option></select></div>
+                <div class="mines-input-group">
+                    <label>Bet Amount</label>
+                    <div style="display:flex; align-items:center;">
+                        <input type="number" id="mines-bet" value="1.0" step="0.5" min="0.5">
+                        <span class="ton-badge" style="font-size:10px;">TON</span>
+                    </div>
+                </div>
+                <div class="mines-input-group">
+                    <label>Mines</label>
+                    <select id="mines-count">
+                        <option value="3" selected>3 Mines</option>
+                        <option value="5">5 Mines</option>
+                        <option value="10">10 Mines</option>
+                        <option value="24">24 Mines</option>
+                    </select>
+                </div>
             </div>
+        
+            <!-- Live HUD (Hidden until started) -->
             <div class="mines-hud" id="mines-hud-area" style="display: none;">
-                <div><div style="font-size:10px; color:#8b9bb4; font-weight:bold;">CURRENT MULTIPLIER</div><div class="mines-multiplier" id="mines-current-mult">1.00x</div></div>
-                <div style="text-align:right;"><div style="font-size:10px; color:#8b9bb4; font-weight:bold;">PROFIT</div><div style="font-family:'Rajdhani'; font-size:20px; font-weight:bold; color:white;" id="mines-current-profit">0.00 TON</div></div>
+                <div>
+                    <div style="font-size:10px; color:#8b9bb4; font-weight:bold;">CURRENT MULTIPLIER</div>
+                    <div class="mines-multiplier" id="mines-current-mult">1.00x</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:10px; color:#8b9bb4; font-weight:bold;">PROFIT</div>
+                    <div style="font-family:'Rajdhani'; font-size:20px; font-weight:bold; color:white;" id="mines-current-profit">0.00 TON</div>
+                </div>
             </div>
-            <div class="mines-grid" id="mines-grid"></div>
+        
+            <div class="mines-grid" id="mines-grid">
+                <!-- 25 Tiles generated by JS -->
+            </div>
+        
             <button class="btn-launch" id="mines-action-btn" onclick="toggleMines()">START GAME</button>
+        </div>
+        
+        <!-- INVENTORY -->
+        <div id="view-inventory" class="game-view">
+            <div style="margin-bottom: 20px;"><h2 style="margin:0; font-family:'Rajdhani'">INVENTORY</h2></div>
+            <div class="inventory-grid" id="main-inventory-grid"></div>
+            <div id="empty-inv" style="text-align:center; margin-top:50px; color:#555; display:none;">No items found.</div>
         </div>
     </main>
 
-    <!-- NEW NAVIGATION -->
     <nav>
         <div class="nav-item active" id="nav-home" onclick="switchView('view-home')"><i class="fa-solid fa-house"></i>HOME</div>
         <div class="nav-item" id="nav-leaderboard" onclick="switchView('view-leaderboard')"><i class="fa-solid fa-trophy"></i>LEADERS</div>
@@ -348,64 +524,60 @@
 
     <!-- MODALS -->
     <div class="modal-overlay" id="result-modal"><div class="result-card glass" id="res-card"><div id="res-title" style="font-family:'Rajdhani'; font-size:24px; font-weight:800; margin-bottom:10px;">WON!</div><img id="res-img" src="" style="width:100px; height:100px; margin-bottom:10px;"><div id="res-name" style="color:#aaa; font-size:14px;">Item Name</div><div id="res-val" style="color:var(--gold); font-weight:bold; margin-top:5px;">5.00 TON</div><button class="btn btn-sm" onclick="closeModal('result-modal')" style="margin-top:20px; background:#333;">CLOSE</button></div></div>
-    
-    <!-- DEPOSIT MODAL -->
     <div class="modal-overlay" id="modal-deposit">
         <div class="modal-sheet">
             <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-gem" style="color:var(--primary); margin-right:10px;"></i>Top Up</div>
+                <div class="modal-title"><i class="fa-solid fa-gem" style="color:var(--primary); margin-right:10px;"></i>Top Up Balance</div>
                 <button class="close-btn" onclick="closeModal('modal-deposit')">&times;</button>
             </div>
             
-            <div style="font-size: 10px; color: #888; text-align: center; margin-bottom: 10px; text-transform: uppercase;">Amount to Deposit</div>
             <input type="number" id="dep-amount" value="5" class="dep-input" placeholder="Amount (TON)">
             
-            <!-- Shows if wallet IS NOT connected -->
-            <button class="btn" id="connect-dep-btn" onclick="tonConnectUI.openModal()" style="display:flex; background:var(--primary); margin-bottom:15px;">
-                <i class="fa-solid fa-wallet"></i> CONNECT WALLET TO DEPOSIT
-            </button>
-            
-            <!-- Shows if wallet IS connected -->
+            <!-- Shown if connected -->
             <button class="btn" id="send-tx-btn" onclick="sendTonTransaction()" style="display:none; background:var(--success); margin-bottom:15px;">
-                <i class="fa-solid fa-paper-plane"></i> CONFIRM & SEND
+                <i class="fa-solid fa-paper-plane"></i> CONFIRM DEPOSIT
+            </button>
+    
+            <!-- Shown if NOT connected -->
+            <button class="btn" id="manual-dep-btn" onclick="tonConnectUI.openModal()" style="background:var(--primary); margin-bottom:15px;">
+                <i class="fa-solid fa-wallet"></i> CONNECT WALLET
             </button>
             
             <button class="btn" id="check-payment-btn" onclick="checkDeposit()" style="background: #222;">
-                <i class="fa-solid fa-rotate"></i> CHECK PAYMENT
+                <i class="fa-solid fa-rotate"></i> MANUAL CHECK
             </button>
         </div>
     </div>
 
     <script>
         const BACKEND_URL = "https://casino.kviappsgames.workers.dev";
+        const WALLET_ADDR = "UQBoRkvzUelDcxR65b5J9J3KM1Ic638n1QJUo5kZTKhT3O64";
 
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/refs/heads/main/tonconnect-manifest.json',
+            manifestUrl: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/refs/heads/main/tonconnect-manifest.json', // Replace with your actual URL
             buttonRootId: 'ton-connect-button'
         });
         
         // Watch for wallet connection status
         tonConnectUI.onStatusChange(wallet => {
             const sendBtn = document.getElementById('send-tx-btn');
-            const connectBtn = document.getElementById('connect-dep-btn');
+            const manualBtn = document.getElementById('manual-dep-btn');
+            
             if (wallet) {
+                // User is connected! Show the "Live" confirm button
                 sendBtn.style.display = 'flex';
-                connectBtn.style.display = 'none';
+                manualBtn.style.display = 'none';
             } else {
+                // User is not connected. Show the manual redirect button
                 sendBtn.style.display = 'none';
-                connectBtn.style.display = 'flex';
+                manualBtn.style.display = 'flex';
             }
         });
         
         let savedId = localStorage.getItem('test_user_id');
         if (!savedId) { savedId = "user_" + Math.floor(Math.random()*99999); localStorage.setItem('test_user_id', savedId); }
-        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || {};
-        const USER_ID = tgUser.id || savedId;
-
-        // Init Profile UI Details
-        document.getElementById('profile-name').innerText = tgUser.first_name || 'Player';
-        document.getElementById('profile-username').innerText = tgUser.username ? `@${tgUser.username}` : '';
-        if(tgUser.photo_url) document.getElementById('profile-avatar').src = tgUser.photo_url;
+        const USER_ID = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || savedId;
+        document.getElementById('dep-memo').innerText = USER_ID;
 
         const CASES = [
             { id: 'daily', name: "Daily Free", price: 0, icon: "fa-gift", color: "#fff" },
@@ -415,17 +587,11 @@
             { id: 'god', name: "God Case", price: 250, icon: "fa-bolt", color: "#ffd700" }
         ];
 
-        let balance=0, totalWagered=0, inventory=[], allGifts=[], activeCase=null, depositPollingTimer=null;
+        let balance=0, inventory=[], allGifts=[], activeCase=null;
 
         async function api(path, method="GET", body=null) {
             try {
-                // We send basic Telegram User Info safely encoded in Headers
-                const headers = { 
-                    "X-Telegram-User": USER_ID,
-                    "X-Tg-First-Name": encodeURIComponent(tgUser.first_name || 'Player'),
-                    "X-Tg-Username": encodeURIComponent(tgUser.username || ''),
-                    "X-Tg-Photo": encodeURIComponent(tgUser.photo_url || '')
-                };
+                const headers = { "X-Telegram-User": USER_ID };
                 if(body) headers["Content-Type"] = "application/json";
                 const res = await fetch(BACKEND_URL + path, { method, headers, body: body ? JSON.stringify(body) : null });
                 return await res.json();
@@ -434,120 +600,101 @@
 
         window.onload = async () => { await Promise.all([refreshUser(), loadGifts()]); renderCasesMenu(); checkDailyTimer(); };
 
+        let totalVolume = 0;
+        const TG_USER = window.Telegram?.WebApp?.initDataUnsafe?.user || { id: USER_ID, first_name: "Player_" + USER_ID.toString().substring(0,4), username: "" };
+
         async function refreshUser() {
-            const d = await api("/api/user");
+            // Send TG data to backend for profile sync
+            const d = await api("/api/user", "POST", { 
+                first_name: TG_USER.first_name, 
+                photo_url: TG_USER.photo_url || "" 
+            });
+            
             if(d.balance !== undefined) {
                 balance = d.balance; 
+                totalVolume = d.total_volume;
                 inventory = d.inventory;
-                totalWagered = d.total_wagered || 0;
                 
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-                document.getElementById('profile-volume').innerText = totalWagered.toFixed(2) + " TON";
-                
                 if(document.getElementById('crash-balance-display')) document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
                 if(document.getElementById('mines-balance-display')) document.getElementById('mines-balance-display').innerText = balance.toFixed(2);
                 if(document.getElementById('case-balance-display')) document.getElementById('case-balance-display').innerText = balance.toFixed(2);
-                    
+                
+                // Update Profile UI
+                document.getElementById('profile-name').innerText = TG_USER.first_name;
+                document.getElementById('profile-username').innerText = TG_USER.username ? "@" + TG_USER.username : "";
+                document.getElementById('profile-volume').innerText = totalVolume.toFixed(2) + " TON";
+                
+                const avatarImg = document.getElementById('profile-avatar');
+                if (TG_USER.photo_url) avatarImg.src = TG_USER.photo_url;
+                else avatarImg.src = `https://ui-avatars.com/api/?name=${TG_USER.first_name}&background=0088cc&color=fff`;
+
                 renderInventory();
             }
         }
 
         async function loadLeaderboard() {
-            const container = document.getElementById('leaderboard-list');
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color: var(--text-secondary);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
-            const d = await api("/api/leaderboard");
-            container.innerHTML = '';
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Loading...</div>';
             
-            if(d.leaderboard && d.leaderboard.length > 0) {
-                d.leaderboard.forEach((user, index) => {
-                    let rankHtml = `${index + 1}`;
-                    let rankClass = '';
-                    if(index === 0) { rankHtml = `<i class="fa-solid fa-trophy"></i>`; rankClass = 'gold'; }
-                    else if(index === 1) { rankHtml = `<i class="fa-solid fa-medal"></i>`; rankClass = 'silver'; }
-                    else if(index === 2) { rankHtml = `<i class="fa-solid fa-medal"></i>`; rankClass = 'bronze'; }
-
-                    const avatarSrc = user.photo_url || 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+            const res = await api("/api/leaderboard");
+            if(res.leaders) {
+                list.innerHTML = '';
+                res.leaders.forEach((u, i) => {
+                    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+                    const avatar = u.avatar_url || `https://ui-avatars.com/api/?name=${u.first_name}&background=1a1a20&color=fff`;
                     
-                    container.innerHTML += `
-                        <div class="lb-item">
-                            <div class="lb-rank ${rankClass}">${rankHtml}</div>
-                            <img src="${avatarSrc}" class="lb-avatar">
-                            <div class="lb-details">
-                                <div class="lb-name">${user.first_name || 'Player'}</div>
+                    list.innerHTML += `
+                        <div class="leader-card">
+                            <div class="leader-rank ${rankClass}">#${i+1}</div>
+                            <img src="${avatar}" class="leader-avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=1a1a20&color=fff'">
+                            <div class="leader-info">
+                                <div class="leader-name">${u.first_name}</div>
                             </div>
-                            <div class="lb-vol">${(user.total_wagered || 0).toFixed(2)}</div>
+                            <div class="leader-vol">${u.total_volume.toFixed(2)} TON</div>
                         </div>
                     `;
                 });
-            } else {
-                container.innerHTML = `<div style="text-align:center; color:#888; padding: 20px;">No players yet.</div>`;
             }
         }
-
+        
         async function loadGifts() {
             const d = await api("/api/gifts");
             if(d.gifts) { allGifts = d.gifts.map(g => ({ id: g.id, name: g.name, price: parseFloat(g.price), tier: g.price<1?'low':g.price<10?'mid':g.price<50?'high':'god' })); }
         }
 
+        // --- DEPOSIT UI ---
         function openDepositModal() { document.getElementById('modal-deposit').classList.add('open'); }
-        
-        async function sendTonTransaction() {
+        function openTonWallet() {
             const amt = document.getElementById('dep-amount').value || 5;
-            const amountInNano = (parseFloat(amt) * 1000000000).toString(); 
-            
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 300, 
-                messages: [{ address: "UQBoRkvzUelDcxR65b5J9J3KM1Ic638n1QJUo5kZTKhT3O64", amount: amountInNano }]
-            };
+            const address = WALLET_ADDR;
+            const amountNano = amt * 1000000000;
+            const comment = USER_ID;
         
-            try {
-                await tonConnectUI.sendTransaction(transaction);
-                startAutoCheckDeposit();
-            } catch (e) {
-                alert("Payment failed or was canceled.");
+            // 1. Standard Deep Link (Works if a wallet is installed)
+            const deepLink = `ton://transfer/${address}?amount=${amountNano}&text=${comment}`;
+            
+            // 2. Universal Link (Safest fallback, opens Tonkeeper or a web-selector)
+            const universalLink = `https://app.tonkeeper.com/transfer/${address}?amount=${amountNano}&text=${comment}`;
+        
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                // This is the "Magic Fix" for Telegram Mini Apps
+                // It tells Telegram to handle the protocol properly
+                window.Telegram.WebApp.openLink(universalLink);
+            } else {
+                // Fallback for standard PC browsers
+                window.location.href = deepLink;
+                
+                // If the deep link fails to trigger after 500ms, try the universal link
+                setTimeout(() => {
+                    window.open(universalLink, '_blank');
+                }, 500);
             }
         }
+        function updateDeepLink() {}
+    
 
-        function startAutoCheckDeposit() {
-            const btn = document.getElementById('check-payment-btn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> WAITING FOR CONFIRMATION...';
-            btn.disabled = true;
-            let attempts = 0;
-            
-            if(depositPollingTimer) clearInterval(depositPollingTimer);
-            
-            depositPollingTimer = setInterval(async () => {
-                attempts++;
-                try {
-                    const res = await api("/api/deposit/check", "POST");
-                    if(res.added > 0) {
-                        clearInterval(depositPollingTimer);
-                        alert(`Successfully added ${res.added} TON to your balance!`);
-                        refreshUser();
-                        closeModal('modal-deposit');
-                        resetCheckBtn(btn);
-                    } else if (attempts >= 12) { // 60 seconds
-                        clearInterval(depositPollingTimer);
-                        resetCheckBtn(btn);
-                        alert("Transaction is taking longer than expected to confirm on the blockchain. Please check back in a moment.");
-                    }
-                } catch(e) {}
-            }, 5000);
-        }
-
-        async function checkDeposit() {
-            const btn = document.getElementById('check-payment-btn'); 
-            btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
-            try {
-                const res = await api("/api/deposit/check", "POST");
-                if(res.added>0) { alert(`Added ${res.added} TON`); refreshUser(); closeModal('modal-deposit'); }
-                else { alert("No new transactions confirmed yet."); }
-            } catch(e) { alert("Network Error. Try again."); }
-            resetCheckBtn(btn);
-        }
-
-        function resetCheckBtn(btn) { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rotate"></i> CHECK PAYMENT'; }
-
+        // --- CASES UI ---
         function renderCasesMenu() {
             const c=document.getElementById('cases-list-container'); c.innerHTML='';
             CASES.forEach(ca => {
@@ -559,6 +706,77 @@
                 d.innerHTML=`<div class="case-img-wrap"><i class="fa-solid ${ca.icon}" style="color:${ca.color}"></i></div><div class="case-info"><div class="case-name">${ca.name}</div>${subHtml}</div><div class="case-btn-icon"><i class="fa-solid fa-chevron-right" style="color:white"></i></div>`;
                 c.appendChild(d);
             });
+        }
+
+        async function sendTonTransaction() {
+            const amt = document.getElementById('dep-amount').value || 5;
+            const amountInNano = (parseFloat(amt) * 1000000000).toString(); 
+            
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 300, 
+                messages: [{ address: WALLET_ADDR, amount: amountInNano }]
+            };
+        
+            try {
+                await tonConnectUI.sendTransaction(transaction);
+                // DO NOT close modal. Start auto-polling.
+                startDepositPolling();
+            } catch (e) {
+                alert("Payment failed or was canceled.");
+            }
+        }
+
+        function startDepositPolling() {
+            const btn = document.getElementById('send-tx-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CONFIRMING...';
+            btn.disabled = true;
+            
+            let attempts = 0;
+            const pollInterval = setInterval(async () => {
+                attempts++;
+                try {
+                    const res = await api("/api/deposit/check", "POST");
+                    if (res.added > 0) {
+                        clearInterval(pollInterval);
+                        alert(`Deposit confirmed! Added ${res.added} TON`);
+                        refreshUser();
+                        closeModal('modal-deposit');
+                        resetDepositBtn(btn);
+                    } else if (attempts >= 12) { // Stop after 60 seconds (12 * 5s)
+                        clearInterval(pollInterval);
+                        alert("Transaction is taking a while. Your balance will update automatically when it confirms.");
+                        resetDepositBtn(btn);
+                    }
+                } catch(e) { /* ignore network errors during polling */ }
+            }, 5000);
+        }
+
+        function resetDepositBtn(btn) {
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> CONFIRM DEPOSIT';
+            btn.disabled = false;
+        }
+
+        // Updated manual check with Try/Catch to prevent endless spinner
+        async function checkDeposit() {
+            const btn = document.getElementById('check-payment-btn'); 
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
+            
+            try {
+                const res = await api("/api/deposit/check", "POST");
+                if (res.added > 0) { 
+                    alert(`Added ${res.added} TON`); 
+                    refreshUser(); 
+                    closeModal('modal-deposit'); 
+                } else { 
+                    alert("No new transactions found yet. Please wait a moment."); 
+                }
+            } catch (e) {
+                alert("Network error checking deposit. Try again.");
+            }
+            
+            btn.disabled = false; 
+            btn.innerHTML = '<i class="fa-solid fa-rotate"></i> MANUAL CHECK';
         }
         
         function openCaseView(id) {
@@ -602,6 +820,7 @@
         async function spinCase() {
             if(!activeCase) return;
             const btn=document.getElementById('spin-btn');
+            
             let pool = [];
             if(activeCase.id === 'daily') pool = allGifts.filter(g => g.price < 5);
             else if(activeCase.id === 'starter') pool = allGifts.filter(g => g.price < 8);
@@ -632,48 +851,72 @@
             }, 4100);
         }
 
-        // MINES
-        let isMinesRunning = false; let minesCurrentBet = 0;
+        // --- MINES LOGIC ---
+        let isMinesRunning = false;
+        let minesCurrentBet = 0;
+        
         function initMinesGrid() {
-            const grid = document.getElementById('mines-grid'); grid.innerHTML = '';
+            const grid = document.getElementById('mines-grid');
+            grid.innerHTML = '';
             for (let i = 0; i < 25; i++) {
-                const tile = document.createElement('div'); tile.className = 'mine-tile'; tile.id = `mine-tile-${i}`;
-                tile.onclick = () => clickMine(i); grid.appendChild(tile);
+                const tile = document.createElement('div');
+                tile.className = 'mine-tile';
+                tile.id = `mine-tile-${i}`;
+                tile.onclick = () => clickMine(i);
+                grid.appendChild(tile);
             }
         }
+        // Call this once on load
         initMinesGrid();
         
         async function toggleMines() {
             const btn = document.getElementById('mines-action-btn');
+            
             if (isMinesRunning) {
+                // CASHOUT FLOW
                 btn.innerHTML = "CASHING OUT..."; btn.disabled = true;
                 const res = await api("/api/game/mines/cashout", "POST");
                 btn.disabled = false;
+                
                 if (res.error) return alert(res.error);
+                
                 finishMinesGame(res.full_grid, res.win_amount);
                 document.getElementById('mines-current-profit').innerText = "+" + res.win_amount.toFixed(2) + " TON";
                 document.getElementById('mines-current-profit').style.color = "var(--success)";
-                refreshUser(); 
+                refreshUser(); // Updates balances globally
             } else {
+                // START FLOW
                 const betAmt = parseFloat(document.getElementById('mines-bet').value);
                 const minesCount = parseInt(document.getElementById('mines-count').value);
                 if (balance < betAmt) return alert("Insufficient funds!");
+        
                 btn.innerHTML = "STARTING..."; btn.disabled = true;
                 const res = await api("/api/game/mines/start", "POST", { bet: betAmt, mines: minesCount });
                 btn.disabled = false;
+                
                 if (res.error) return alert(res.error);
                 
-                balance = res.balance; document.getElementById('user-balance').innerText = balance.toFixed(2); document.getElementById('mines-balance-display').innerText = balance.toFixed(2);
-                isMinesRunning = true; minesCurrentBet = betAmt;
+                balance = res.balance;
+                document.getElementById('user-balance').innerText = balance.toFixed(2);
+                document.getElementById('mines-balance-display').innerText = balance.toFixed(2);
                 
+                isMinesRunning = true;
+                minesCurrentBet = betAmt;
+                
+                // Reset UI
                 document.getElementById('mines-setup-area').style.display = 'none';
                 document.getElementById('mines-hud-area').style.display = 'flex';
                 document.getElementById('mines-current-mult').innerText = "1.00x";
                 document.getElementById('mines-current-profit').innerText = "0.00 TON";
                 document.getElementById('mines-current-profit').style.color = "white";
                 
-                btn.innerHTML = "CASHOUT"; btn.classList.add('cashout'); btn.disabled = true;
-                const tiles = document.querySelectorAll('.mine-tile'); tiles.forEach(t => { t.className = 'mine-tile'; t.style.pointerEvents = 'auto'; });
+                btn.innerHTML = "CASHOUT";
+                btn.classList.add('cashout');
+                btn.disabled = true; // Disable cashout until at least 1 click
+                
+                // Reset Grid visual
+                const tiles = document.querySelectorAll('.mine-tile');
+                tiles.forEach(t => { t.className = 'mine-tile'; t.style.pointerEvents = 'auto'; });
             }
         }
         
@@ -681,159 +924,390 @@
             if (!isMinesRunning) return;
             const tile = document.getElementById(`mine-tile-${index}`);
             if (tile.classList.contains('disabled')) return;
-            tile.classList.add('disabled'); 
+            
+            tile.classList.add('disabled'); // Optimistic lock
             const res = await api("/api/game/mines/click", "POST", { index: index });
-            if (res.error) { tile.classList.remove('disabled'); return alert(res.error); }
+            
+            if (res.error) {
+                tile.classList.remove('disabled');
+                return alert(res.error);
+            }
             
             if (res.status === 'safe') {
                 tile.classList.add('gem');
                 document.getElementById('mines-current-mult').innerText = res.new_multiplier.toFixed(2) + "x";
                 document.getElementById('mines-current-profit').innerText = (minesCurrentBet * res.new_multiplier).toFixed(2) + " TON";
-                document.getElementById('mines-action-btn').disabled = false; 
+                document.getElementById('mines-action-btn').disabled = false; // Enable cashout
+                
+                // Auto-cashout if grid is cleared
                 if (res.cleared) toggleMines(); 
+                
             } else if (res.status === 'boom') {
-                tile.classList.add('bomb'); finishMinesGame(res.full_grid, 0); refreshUser();
+                tile.classList.add('bomb');
+                finishMinesGame(res.full_grid, 0);
             }
         }
         
         function finishMinesGame(fullGrid, winAmount) {
-            isMinesRunning = false; const btn = document.getElementById('mines-action-btn');
-            btn.innerHTML = "PLAY AGAIN"; btn.classList.remove('cashout'); btn.disabled = false;
-            document.getElementById('mines-setup-area').style.display = 'flex'; document.getElementById('mines-hud-area').style.display = 'none';
+            isMinesRunning = false;
+            const btn = document.getElementById('mines-action-btn');
+            btn.innerHTML = "PLAY AGAIN";
+            btn.classList.remove('cashout');
+            btn.disabled = false;
+            
+            document.getElementById('mines-setup-area').style.display = 'flex';
+            document.getElementById('mines-hud-area').style.display = 'none';
+        
+            // Reveal grid
             const tiles = document.querySelectorAll('.mine-tile');
             for (let i = 0; i < 25; i++) {
                 tiles[i].classList.add('disabled');
                 if (!tiles[i].classList.contains('gem') && !tiles[i].classList.contains('bomb')) {
-                    tiles[i].classList.add('dimmed'); tiles[i].classList.add(fullGrid[i] === 1 ? 'bomb' : 'gem');
+                    tiles[i].classList.add('dimmed');
+                    tiles[i].classList.add(fullGrid[i] === 1 ? 'bomb' : 'gem');
                 }
+            }
+            
+            if (winAmount > 0) {
+                document.getElementById('crash-win-msg').innerText = `WON ${winAmount.toFixed(2)} TON`;
             }
         }
         
-        // CRASH
         const RocketEngine = {
-            canvas: null, ctx: null, lottieAnim: null, boomLottie: null, rocketEl: null, boomEl: null, width: 0, height: 0, animId: null,
-            status: 'IDLE', startTime: 0, multiplier: 1.00, crashPoint: 0, bet: 0, hasCashedOut: false, scaleX: 45, scaleY: 80,
+            canvas: null, ctx: null, lottieAnim: null, boomLottie: null,
+            rocketEl: null, boomEl: null, width: 0, height: 0, animId: null,
+            
+            status: 'IDLE', startTime: 0, multiplier: 1.00, crashPoint: 0, bet: 0,
+            hasCashedOut: false, scaleX: 45, scaleY: 80, // Tuned for beautiful curve
+            
             init: function() {
-                this.canvas = document.getElementById('crashCanvas'); this.ctx = this.canvas.getContext('2d');
-                this.rocketEl = document.getElementById('rocket-entry'); this.boomEl = document.getElementById('boom-anim');
-                this.lottieAnim = lottie.loadAnimation({ container: this.rocketEl, renderer: 'svg', loop: true, autoplay: false, path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json' });
-                this.boomLottie = lottie.loadAnimation({ container: this.boomEl, renderer: 'svg', loop: false, autoplay: false, path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5242579622872256599.json' });
-                this.resize(); window.addEventListener('resize', () => this.resize()); this.drawIdle();
+                this.canvas = document.getElementById('crashCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.rocketEl = document.getElementById('rocket-entry');
+                this.boomEl = document.getElementById('boom-anim');
+                
+                this.lottieAnim = lottie.loadAnimation({
+                    container: this.rocketEl, renderer: 'svg', loop: true, autoplay: false,
+                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json' 
+                });
+        
+                this.boomLottie = lottie.loadAnimation({
+                    container: this.boomEl, renderer: 'svg', loop: false, autoplay: false,
+                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5242579622872256599.json'
+                });
+        
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                this.drawIdle();
             },
+        
             resize: function() {
-                if(!this.canvas) return; const rect = this.canvas.parentElement.getBoundingClientRect();
-                this.width = rect.width; this.height = rect.height; this.canvas.width = this.width; this.canvas.height = this.height;
+                if(!this.canvas) return;
+                const parent = this.canvas.parentElement;
+                
+                // Use getBoundingClientRect for sub-pixel accuracy on mobile
+                const rect = parent.getBoundingClientRect();
+                this.width = rect.width;
+                this.height = rect.height;
+                
+                // Set internal drawing resolution to match display size
+                this.canvas.width = this.width;
+                this.canvas.height = this.height;
+                
                 if(this.status === 'IDLE') this.drawIdle();
             },
+        
             startGame: function(betAmount, finalCrashPoint) {
-                this.bet = betAmount; this.crashPoint = finalCrashPoint; this.startTime = Date.now(); this.status = 'RUNNING'; this.hasCashedOut = false; this.multiplier = 1.00;
-                this.rocketEl.style.display = 'block'; this.boomEl.style.display = 'none'; this.boomLottie.stop(); this.lottieAnim.play();
-                if (this.animId) cancelAnimationFrame(this.animId); this.loop();
+                this.bet = betAmount;
+                this.crashPoint = finalCrashPoint;
+                this.startTime = Date.now();
+                this.status = 'RUNNING';
+                this.hasCashedOut = false;
+                this.multiplier = 1.00;
+                
+                this.rocketEl.style.display = 'block';
+                this.boomEl.style.display = 'none';
+                this.boomLottie.stop();
+                this.lottieAnim.play();
+                
+                if (this.animId) cancelAnimationFrame(this.animId);
+                this.loop();
             },
-            cashOut: function() { this.hasCashedOut = true; return this.multiplier; },
+        
+            cashOut: function() {
+                this.hasCashedOut = true;
+                return this.multiplier;
+            },
+        
             crash: function() {
-                this.status = 'CRASHED'; this.rocketEl.style.display = 'none'; this.lottieAnim.stop(); 
-                const t = this.getErrorTime(); const worldX = t * this.scaleX; const worldY = (this.multiplier - 1) * this.scaleY;
-                const w = this.width, h = this.height; const baseScreenX = 30, baseScreenY = h - 30;
-                let camX = 0, camY = 0; if (worldX > w * 0.6) camX = worldX - w * 0.6; if (worldY > h * 0.6) camY = worldY - h * 0.6;
-                const finalX = baseScreenX + worldX - camX; const finalY = baseScreenY - worldY + camY;
-                this.boomEl.style.display = 'block'; this.boomEl.style.left = `${finalX}px`; this.boomEl.style.top = `${finalY}px`; this.boomLottie.goToAndPlay(0, true);
-                this.draw(t); cancelAnimationFrame(this.animId); refreshUser();
+                this.status = 'CRASHED';
+                this.rocketEl.style.display = 'none'; 
+                this.lottieAnim.stop(); 
+                
+                // Exact Explosion Coordinates
+                const t = this.getErrorTime();
+                const worldX = t * this.scaleX;
+                const worldY = (this.multiplier - 1) * this.scaleY;
+                const w = this.width, h = this.height;
+                const baseScreenX = 30, baseScreenY = h - 30;
+        
+                let camX = 0, camY = 0;
+                if (worldX > w * 0.6) camX = worldX - w * 0.6;
+                if (worldY > h * 0.6) camY = worldY - h * 0.6;
+                
+                const finalX = baseScreenX + worldX - camX;
+                const finalY = baseScreenY - worldY + camY;
+        
+                this.boomEl.style.display = 'block';
+                this.boomEl.style.left = `${finalX}px`;
+                this.boomEl.style.top = `${finalY}px`;
+                this.boomLottie.goToAndPlay(0, true);
+        
+                this.draw(t);
+                cancelAnimationFrame(this.animId);
             },
+        
+            // A real exponential curve function
             getMultiplier: function(t) { return Math.max(1, Math.pow(1.15, t)); },
             getErrorTime: function() { return (Date.now() - this.startTime) / 1000; },
+        
             loop: function() {
-                if(this.status !== 'RUNNING') return; const t = this.getErrorTime(); this.multiplier = this.getMultiplier(t);
+                if(this.status !== 'RUNNING') return;
+                const t = this.getErrorTime();
+                this.multiplier = this.getMultiplier(t);
+        
                 document.getElementById('crash-text').innerText = this.multiplier.toFixed(2) + "x";
-                if(this.multiplier >= this.crashPoint) { this.multiplier = this.crashPoint; document.getElementById('crash-text').innerText = this.crashPoint.toFixed(2) + "x"; crashEnd(); return; }
-                this.draw(t); this.animId = requestAnimationFrame(() => this.loop());
+        
+                if(this.multiplier >= this.crashPoint) {
+                    this.multiplier = this.crashPoint;
+                    document.getElementById('crash-text').innerText = this.crashPoint.toFixed(2) + "x";
+                    crashEnd(); 
+                    return; 
+                }
+                this.draw(t);
+                this.animId = requestAnimationFrame(() => this.loop());
             },
+        
             draw: function(t) {
                 const ctx = this.ctx; const w = this.width; const h = this.height;
-                let curScaleX = this.scaleX; let curScaleY = this.scaleY;
-                if (this.multiplier > 2.0) { const zoom = 2.0 / this.multiplier; curScaleY = this.scaleY * zoom; curScaleX = this.scaleX * Math.sqrt(zoom); }
-                const worldX = t * curScaleX; const worldY = (this.multiplier - 1) * curScaleY;
-                const baseScreenX = 40; const baseScreenY = h - 40; 
-                let camX = 0; let camY = 0; if (worldX > w * 0.5) camX = worldX - w * 0.5; if (worldY > h * 0.5) camY = worldY - h * 0.5;
-                ctx.fillStyle = "#09090b"; ctx.fillRect(0, 0, w, h);
-                const gridSize = 50; ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20"; ctx.beginPath();
+        
+                // --- DYNAMIC ZOOM: Prevents flying off screen! ---
+                let curScaleX = this.scaleX;
+                let curScaleY = this.scaleY;
+        
+                // As multiplier goes high, we "zoom out" so the line fits on screen forever
+                if (this.multiplier > 2.0) {
+                    const zoom = 2.0 / this.multiplier;
+                    curScaleY = this.scaleY * zoom;          // Squishes vertical curve heavily
+                    curScaleX = this.scaleX * Math.sqrt(zoom); // Squishes horizontal speed smoothly
+                }
+        
+                const worldX = t * curScaleX; 
+                const worldY = (this.multiplier - 1) * curScaleY;
+                
+                const baseScreenX = 40; // Starting position X
+                const baseScreenY = h - 40; // Starting position Y
+        
+                // Camera safely tracks the graph
+                let camX = 0; let camY = 0;
+                if (worldX > w * 0.5) camX = worldX - w * 0.5;
+                if (worldY > h * 0.5) camY = worldY - h * 0.5;
+        
+                // Dark Background
+                ctx.fillStyle = "#09090b"; 
+                ctx.fillRect(0, 0, w, h);
+        
+                // Infinite Grid
+                const gridSize = 50;
+                ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
+                ctx.beginPath();
                 const offsetX = camX % gridSize; const offsetY = camY % gridSize;
                 for (let x = baseScreenX - offsetX; x <= w; x += gridSize) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
-                for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); } ctx.stroke();
-                ctx.save(); ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#ff9900"; 
-                ctx.beginPath(); ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
-                for (let px = 0; px <= worldX; px += 3) { const py = (this.getMultiplier(px / curScaleX) - 1) * curScaleY; ctx.lineTo(baseScreenX + px - camX, baseScreenY - py + camY); }
-                const rocketScreenX = baseScreenX + worldX - camX; const rocketScreenY = baseScreenY - worldY + camY; ctx.lineTo(rocketScreenX, rocketScreenY); ctx.stroke();
+                for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+                ctx.stroke();
+        
+                // Draw Orange Curve
+                ctx.save();
+                ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
+                ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#ff9900"; 
+                
+                ctx.beginPath();
+                ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
+                
+                // Map the entire historical path perfectly based on current zoom
+                for (let px = 0; px <= worldX; px += 3) {
+                    const pTime = px / curScaleX;
+                    const pMult = this.getMultiplier(pTime);
+                    const py = (pMult - 1) * curScaleY;
+                    ctx.lineTo(baseScreenX + px - camX, baseScreenY - py + camY);
+                }
+                
+                // Exact tip of the line
+                const rocketScreenX = baseScreenX + worldX - camX;
+                const rocketScreenY = baseScreenY - worldY + camY;
+                ctx.lineTo(rocketScreenX, rocketScreenY);
+                ctx.stroke();
+        
+                // Orange Glow underneath
                 ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
-                if(this.status === 'CRASHED') { grad.addColorStop(0, "rgba(255, 0, 85, 0.2)"); grad.addColorStop(1, "rgba(255, 0, 85, 0)"); } else { grad.addColorStop(0, "rgba(255, 153, 0, 0.25)"); grad.addColorStop(1, "rgba(255, 153, 0, 0)"); }
+                if(this.status === 'CRASHED') {
+                    grad.addColorStop(0, "rgba(255, 0, 85, 0.2)"); grad.addColorStop(1, "rgba(255, 0, 85, 0)");
+                } else {
+                    grad.addColorStop(0, "rgba(255, 153, 0, 0.25)"); grad.addColorStop(1, "rgba(255, 153, 0, 0)");
+                }
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
+        
+                // --- PERFECT ROCKET ANCHORING ---
                 if (this.status !== 'CRASHED') {
-                    const nextWorldX = (t + 0.1) * curScaleX; const nextWorldY = (this.getMultiplier(t + 0.1) - 1) * curScaleY;
-                    const angle = Math.atan2(-(nextWorldY - worldY), nextWorldX - worldX); 
-                    this.rocketEl.style.left = `${rocketScreenX}px`; this.rocketEl.style.top = `${rocketScreenY}px`;
+                    // Predict next frame to get the exact pointing angle
+                    const nextTime = t + 0.1;
+                    const nextMult = this.getMultiplier(nextTime);
+                    const nextWorldX = nextTime * curScaleX;
+                    const nextWorldY = (nextMult - 1) * curScaleY;
+        
+                    const dx = nextWorldX - worldX;
+                    const dy = nextWorldY - worldY; 
+                    const angle = Math.atan2(-dy, dx); 
+                    
+                    // Set position EXACTLY to the tip of the line
+                    this.rocketEl.style.left = `${rocketScreenX}px`;
+                    this.rocketEl.style.top = `${rocketScreenY}px`;
+                    
+                    // MAGIC FIX: -30% (X) and -75% (Y) physically shifts the visual Lottie box 
+                    // so the nozzle (bottom-left of the rocket) aligns flawlessly with the line tip!
                     this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`;
                 }
             },
+        
             drawIdle: function() {
-                const w = this.width; const h = this.height; const ctx = this.ctx; ctx.fillStyle = "#09090b"; ctx.fillRect(0,0,w,h);
+                const w = this.width; const h = this.height; const ctx = this.ctx;
+                ctx.fillStyle = "#09090b"; ctx.fillRect(0,0,w,h);
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20"; ctx.beginPath();
-                for(let x=0; x<=w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); } for(let y=0; y<=h; y+=50) { ctx.moveTo(0,y); ctx.lineTo(w,y); } ctx.stroke();
+                for(let x=0; x<=w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
+                for(let y=0; y<=h; y+=50) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
+                ctx.stroke();
                 this.rocketEl.style.display = 'none'; 
             }
         };
+        
         setTimeout(() => RocketEngine.init(), 500);
         function setHalfBet() { const b = document.getElementById('crash-bet'); b.value = Math.max(0.5, parseFloat(b.value)/2).toFixed(1); }
         function setDoubleBet() { const b = document.getElementById('crash-bet'); b.value = (parseFloat(b.value)*2).toFixed(1); }
         
         async function toggleCrash() {
-            const btn = document.getElementById('crash-action-btn'); const msg = document.getElementById('crash-status'); const winMsg = document.getElementById('crash-win-msg'); const uiMult = document.getElementById('crash-text');
+            const btn = document.getElementById('crash-action-btn');
+            const msg = document.getElementById('crash-status');
+            const winMsg = document.getElementById('crash-win-msg');
+            const uiMult = document.getElementById('crash-text');
+        
+            // 1. CASHOUT (Secure Flow)
             if (RocketEngine.status === 'RUNNING' && !RocketEngine.hasCashedOut) {
-                const winAmt = RocketEngine.bet * RocketEngine.cashOut();
+                const finalMult = RocketEngine.cashOut();
+                const winAmt = RocketEngine.bet * finalMult;
+                
                 btn.innerHTML = "SYNCING..."; btn.disabled = true;
+                
                 const res = await api("/api/game/crash/cashout", "POST", { winAmt: winAmt });
-                btn.disabled = false; if(res.error) { alert(res.error); return; }
-                balance += winAmt; document.getElementById('user-balance').innerText = balance.toFixed(2); document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
-                btn.innerHTML = "LAUNCH ROCKET"; btn.classList.remove('cashout'); msg.innerText = ""; winMsg.innerText = `+${winAmt.toFixed(2)} TON`;
-                refreshUser(); return;
+                btn.disabled = false;
+                if(res.error) { alert(res.error); return; }
+        
+                balance += winAmt;
+                document.getElementById('user-balance').innerText = balance.toFixed(2);
+                document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
+                
+                btn.innerHTML = "LAUNCH ROCKET"; btn.classList.remove('cashout');
+                
+                msg.innerText = ""; // Hide text
+                winMsg.innerText = `+${winAmt.toFixed(2)} TON`;
+                return;
             }
+        
+            // 2. START GAME (Secure Flow)
             if (RocketEngine.status !== 'RUNNING') {
                 const betAmt = parseFloat(document.getElementById('crash-bet').value);
-                if(balance < betAmt) return alert("Insufficient funds!");
+                if(balance < betAmt) { alert("Insufficient funds!"); return; }
+        
                 btn.innerHTML = "PREPARING..."; btn.disabled = true;
+        
                 const res = await api("/api/game/crash/start", "POST", { bet: betAmt });
-                btn.disabled = false; if (res.error) return alert(res.error);
-                balance = res.balance; document.getElementById('user-balance').innerText = balance.toFixed(2); document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
-                uiMult.style.color = "#ff9900"; uiMult.style.textShadow = "0 0 20px rgba(255, 153, 0, 0.6)"; msg.innerText = ""; winMsg.innerText = ""; btn.innerHTML = "EJECT NOW"; btn.classList.add('cashout');
+                btn.disabled = false;
+                if (res.error) { alert(res.error); return; }
+        
+                balance = res.balance; 
+                document.getElementById('user-balance').innerText = balance.toFixed(2);
+                document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
+        
+                uiMult.style.color = "#ff9900"; // Orange while running
+                uiMult.style.textShadow = "0 0 20px rgba(255, 153, 0, 0.6)";
+                msg.innerText = ""; // Empty string, no more "Rocket in flight"
+                winMsg.innerText = "";
+                btn.innerHTML = "EJECT NOW"; btn.classList.add('cashout');
+        
                 let crashAt = 1.0; const r = Math.random();
-                if(r < 0.3) crashAt = 1.0 + Math.random()*0.2; else if(r < 0.6) crashAt = 1.2 + Math.random()*1.8; else if(r < 0.9) crashAt = 3.0 + Math.random()*7.0; else crashAt = 10 + Math.random()*50;               
+                if(r < 0.3) crashAt = 1.0 + Math.random()*0.2;     
+                else if(r < 0.6) crashAt = 1.2 + Math.random()*1.8; 
+                else if(r < 0.9) crashAt = 3.0 + Math.random()*7.0; 
+                else crashAt = 10 + Math.random()*50;               
+        
                 RocketEngine.startGame(betAmt, crashAt);
             }
         }
+        
         function crashEnd() {
-            RocketEngine.crash(); const btn = document.getElementById('crash-action-btn'); btn.innerHTML = "TRY AGAIN"; btn.classList.remove('cashout');
-            if (RocketEngine.hasCashedOut) { document.getElementById('crash-status').innerText = ""; document.getElementById('crash-text').style.color = "#8b9bb4"; document.getElementById('crash-text').style.textShadow = "none"; } 
-            else { document.getElementById('crash-text').style.color = "#ff0055"; document.getElementById('crash-text').style.textShadow = "0 0 20px rgba(255, 0, 85, 0.6)"; document.getElementById('crash-status').innerText = ""; document.getElementById('crash-win-msg').innerText = ""; }
+            RocketEngine.crash();
+            const btn = document.getElementById('crash-action-btn');
+            btn.innerHTML = "TRY AGAIN"; btn.classList.remove('cashout');
+            
+            if (RocketEngine.hasCashedOut) {
+                document.getElementById('crash-status').innerText = ""; 
+                document.getElementById('crash-text').style.color = "#8b9bb4"; 
+                document.getElementById('crash-text').style.textShadow = "none";
+            } else {
+                document.getElementById('crash-text').style.color = "#ff0055"; 
+                document.getElementById('crash-text').style.textShadow = "0 0 20px rgba(255, 0, 85, 0.6)";
+                document.getElementById('crash-status').innerText = ""; // Removed "ROCKET EXPLODED"
+                document.getElementById('crash-win-msg').innerText = "";
+            }
         }
 
-        // UTILS
+        // --- UTILS ---
         function switchView(id) {
+            // 1. Handle Active View Class
             document.querySelectorAll('.game-view').forEach(e => e.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-            
-            if (id === 'view-home' || id.includes('case') || id === 'view-inventory') document.getElementById('nav-home').classList.add('active');
-            if (id === 'view-profile') document.getElementById('nav-profile').classList.add('active'); 
-            if (id === 'view-leaderboard') { document.getElementById('nav-leaderboard').classList.add('active'); loadLeaderboard(); }
         
+            // 2. Handle Bottom Navigation Highlighting
+            // 2. Handle Bottom Navigation Highlighting
+            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+            if (id === 'view-home' || id.includes('case')) document.getElementById('nav-home').classList.add('active');
+            if (id === 'view-leaderboard') { 
+                document.getElementById('nav-leaderboard').classList.add('active'); 
+                loadLeaderboard(); 
+            }
+            if (id === 'view-profile') document.getElementById('nav-profile').classList.add('active'); 
+            if (id === 'view-inventory') renderInventory();
+        
+            // --- NEW: HEADER VISIBILITY LOGIC ---
             const header = document.querySelector('header');
-            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-profile', 'view-leaderboard'];
-            if (viewsWithHeader.includes(id)) header.classList.remove('hidden'); else header.classList.add('hidden');
-            if (id === 'view-crash') setTimeout(() => { if (window.RocketEngine) RocketEngine.resize(); }, 50); 
+            
+            // Define which views should KEEP the header visible
+            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade'];
+        
+            if (viewsWithHeader.includes(id)) {
+                header.classList.remove('hidden');
+            } else {
+                header.classList.add('hidden'); // Hides header for Crash, Mines, Case Play
+            }
+        
+            // 3. Game Specific Resizing
+            if (id === 'view-crash') { 
+                setTimeout(() => { if (window.RocketEngine) RocketEngine.resize(); }, 50); 
+            }
         }
 
         function renderInventory(){ const g=document.getElementById('main-inventory-grid'); g.innerHTML=''; if(!inventory.length){document.getElementById('empty-inv').style.display='block';return;} document.getElementById('empty-inv').style.display='none'; inventory.slice().reverse().forEach(i=>{ const d=document.createElement('div'); d.className='glass inv-card'; d.innerHTML=`<img src="https://cdn.changes.tg/gifts/originals/${i.gift_id}/Original.png"><div class="inv-info"><div class="inv-name">${i.gift_name}</div><div class="inv-price">${i.gift_price}</div></div><button class="btn sell-btn" onclick="sellItem(${i.id})">SELL</button>`; g.appendChild(d); }); }
-        async function sellItem(id){ if(confirm("Sell for TON?")) { await api("/api/inventory/sell","POST",{itemId:id}); refreshUser(); } }
+        async function sellItem(id){ if(confirm("Sell?")) { await api("/api/inventory/sell","POST",{itemId:id}); refreshUser(); } }
         function openCasesMenu(){ switchView('view-cases-menu'); checkDailyTimer(); }
         function closeModal(id){ document.getElementById(id).classList.remove('open'); }
         function showResult(win,i){ const m=document.getElementById('result-modal'),c=document.getElementById('res-card'); if(win){ document.getElementById('res-title').innerText="WON"; document.getElementById('res-title').style.color="var(--success)"; document.getElementById('res-img').src=`https://cdn.changes.tg/gifts/originals/${i.id}/Original.png`; document.getElementById('res-img').style.display='inline'; document.getElementById('res-name').innerText=i.name; document.getElementById('res-val').innerText=i.price; } else { document.getElementById('res-title').innerText="LOST"; document.getElementById('res-title').style.color="var(--accent)"; document.getElementById('res-img').style.display='none'; document.getElementById('res-name').innerText="Burned"; document.getElementById('res-val').innerText=""; } m.classList.add('open'); setTimeout(()=>c.classList.add('pop'),50); }
