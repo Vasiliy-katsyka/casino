@@ -621,7 +621,6 @@
         window.onload = async () => { await Promise.all([refreshUser(), loadGifts()]); renderCasesMenu(); checkDailyTimer(); };
 
         let totalVolume = 0;
-        const TG_USER = window.Telegram?.WebApp?.initDataUnsafe?.user || { id: USER_ID, first_name: "Player_" + USER_ID.toString().substring(0,4), username: "" };
 
         async function refreshUser() {
             // Send TG data to backend for profile sync
