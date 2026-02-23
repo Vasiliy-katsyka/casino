@@ -9,6 +9,8 @@
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://unpkg.com/@ton/ton@13.9.0/dist/ton.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/tonweb@0.0.66/dist/tonweb.js"></script>
     <style>
         /* GLASS & NEON THEME */
         :root { --bg-color: #0f0f13; --glass-bg: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --primary: #0088cc; --accent: #ff0055; --gold: #ffd700; --success: #00ff88; --text: #ffffff; --text-secondary: #8b9bb4; }
@@ -554,6 +556,28 @@
         const BACKEND_URL = "https://casino.kviappsgames.workers.dev";
         const WALLET_ADDR = "UQBoRkvzUelDcxR65b5J9J3KM1Ic638n1QJUo5kZTKhT3O64";
 
+        // 1. Try to get data from Telegram WebApp
+        const tgData = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        
+        // 2. If existing user ID is stored, use it, otherwise generate one
+        let savedId = localStorage.getItem('test_user_id');
+        if (!savedId) { savedId = "user_" + Math.floor(Math.random()*99999); localStorage.setItem('test_user_id', savedId); }
+
+        // 3. Define the Global User Object
+        const USER_ID = tgData?.id || savedId;
+        const TG_USER = {
+            id: USER_ID,
+            first_name: tgData?.first_name || "Player",
+            username: tgData?.username || "",
+            photo_url: tgData?.photo_url || ""
+        };
+
+        // 4. Force Expand the App (Make it full height)
+        if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+        
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/refs/heads/main/tonconnect-manifest.json', // Replace with your actual URL
             buttonRootId: 'ton-connect-button'
@@ -574,10 +598,6 @@
                 manualBtn.style.display = 'flex';
             }
         });
-        
-        let savedId = localStorage.getItem('test_user_id');
-        if (!savedId) { savedId = "user_" + Math.floor(Math.random()*99999); localStorage.setItem('test_user_id', savedId); }
-        const USER_ID = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || savedId;
 
         const CASES = [
             { id: 'daily', name: "Daily Free", price: 0, icon: "fa-gift", color: "#fff" },
@@ -711,33 +731,32 @@
         async function sendTonTransaction() {
             const amt = document.getElementById('dep-amount').value || 5;
             const amountInNano = (parseFloat(amt) * 1000000000).toString(); 
-            const comment = USER_ID.toString(); // Your User ID
+            const comment = USER_ID.toString();
 
-            // 1. Create the Payload (Comment) using the TON library
-            // Opcode 0 means "Text Comment"
-            const body = Ton.beginCell()
-                .storeUint(0, 32) 
-                .storeStringTail(comment)
-                .endCell();
-
-            // Convert to Base64 for TonConnect
-            const payload = body.toBoc().toString("base64");
-            
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 300, 
-                messages: [
-                    {
-                        address: WALLET_ADDR,
-                        amount: amountInNano,
-                        payload: payload // <--- NOW INCLUDED
-                    }
-                ]
-            };
-        
             try {
+                // 1. Create the Payload (Comment) using TonWeb
+                const tonweb = new window.TonWeb();
+                const cell = new tonweb.boc.Cell();
+                cell.bits.writeUint(0, 32); // Opcode 0 = Text Comment
+                cell.bits.writeString(comment); // Write User ID
+                const payload = tonweb.utils.bytesToBase64(await cell.toBoc());
+
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 300, 
+                    messages: [
+                        {
+                            address: WALLET_ADDR,
+                            amount: amountInNano,
+                            payload: payload // <--- Safely attached now
+                        }
+                    ]
+                };
+
                 await tonConnectUI.sendTransaction(transaction);
-                // Start polling only after user signs in wallet
+                
+                // Do not close modal; start polling for the result
                 startDepositPolling();
+                
             } catch (e) {
                 console.error(e);
                 alert("Payment failed or was canceled.");
