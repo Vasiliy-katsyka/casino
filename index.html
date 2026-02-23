@@ -577,7 +577,6 @@
         let savedId = localStorage.getItem('test_user_id');
         if (!savedId) { savedId = "user_" + Math.floor(Math.random()*99999); localStorage.setItem('test_user_id', savedId); }
         const USER_ID = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || savedId;
-        document.getElementById('dep-memo').innerText = USER_ID;
 
         const CASES = [
             { id: 'daily', name: "Daily Free", price: 0, icon: "fa-gift", color: "#fff" },
