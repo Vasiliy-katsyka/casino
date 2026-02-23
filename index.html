@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="https://unpkg.com/tonweb@0.0.60/dist/tonweb.js"></script>
     <style>
         /* GLASS & NEON THEME */
         :root { --bg-color: #0f0f13; --glass-bg: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --primary: #0088cc; --accent: #ff0055; --gold: #ffd700; --success: #00ff88; --text: #ffffff; --text-secondary: #8b9bb4; }
@@ -24,102 +25,29 @@
 
         main { flex: 1; position: relative; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
         
-        nav { display: flex; justify-content: space-around; padding: 12px 0; padding-bottom: calc(12px + env(safe-area-inset-bottom)); background: rgba(15, 15, 19, 0.95); border-top: 1px solid var(--glass-border); position: fixed; bottom: 0; width: 100%; z-index: 100; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .nav-item { color: #666; text-align: center; font-size: 10px; cursor: pointer; transition: 0.3s; flex: 1; display: flex; flex-direction: column; align-items: center; } 
+        nav { display: flex; justify-content: space-around; padding: 12px 0; background: rgba(15, 15, 19, 0.95); border-top: 1px solid var(--glass-border); position: fixed; bottom: 0; width: 100%; z-index: 100; } 
+        .nav-item { color: #666; text-align: center; font-size: 10px; cursor: pointer; transition: 0.3s; } 
         .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; } 
         .nav-item.active { color: var(--primary); }
         
         .game-view { display: none; flex-direction: column; min-height: 100%; animation: fadeIn 0.3s ease; } .game-view.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    
-        /* --- NEW PREMIUM MENU STYLES --- */
+
         .menu-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-        
-        .menu-btn { 
-            width: 100%; height: 110px; border-radius: 20px; 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 25px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; 
-            position: relative; overflow: hidden; 
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+        .menu-btn { width: 100%; height: 110px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); }
         .menu-btn:active { transform: scale(0.98); }
-        
-        /* Text Layout */
-        .menu-btn-text { 
-            display: flex; flex-direction: column; align-items: flex-start; 
-            z-index: 3; max-width: 60%; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-        }
-        .menu-btn-title { 
-            font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 32px; 
-            letter-spacing: 1px; line-height: 1; text-transform: uppercase; color: white;
-            margin-bottom: 4px;
-        }
-        .menu-btn-sub { 
-            font-size: 11px; font-weight: 600; opacity: 0.8; 
-            text-transform: uppercase; letter-spacing: 1px; color: #ccc;
-        }
-        
-        /* The NFT Image */
-        .menu-btn-img {
-            position: absolute;
-            right: -15px;
-            bottom: -15px;
-            width: 130px; 
-            height: 130px;
-            object-fit: contain;
-            transform: rotate(-10deg);
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
-            z-index: 2;
-            transition: transform 0.3s ease;
-        }
+        .menu-btn-text { display: flex; flex-direction: column; align-items: flex-start; z-index: 3; max-width: 60%; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .menu-btn-title { font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: 1px; line-height: 1; text-transform: uppercase; color: white; margin-bottom: 4px; }
+        .menu-btn-sub { font-size: 11px; font-weight: 600; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
+        .menu-btn-img { position: absolute; right: -15px; bottom: -15px; width: 130px; height: 130px; object-fit: contain; transform: rotate(-10deg); filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)); z-index: 2; transition: transform 0.3s ease; }
         .menu-btn:hover .menu-btn-img { transform: rotate(0deg) scale(1.05); }
         
-        /* --- SPECIFIC THEMES (Glows) --- */
-        
-        /* 1. Inventory (White/Glass Glow) */
-        .btn-inventory { 
-            background: radial-gradient(circle at 90% 50%, rgba(255, 255, 255, 0.15) 0%, rgba(15, 15, 20, 1) 70%);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* 2. Cases (Green Glow) */
-        .btn-cases { 
-            background: radial-gradient(circle at 90% 50%, rgba(0, 255, 136, 0.25) 0%, rgba(10, 25, 15, 1) 70%);
-            border-color: rgba(0, 255, 136, 0.2);
-            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
-        }
-        
-        /* 3. Crash (Blue/Cyan Glow) */
-        .btn-crash { 
-            background: radial-gradient(circle at 90% 50%, rgba(0, 198, 255, 0.25) 0%, rgba(10, 20, 30, 1) 70%);
-            border-color: rgba(0, 198, 255, 0.2);
-            box-shadow: 0 4px 20px rgba(0, 198, 255, 0.1);
-        }
-        
-        /* 4. Mines (Orange/Yellow Glow) */
-        .btn-mines { 
-            background: radial-gradient(circle at 90% 50%, rgba(255, 152, 0, 0.25) 0%, rgba(30, 15, 5, 1) 70%);
-            border-color: rgba(255, 152, 0, 0.2);
-            box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1);
-        }
-        
-        /* Menu Types */
-        .btn-inventory { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); color: white; }
-        .btn-cases { background: linear-gradient(135deg, #00b09b, #96c93d); box-shadow: 0 10px 20px rgba(150, 201, 61, 0.2); color: white; border: none; }
-        .btn-crash { background: linear-gradient(135deg, #00c6ff, #0072ff); box-shadow: 0 10px 20px rgba(0, 114, 255, 0.2); color: white; border: none; }
-        .menu-btn-bg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 90px; opacity: 0.15; z-index: 1; }
-    
-        /* BULLETPROOF MOBILE SCROLL FIX */
-        .game-view::after {
-            content: "";
-            display: block;
-            height: 140px; /* Massive empty space */
-            min-height: 140px;
-            width: 100%;
-            flex-shrink: 0;
-            pointer-events: none;
-        }
+        .btn-inventory { background: radial-gradient(circle at 90% 50%, rgba(255, 255, 255, 0.15) 0%, rgba(15, 15, 20, 1) 70%); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+        .btn-cases { background: radial-gradient(circle at 90% 50%, rgba(0, 255, 136, 0.25) 0%, rgba(10, 25, 15, 1) 70%); border-color: rgba(0, 255, 136, 0.2); box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1); }
+        .btn-crash { background: radial-gradient(circle at 90% 50%, rgba(0, 198, 255, 0.25) 0%, rgba(10, 20, 30, 1) 70%); border-color: rgba(0, 198, 255, 0.2); box-shadow: 0 4px 20px rgba(0, 198, 255, 0.1); }
+        .btn-mines { background: radial-gradient(circle at 90% 50%, rgba(255, 152, 0, 0.25) 0%, rgba(30, 15, 5, 1) 70%); border-color: rgba(255, 152, 0, 0.2); box-shadow: 0 4px 20px rgba(255, 152, 0, 0.1); }
+
+        .game-view::after { content: ""; display: block; height: 140px; min-height: 140px; width: 100%; flex-shrink: 0; pointer-events: none; }
         .inventory-grid, .cases-list, .select-grid { padding-bottom: 20px; }
         
         .cases-list { display: flex; flex-direction: column; gap: 15px; }
@@ -558,17 +486,28 @@
             const amt = document.getElementById('dep-amount').value || 5;
             const amountInNano = (parseFloat(amt) * 1000000000).toString(); 
             
+            // 1. We must convert the USER_ID comment into a TON Base64 BOC
+            const cell = new TonWeb.boc.Cell();
+            cell.bits.writeUint(0, 32); // 0x00000000 indicates this is a text comment
+            cell.bits.writeString(USER_ID);
+            const payloadBoc = TonWeb.utils.bytesToBase64(await cell.toBoc());
+            
+            // 2. Add it to the transaction object
             const transaction = {
                 validUntil: Math.floor(Date.now() / 1000) + 300, 
-                messages: [{ address: WALLET_ADDR, amount: amountInNano, payload: USER_ID }]
+                messages: [{ 
+                    address: WALLET_ADDR, 
+                    amount: amountInNano, 
+                    payload: payloadBoc // Pass the Base64 encoded comment here!
+                }]
             };
         
             try {
                 await tonConnectUI.sendTransaction(transaction);
                 alert("Transaction approved! Wait ~30 seconds and click 'Check Payment' inside the app.");
-                // Removed closeModal() so the UI stays open to click check!
             } catch (e) {
                 console.log(e);
+                alert("Transaction cancelled or failed.");
             }
         }
 
