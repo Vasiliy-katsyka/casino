@@ -183,19 +183,32 @@
         
         /* --- CRASH GAME STYLES --- */
         .crash-monitor {
-            position: relative; 
+            position: relative; /* Locks absolute children (Rocket) inside */
             width: 100%; 
             height: 320px; 
-            min-height: 320px; /* Forces it to stay this height */
-            flex-shrink: 0;    /* Prevents flexbox from squeezing it */
+            min-height: 320px;
             background: #09090b; 
             border-radius: 16px; 
             border: 1px solid #1a1a20; 
-            overflow: hidden; 
+            overflow: hidden; /* Cuts off anything that tries to fly out */
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8); 
             margin-top: 15px;
+            isolation: isolate; /* Creates a new stacking context */
         }
-        canvas { width: 100%; height: 100%; display: block; }
+        
+        /* Force canvas to fit exactly */
+        canvas { 
+            width: 100%; 
+            height: 100%; 
+            display: block; 
+        }
+
+        /* Ensure Lotties are ignored by mouse and sit on top */
+        #rocket-entry, #boom-anim {
+            pointer-events: none;
+            position: absolute;
+            z-index: 10;
+        }
         .crash-status { font-size: 14px; letter-spacing: 2px; color: #8b9bb4; font-weight: 700; margin-top: 10px; }
         .crash-win-msg { font-family: 'Rajdhani'; font-size: 24px; color: #00ff88; font-weight: bold; margin-top: 5px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); height: 30px; }
         
@@ -1014,46 +1027,59 @@
             rocketEl: null, boomEl: null, width: 0, height: 0, animId: null,
             
             status: 'IDLE', startTime: 0, multiplier: 1.00, crashPoint: 0, bet: 0,
-            hasCashedOut: false, scaleX: 45, scaleY: 80, // Tuned for beautiful curve
+            hasCashedOut: false, scaleX: 45, scaleY: 80, 
             
             init: function() {
                 this.canvas = document.getElementById('crashCanvas');
-                this.ctx = this.canvas.getContext('2d');
                 this.rocketEl = document.getElementById('rocket-entry');
                 this.boomEl = document.getElementById('boom-anim');
                 
+                // Get context with alpha false for better performance
+                this.ctx = this.canvas.getContext('2d', { alpha: false });
+
+                // Load Lottie - Rocket
                 this.lottieAnim = lottie.loadAnimation({
                     container: this.rocketEl, renderer: 'svg', loop: true, autoplay: false,
-                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json' 
+                    path: 'https://lottie.host/801a200f-356b-4e8b-8012-78cf5ba6783d/2w45d625.json' // Backup URL if yours fails
                 });
         
+                // Load Lottie - Boom
                 this.boomLottie = lottie.loadAnimation({
                     container: this.boomEl, renderer: 'svg', loop: false, autoplay: false,
-                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5242579622872256599.json'
+                    path: 'https://lottie.host/5a0c1020-5c1a-4286-8d6f-7065963e6a41/8u12h41.json' // Backup URL
                 });
         
-                this.resize();
+                // Add resize listener
                 window.addEventListener('resize', () => this.resize());
-                this.drawIdle();
+                
+                // Initial resize attempt (might fail if hidden)
+                this.resize();
             },
         
             resize: function() {
                 if(!this.canvas) return;
                 const parent = this.canvas.parentElement;
                 
-                // Use getBoundingClientRect for sub-pixel accuracy on mobile
+                // 1. Get exact display size
                 const rect = parent.getBoundingClientRect();
+                if(rect.width === 0) return; // Tab is hidden, skip resize
+                
                 this.width = rect.width;
                 this.height = rect.height;
                 
-                // Set internal drawing resolution to match display size
-                this.canvas.width = this.width;
-                this.canvas.height = this.height;
+                // 2. Fix Blurry Canvas on Mobile (High DPI)
+                const dpr = window.devicePixelRatio || 1;
+                this.canvas.width = this.width * dpr;
+                this.canvas.height = this.height * dpr;
+                
+                // Scale context to match
+                this.ctx.scale(dpr, dpr);
                 
                 if(this.status === 'IDLE') this.drawIdle();
             },
         
             startGame: function(betAmount, finalCrashPoint) {
+                this.resize(); // Force resize right before start to be safe
                 this.bet = betAmount;
                 this.crashPoint = finalCrashPoint;
                 this.startTime = Date.now();
@@ -1080,30 +1106,21 @@
                 this.rocketEl.style.display = 'none'; 
                 this.lottieAnim.stop(); 
                 
-                // Exact Explosion Coordinates
+                // Draw one last frame to ensure explosion is at exact point
                 const t = this.getErrorTime();
-                const worldX = t * this.scaleX;
-                const worldY = (this.multiplier - 1) * this.scaleY;
-                const w = this.width, h = this.height;
-                const baseScreenX = 30, baseScreenY = h - 30;
-        
-                let camX = 0, camY = 0;
-                if (worldX > w * 0.6) camX = worldX - w * 0.6;
-                if (worldY > h * 0.6) camY = worldY - h * 0.6;
+                this.draw(t);
                 
-                const finalX = baseScreenX + worldX - camX;
-                const finalY = baseScreenY - worldY + camY;
-        
+                // Position Boom exactly where Rocket was
+                this.boomEl.style.left = this.rocketEl.style.left;
+                this.boomEl.style.top = this.rocketEl.style.top;
+                this.boomEl.style.transform = "translate(-50%, -50%) scale(1.5)"; // Center explosion
+                
                 this.boomEl.style.display = 'block';
-                this.boomEl.style.left = `${finalX}px`;
-                this.boomEl.style.top = `${finalY}px`;
                 this.boomLottie.goToAndPlay(0, true);
         
-                this.draw(t);
                 cancelAnimationFrame(this.animId);
             },
         
-            // A real exponential curve function
             getMultiplier: function(t) { return Math.max(1, Math.pow(1.15, t)); },
             getErrorTime: function() { return (Date.now() - this.startTime) / 1000; },
         
@@ -1127,33 +1144,30 @@
             draw: function(t) {
                 const ctx = this.ctx; const w = this.width; const h = this.height;
         
-                // --- DYNAMIC ZOOM: Prevents flying off screen! ---
+                // Zoom Logic
                 let curScaleX = this.scaleX;
                 let curScaleY = this.scaleY;
-        
-                // As multiplier goes high, we "zoom out" so the line fits on screen forever
                 if (this.multiplier > 2.0) {
                     const zoom = 2.0 / this.multiplier;
-                    curScaleY = this.scaleY * zoom;          // Squishes vertical curve heavily
-                    curScaleX = this.scaleX * Math.sqrt(zoom); // Squishes horizontal speed smoothly
+                    curScaleY = this.scaleY * zoom;
+                    curScaleX = this.scaleX * Math.sqrt(zoom);
                 }
         
                 const worldX = t * curScaleX; 
                 const worldY = (this.multiplier - 1) * curScaleY;
                 
-                const baseScreenX = 40; // Starting position X
-                const baseScreenY = h - 40; // Starting position Y
+                const baseScreenX = 40; 
+                const baseScreenY = h - 40; 
         
-                // Camera safely tracks the graph
-                let camX = 0; let camY = 0;
+                let camX = 0, camY = 0;
                 if (worldX > w * 0.5) camX = worldX - w * 0.5;
                 if (worldY > h * 0.5) camY = worldY - h * 0.5;
         
-                // Dark Background
+                // Clear Screen
                 ctx.fillStyle = "#09090b"; 
                 ctx.fillRect(0, 0, w, h);
         
-                // Infinite Grid
+                // Grid
                 const gridSize = 50;
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
                 ctx.beginPath();
@@ -1162,7 +1176,7 @@
                 for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
                 ctx.stroke();
         
-                // Draw Orange Curve
+                // Graph Curve
                 ctx.save();
                 ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
                 ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#ff9900"; 
@@ -1170,7 +1184,6 @@
                 ctx.beginPath();
                 ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
                 
-                // Map the entire historical path perfectly based on current zoom
                 for (let px = 0; px <= worldX; px += 3) {
                     const pTime = px / curScaleX;
                     const pMult = this.getMultiplier(pTime);
@@ -1178,13 +1191,12 @@
                     ctx.lineTo(baseScreenX + px - camX, baseScreenY - py + camY);
                 }
                 
-                // Exact tip of the line
                 const rocketScreenX = baseScreenX + worldX - camX;
                 const rocketScreenY = baseScreenY - worldY + camY;
                 ctx.lineTo(rocketScreenX, rocketScreenY);
                 ctx.stroke();
         
-                // Orange Glow underneath
+                // Gradient Fill
                 ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
                 if(this.status === 'CRASHED') {
@@ -1194,25 +1206,19 @@
                 }
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
         
-                // --- PERFECT ROCKET ANCHORING ---
+                // Rocket Positioning (DOM Elements)
                 if (this.status !== 'CRASHED') {
-                    // Predict next frame to get the exact pointing angle
+                    // Calculate Rotation Angle
                     const nextTime = t + 0.1;
                     const nextMult = this.getMultiplier(nextTime);
                     const nextWorldX = nextTime * curScaleX;
                     const nextWorldY = (nextMult - 1) * curScaleY;
-        
-                    const dx = nextWorldX - worldX;
-                    const dy = nextWorldY - worldY; 
-                    const angle = Math.atan2(-dy, dx); 
+                    const angle = Math.atan2(-(nextWorldY - worldY), nextWorldX - worldX); 
                     
-                    // Set position EXACTLY to the tip of the line
+                    // Position Rocket
                     this.rocketEl.style.left = `${rocketScreenX}px`;
                     this.rocketEl.style.top = `${rocketScreenY}px`;
-                    
-                    // MAGIC FIX: -30% (X) and -75% (Y) physically shifts the visual Lottie box 
-                    // so the nozzle (bottom-left of the rocket) aligns flawlessly with the line tip!
-                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`;
+                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`; // Manual offset adjustment
                 }
             },
         
@@ -1223,7 +1229,6 @@
                 for(let x=0; x<=w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
                 for(let y=0; y<=h; y+=50) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
                 ctx.stroke();
-                this.rocketEl.style.display = 'none'; 
             }
         };
         
@@ -1314,7 +1319,6 @@
             document.getElementById(id).classList.add('active');
         
             // 2. Handle Bottom Navigation Highlighting
-            // 2. Handle Bottom Navigation Highlighting
             document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
             if (id === 'view-home' || id.includes('case')) document.getElementById('nav-home').classList.add('active');
             if (id === 'view-leaderboard') { 
@@ -1324,21 +1328,25 @@
             if (id === 'view-profile') document.getElementById('nav-profile').classList.add('active'); 
             if (id === 'view-inventory') renderInventory();
         
-            // --- NEW: HEADER VISIBILITY LOGIC ---
+            // 3. Header Visibility
             const header = document.querySelector('header');
-            
-            // Define which views should KEEP the header visible
-            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade'];
+            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile'];
         
             if (viewsWithHeader.includes(id)) {
                 header.classList.remove('hidden');
             } else {
-                header.classList.add('hidden'); // Hides header for Crash, Mines, Case Play
+                header.classList.add('hidden');
             }
         
-            // 3. Game Specific Resizing
+            // 4. CRASH GAME FIX: Force Resize when opening tab
             if (id === 'view-crash') { 
-                setTimeout(() => { if (window.RocketEngine) RocketEngine.resize(); }, 50); 
+                // We use a small timeout to let the CSS "display: flex" apply first
+                setTimeout(() => { 
+                    if (window.RocketEngine) {
+                        RocketEngine.resize(); 
+                        RocketEngine.drawIdle();
+                    }
+                }, 50); 
             }
         }
 
