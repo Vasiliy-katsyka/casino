@@ -1038,49 +1038,62 @@
                 this.canvas = document.getElementById('crashCanvas');
                 this.rocketEl = document.getElementById('rocket-entry');
                 this.boomEl = document.getElementById('boom-anim');
+                
+                // Get context with alpha false for better performance
                 this.ctx = this.canvas.getContext('2d', { alpha: false });
-        
-                // 1. Load User's RAW Rocket JSON
+    
+                // Load Lottie - Rocket
+                // Inside RocketEngine.init function:
+                
+                // 1. Load Rocket Lottie with RAW link
                 this.lottieAnim = lottie.loadAnimation({
-                    container: this.rocketEl,
-                    renderer: 'svg',
-                    loop: true,
+                    container: this.rocketEl, 
+                    renderer: 'svg', 
+                    loop: true, 
                     autoplay: false,
-                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json'
+                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json' 
                 });
-        
-                // 2. Load User's RAW Boom JSON
+                
+                // 2. Load Boom Lottie with RAW link
                 this.boomLottie = lottie.loadAnimation({
-                    container: this.boomEl,
-                    renderer: 'svg',
-                    loop: false,
+                    container: this.boomEl, 
+                    renderer: 'svg', 
+                    loop: false, 
                     autoplay: false,
                     path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5242579622872256599.json'
                 });
         
+                // Add resize listener
                 window.addEventListener('resize', () => this.resize());
-                setTimeout(() => this.resize(), 100);
+                
+                // Initial resize attempt (might fail if hidden)
+                this.resize();
             },
         
             resize: function() {
                 if(!this.canvas) return;
                 const parent = this.canvas.parentElement;
+                
+                // 1. Get exact display size
                 const rect = parent.getBoundingClientRect();
-                if(rect.width === 0) return; 
-        
+                if(rect.width === 0) return; // Tab is hidden, skip resize
+                
                 this.width = rect.width;
                 this.height = rect.height;
                 
+                // 2. Fix Blurry Canvas on Mobile (High DPI)
                 const dpr = window.devicePixelRatio || 1;
                 this.canvas.width = this.width * dpr;
                 this.canvas.height = this.height * dpr;
+                
+                // Scale context to match
                 this.ctx.scale(dpr, dpr);
                 
                 if(this.status === 'IDLE') this.drawIdle();
             },
         
             startGame: function(betAmount, finalCrashPoint) {
-                this.resize();
+                this.resize(); // Force resize right before start to be safe
                 this.bet = betAmount;
                 this.crashPoint = finalCrashPoint;
                 this.startTime = Date.now();
@@ -1088,12 +1101,10 @@
                 this.hasCashedOut = false;
                 this.multiplier = 1.00;
                 
-                // Show Rocket, Hide Boom
                 this.rocketEl.style.display = 'block';
                 this.boomEl.style.display = 'none';
-                
-                this.lottieAnim.play();
                 this.boomLottie.stop();
+                this.lottieAnim.play();
                 
                 if (this.animId) cancelAnimationFrame(this.animId);
                 this.loop();
@@ -1106,24 +1117,22 @@
         
             crash: function() {
                 this.status = 'CRASHED';
-                
-                // Hide Rocket
                 this.rocketEl.style.display = 'none'; 
-                this.lottieAnim.stop();
-        
+                this.lottieAnim.stop(); 
+                
+                // Draw one last frame to ensure explosion is at exact point
+                const t = this.getErrorTime();
+                this.draw(t);
+                
                 // Position Boom exactly where Rocket was
                 this.boomEl.style.left = this.rocketEl.style.left;
                 this.boomEl.style.top = this.rocketEl.style.top;
+                this.boomEl.style.transform = "translate(-50%, -50%) scale(1.5)"; // Center explosion
                 
-                // Center the explosion on the coordinates
-                this.boomEl.style.transform = "translate(-50%, -50%) scale(1.5)"; 
-                
-                // Play Boom
                 this.boomEl.style.display = 'block';
                 this.boomLottie.goToAndPlay(0, true);
         
                 cancelAnimationFrame(this.animId);
-                this.draw(this.getErrorTime());
             },
         
             getMultiplier: function(t) { return Math.max(1, Math.pow(1.15, t)); },
@@ -1147,14 +1156,11 @@
             },
         
             draw: function(t) {
-                if(!this.ctx || this.width === 0) return; 
-        
                 const ctx = this.ctx; const w = this.width; const h = this.height;
         
+                // Zoom Logic
                 let curScaleX = this.scaleX;
                 let curScaleY = this.scaleY;
-                
-                // Zoom Logic
                 if (this.multiplier > 2.0) {
                     const zoom = 2.0 / this.multiplier;
                     curScaleY = this.scaleY * zoom;
@@ -1171,8 +1177,11 @@
                 if (worldX > w * 0.5) camX = worldX - w * 0.5;
                 if (worldY > h * 0.5) camY = worldY - h * 0.5;
         
-                // Draw Background & Grid
-                ctx.fillStyle = "#09090b"; ctx.fillRect(0, 0, w, h);
+                // Clear Screen
+                ctx.fillStyle = "#09090b"; 
+                ctx.fillRect(0, 0, w, h);
+        
+                // Grid
                 const gridSize = 50;
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
                 ctx.beginPath();
@@ -1181,49 +1190,53 @@
                 for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
                 ctx.stroke();
         
-                // Draw Line
+                // Graph Curve
                 ctx.save();
                 ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
                 ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#ff9900"; 
+                
                 ctx.beginPath();
                 ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
                 
+                for (let px = 0; px <= worldX; px += 3) {
+                    const pTime = px / curScaleX;
+                    const pMult = this.getMultiplier(pTime);
+                    const py = (pMult - 1) * curScaleY;
+                    ctx.lineTo(baseScreenX + px - camX, baseScreenY - py + camY);
+                }
+                
                 const rocketScreenX = baseScreenX + worldX - camX;
                 const rocketScreenY = baseScreenY - worldY + camY;
-                
                 ctx.lineTo(rocketScreenX, rocketScreenY);
                 ctx.stroke();
-                
-                // Fill Gradient
+        
+                // Gradient Fill
                 ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
-                grad.addColorStop(0, this.status === 'CRASHED' ? "rgba(255, 0, 85, 0.2)" : "rgba(255, 153, 0, 0.25)"); 
-                grad.addColorStop(1, "rgba(0,0,0,0)");
+                if(this.status === 'CRASHED') {
+                    grad.addColorStop(0, "rgba(255, 0, 85, 0.2)"); grad.addColorStop(1, "rgba(255, 0, 85, 0)");
+                } else {
+                    grad.addColorStop(0, "rgba(255, 153, 0, 0.25)"); grad.addColorStop(1, "rgba(255, 153, 0, 0)");
+                }
                 ctx.fillStyle = grad; ctx.fill(); ctx.restore();
         
-                // --- POSITION THE LOTTIE CONTAINER ---
+                // Rocket Positioning (DOM Elements)
                 if (this.status !== 'CRASHED') {
+                    // Calculate Rotation Angle
                     const nextTime = t + 0.1;
                     const nextMult = this.getMultiplier(nextTime);
                     const nextWorldX = nextTime * curScaleX;
                     const nextWorldY = (nextMult - 1) * curScaleY;
+                    const angle = Math.atan2(-(nextWorldY - worldY), nextWorldX - worldX); 
                     
-                    // Calculate angle
-                    let angle = Math.atan2(-(nextWorldY - worldY), nextWorldX - worldX); 
-                    
-                    // Move container
+                    // Position Rocket
                     this.rocketEl.style.left = `${rocketScreenX}px`;
                     this.rocketEl.style.top = `${rocketScreenY}px`;
-                    
-                    // Translate (-50%) centers the div on the line tip.
-                    // If your rocket flies sideways, remove "rotate". 
-                    // If it flies up, add "+ 1.57" to angle.
-                    this.rocketEl.style.transform = `translate(-50%, -50%) rotate(${angle}rad)`; 
+                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`; // Manual offset adjustment
                 }
             },
         
             drawIdle: function() {
-                if(!this.ctx) return;
                 const w = this.width; const h = this.height; const ctx = this.ctx;
                 ctx.fillStyle = "#09090b"; ctx.fillRect(0,0,w,h);
                 ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20"; ctx.beginPath();
