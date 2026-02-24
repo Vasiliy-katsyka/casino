@@ -847,7 +847,7 @@
         
         // 1. Check for onboarding IMMEDIATELY as the DOM loads (Instant display)
         document.addEventListener('DOMContentLoaded', () => {
-            if (!localStorage.getItem('hasOnboarded')) {
+            if (!localStorage.getItem('hasOnboarded1')) {
                 // Hide main UI immediately
                 document.querySelector('header').style.display = 'none';
                 document.querySelector('nav').style.display = 'none';
