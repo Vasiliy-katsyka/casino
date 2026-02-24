@@ -333,12 +333,98 @@
         .leader-info { flex: 1; }
         .leader-name { font-weight: bold; font-size: 14px; }
         .leader-vol { font-family: 'Rajdhani'; color: var(--success); font-weight: bold; }
+
+        /* --- ONBOARDING / CHARACTER SELECTION --- */
+        #view-onboarding {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            /* Custom color scheme matching your screenshot */
+            background: linear-gradient(180deg, #3a0d78 0%, #6D24D3 35%, #050505 65%, #000000 100%);
+            z-index: 9999; display: flex; flex-direction: column; justify-content: space-between;
+            padding: 40px 20px 30px; font-family: 'Inter', sans-serif; color: white;
+        }
+        
+        .onboarding-top { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; }
+        
+        .onboarding-carousel {
+            position: relative; width: 100%; height: 400px;
+            display: flex; align-items: center; justify-content: center;
+            margin-top: 10px;
+        }
+        .carousel-item {
+            position: absolute; height: 360px; 
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 1; display: flex; align-items: flex-end; justify-content: center;
+            will-change: transform, filter;
+        }
+        .carousel-item img { height: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)); }
+        
+        /* Smooth sliding effects */
+        .carousel-item.active { transform: scale(1.1) translateY(10px); z-index: 3; filter: brightness(1); }
+        .carousel-item.prev { transform: translateX(-110px) scale(0.85); z-index: 2; filter: brightness(0.35); cursor: pointer; }
+        .carousel-item.next { transform: translateX(110px) scale(0.85); z-index: 2; filter: brightness(0.35); cursor: pointer; }
+        
+        .carousel-arrows {
+            position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between;
+            padding: 0 5px; z-index: 10; transform: translateY(-50%); pointer-events: none;
+        }
+        .carousel-arrows i { pointer-events: auto; font-size: 22px; color: white; cursor: pointer; padding: 15px; opacity: 0.9; }
+        
+        .carousel-dots { display: flex; gap: 6px; justify-content: center; margin-top: -15px; z-index: 5; position: relative; }
+        .carousel-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); transition: 0.3s; }
+        .carousel-dot.active { background: white; transform: scale(1.3); }
+        
+        .onboarding-text-area { text-align: center; margin-top: 30px; min-height: 140px; display: flex; flex-direction: column; align-items: center; }
+        .onboarding-title { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; line-height: 1.1; text-transform: uppercase; }
+        .onboarding-subtitle { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 600; line-height: 1.1; margin-top: 4px; }
+        .onboarding-curve { width: 180px; margin: 10px 0 15px 0; }
+        
+        .onboarding-desc { font-size: 13px; color: #a1a1aa; max-width: 280px; margin: 5px auto 0; line-height: 1.4; font-weight: 400; }
+        
+        .onboarding-btn {
+            background: linear-gradient(90deg, #A855F7, #BA60FF);
+            color: white; border: none; padding: 18px; border-radius: 30px;
+            width: 100%; font-size: 16px; font-weight: 600; cursor: pointer;
+            font-family: 'Inter', sans-serif; box-shadow: 0 4px 15px rgba(186, 96, 255, 0.3);
+            margin-bottom: 20px; transition: transform 0.2s;
+        }
+        .onboarding-btn:active { transform: scale(0.97); }
         
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
 </head>
 <body>
 
+    <!-- ONBOARDING SCREEN -->
+    <div id="view-onboarding" style="display: none;">
+        <div class="onboarding-top">
+            <div class="onboarding-carousel" id="onboarding-carousel">
+                <div class="carousel-arrows">
+                    <i class="fa-solid fa-arrow-left" onclick="moveCarousel(-1)"></i>
+                    <i class="fa-solid fa-arrow-right" onclick="moveCarousel(1)"></i>
+                </div>
+                <!-- 0: Major, 1: Worker, 2: Stencil -->
+                <div class="carousel-item" onclick="setCarousel(0)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/483c9ad2-0744-4609-b4b5-46f42a9cddf6-Photoroom%201.png?raw=true"></div>
+                <div class="carousel-item" onclick="setCarousel(1)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/IMG_5159-Photoroom%201.png?raw=true"></div>
+                <div class="carousel-item" onclick="setCarousel(2)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/IMG_5163-Photoroom%201.png?raw=true"></div>
+            </div>
+            
+            <div class="carousel-dots" id="carousel-dots">
+                <div class="carousel-dot"></div>
+                <div class="carousel-dot active"></div>
+                <div class="carousel-dot"></div>
+            </div>
+
+            <div class="onboarding-text-area">
+                <div id="onboard-title" class="onboarding-title">WELCOME TO ROLLER GIFT</div>
+                <div id="onboard-subtitle" class="onboarding-subtitle">Choose a curator</div>
+                <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/Group%202.png?raw=true" class="onboarding-curve" id="onboard-curve">
+                <div class="onboarding-desc" id="onboard-desc">Each curator gives you a specific bonus. Click on a curator to find out their bonus and choose yours!</div>
+            </div>
+        </div>
+        
+        <button class="onboarding-btn" onclick="finishOnboarding()">Start Playing</button>
+    </div>
+    
     <header class="glass">
         <div class="logo">TG CASINO</div>
         <div class="balance" onclick="openDepositModal()">
@@ -636,7 +722,114 @@
             } catch(e) { console.error(e); return { error: "Network Error" }; }
         }
 
-        window.onload = async () => { await Promise.all([refreshUser(), loadGifts()]); renderCasesMenu(); checkDailyTimer(); };
+        // --- ONBOARDING LOGIC ---
+        const charactersData = [
+            { name: "MAJOR", desc: "For topping up your account, you get 5% more than with other curators." },
+            { name: "WORKER", desc: "For completing tasks, you receive 10% more rewards than with other mentors." },
+            { name: "STENCIL", desc: "For each user you invite, you receive 2 more tokens than with other curators." }
+        ];
+
+        let currentCharIndex = 1; // Default starts at 1 (Worker)
+        let isWelcomeScreen = true;
+        let touchStartX = 0;
+
+        function initOnboarding() {
+            const carouselEl = document.getElementById('onboarding-carousel');
+            
+            // Add swipe support
+            carouselEl.addEventListener('touchstart', e => { 
+                touchStartX = e.changedTouches[0].screenX; 
+            }, {passive: true});
+            
+            carouselEl.addEventListener('touchend', e => { 
+                let touchEndX = e.changedTouches[0].screenX; 
+                if (touchEndX < touchStartX - 40) moveCarousel(1); // Swipe left -> next
+                if (touchEndX > touchStartX + 40) moveCarousel(-1); // Swipe right -> prev
+            }, {passive: true});
+            
+            updateCarouselUI();
+        }
+
+        function moveCarousel(direction) {
+            isWelcomeScreen = false;
+            currentCharIndex = (currentCharIndex + direction + 3) % 3;
+            updateCarouselUI();
+        }
+
+        function setCarousel(index) {
+            if (currentCharIndex !== index) {
+                isWelcomeScreen = false;
+                currentCharIndex = index;
+                updateCarouselUI();
+            }
+        }
+
+        function updateCarouselUI() {
+            const items = document.querySelectorAll('.carousel-item');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            // Manage 3D Slide Effects
+            items.forEach((item, index) => {
+                item.className = 'carousel-item'; 
+                if (index === currentCharIndex) item.classList.add('active');
+                else if (index === (currentCharIndex - 1 + 3) % 3) item.classList.add('prev');
+                else item.classList.add('next');
+            });
+
+            // Update Dots Pagination
+            dots.forEach((dot, index) => {
+                dot.className = 'carousel-dot';
+                if (index === currentCharIndex) dot.classList.add('active');
+            });
+
+            // Update Text
+            const titleEl = document.getElementById('onboard-title');
+            const subtitleEl = document.getElementById('onboard-subtitle');
+            const descEl = document.getElementById('onboard-desc');
+
+            if (isWelcomeScreen) {
+                titleEl.innerText = "WELCOME TO ROLLER GIFT";
+                subtitleEl.innerText = "Choose a curator";
+                subtitleEl.style.display = "block";
+                descEl.innerText = "Each curator gives you a specific bonus. Click on a curator to find out their bonus and choose yours!";
+            } else {
+                titleEl.innerText = charactersData[currentCharIndex].name;
+                subtitleEl.style.display = "none";
+                descEl.innerText = charactersData[currentCharIndex].desc;
+            }
+        }
+
+        function finishOnboarding() {
+            localStorage.setItem('hasOnboarded', 'true');
+            // Store their selection (for the backend logic tomorrow)
+            localStorage.setItem('selectedCurator', currentCharIndex); 
+            
+            // Hide Onboarding, Reveal Game UI
+            document.getElementById('view-onboarding').style.display = 'none';
+            document.querySelector('header').style.display = 'flex';
+            document.querySelector('nav').style.display = 'flex';
+            document.querySelector('main').style.display = 'flex';
+            
+            // Make sure the home menu aligns properly
+            switchView('view-home');
+        }
+        
+        window.onload = async () => { 
+            // 1. Check if user needs onboarding
+            if (!localStorage.getItem('hasOnboarded')) {
+                // Hide main UI elements behind the onboarding
+                document.querySelector('header').style.display = 'none';
+                document.querySelector('nav').style.display = 'none';
+                document.querySelector('main').style.display = 'none';
+                
+                document.getElementById('view-onboarding').style.display = 'flex';
+                initOnboarding();
+            }
+            
+            await Promise.all([refreshUser(), loadGifts()]); 
+            renderCasesMenu(); 
+            checkDailyTimer(); 
+        };
 
         let totalVolume = 0;
 
