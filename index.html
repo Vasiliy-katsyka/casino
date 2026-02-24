@@ -382,6 +382,13 @@
         .carousel-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); transition: 0.3s; }
         .carousel-dot.active { background: white; transform: scale(1.3); }
 
+        .onboarding-btn:disabled { 
+            opacity: 0.5; 
+            filter: grayscale(0.8); 
+            cursor: not-allowed; 
+            transform: none; 
+        }
+        
         /* Hide controls on welcome screen */
         .welcome-mode .carousel-arrows, .welcome-mode .carousel-dots { opacity: 0; pointer-events: none; }
         
@@ -434,7 +441,7 @@
             </div>
         </div>
         
-        <button class="onboarding-btn" onclick="finishOnboarding()">Start Playing</button>
+        <button id="onboard-start-btn" class="onboarding-btn" disabled onclick="finishOnboarding()">Start Playing</button>
     </div>
     
     <header class="glass">
@@ -791,6 +798,7 @@
         function updateCarouselUI() {
             const items = document.querySelectorAll('.carousel-item');
             const dots = document.querySelectorAll('.carousel-dot');
+            const startBtn = document.getElementById('onboard-start-btn'); // Get button
             
             // Manage 3D Slide Effects
             items.forEach((item, index) => {
@@ -806,7 +814,7 @@
                 if (index === currentCharIndex) dot.classList.add('active');
             });
 
-            // Update Text
+            // Update Text & Button State
             const titleEl = document.getElementById('onboard-title');
             const subtitleEl = document.getElementById('onboard-subtitle');
             const descEl = document.getElementById('onboard-desc');
@@ -816,16 +824,18 @@
                 subtitleEl.innerText = "Choose a curator";
                 subtitleEl.style.display = "block";
                 descEl.innerText = "Each curator gives you a specific bonus. Click on a curator to find out their bonus and choose yours!";
+                startBtn.disabled = true; // Disabled on welcome screen
             } else {
                 titleEl.innerText = charactersData[currentCharIndex].name;
                 subtitleEl.style.display = "none";
                 descEl.innerText = charactersData[currentCharIndex].desc;
+                startBtn.disabled = false; // Enabled when a character is selected
             }
         }
 
         function finishOnboarding() {
-            localStorage.setItem('hasOnboarded', 'true');
-            localStorage.setItem('selectedCurator', currentCharIndex); 
+            localStorage.setItem('hasOnboarded1', 'true');
+            localStorage.setItem('selectedCurator1', currentCharIndex); 
             
             document.getElementById('view-onboarding').style.display = 'none';
             document.querySelector('header').style.display = 'flex';
@@ -835,18 +845,22 @@
             switchView('view-home');
         }
         
-        window.onload = async () => { 
-            // 1. Check if user needs onboarding
+        // 1. Check for onboarding IMMEDIATELY as the DOM loads (Instant display)
+        document.addEventListener('DOMContentLoaded', () => {
             if (!localStorage.getItem('hasOnboarded')) {
-                // Hide main UI elements behind the onboarding
+                // Hide main UI immediately
                 document.querySelector('header').style.display = 'none';
                 document.querySelector('nav').style.display = 'none';
                 document.querySelector('main').style.display = 'none';
                 
+                // Show onboarding screen
                 document.getElementById('view-onboarding').style.display = 'flex';
                 initOnboarding();
             }
-            
+        });
+
+        // 2. Load heavy API data in the background
+        window.onload = async () => { 
             await Promise.all([refreshUser(), loadGifts()]); 
             renderCasesMenu(); 
             checkDailyTimer(); 
