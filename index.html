@@ -337,67 +337,67 @@
         /* --- ONBOARDING / CHARACTER SELECTION (RESPONSIVE FIX) --- */
         #view-onboarding {
             position: fixed; top: 0; left: 0; width: 100%; 
-            height: 100%; height: 100dvh; /* dvh fixes mobile browser bar cutoff */
+            height: 100%; height: 100dvh; 
             background: linear-gradient(180deg, #3a0d78 0%, #6D24D3 35%, #050505 65%, #000000 100%);
             z-index: 9999; display: flex; flex-direction: column; justify-content: space-between;
-            padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); /* Accounts for phone swipe bars */
+            padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); 
             font-family: 'Inter', sans-serif; color: white;
-            overflow-y: auto; /* Allows scrolling on ultra-tiny screens */
+            overflow-y: auto; 
         }
         
-        .onboarding-top { 
-            flex: 1; display: flex; flex-direction: column; 
-            justify-content: center; min-height: 0; 
-        }
+        .onboarding-top { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
         
         .onboarding-carousel {
-            position: relative; width: 100%; 
-            height: 45vh; /* Dynamically sizes to screen height */
-            max-height: 380px; min-height: 250px; 
+            position: relative; width: 100%; height: 45vh; 
+            max-height: 400px; min-height: 280px; 
             display: flex; align-items: center; justify-content: center;
         }
         
         .carousel-item {
-            position: absolute; 
-            height: 90%; /* Scales relative to the carousel wrapper */
+            position: absolute; height: 95%; 
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             z-index: 1; display: flex; align-items: flex-end; justify-content: center;
-            will-change: transform, filter;
+            will-change: transform, filter; cursor: pointer;
         }
-        
         .carousel-item img { height: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)); }
         
-        /* Smooth sliding effects */
+        /* Standard Selection Mode */
         .carousel-item.active { transform: scale(1.1) translateY(10px); z-index: 3; filter: brightness(1); }
-        .carousel-item.prev { transform: translateX(-100px) scale(0.85); z-index: 2; filter: brightness(0.35); cursor: pointer; }
-        .carousel-item.next { transform: translateX(100px) scale(0.85); z-index: 2; filter: brightness(0.35); cursor: pointer; }
+        .carousel-item.prev { transform: translateX(-100px) scale(0.85); z-index: 2; filter: brightness(0.35); }
+        .carousel-item.next { transform: translateX(100px) scale(0.85); z-index: 2; filter: brightness(0.35); }
         
+        /* Welcome Mode (All visible, grouped tightly) */
+        .welcome-mode .carousel-item.active { transform: scale(1.1) translateY(10px); }
+        .welcome-mode .carousel-item.prev { transform: translateX(-85px) scale(0.9) translateY(5px); filter: brightness(1); }
+        .welcome-mode .carousel-item.next { transform: translateX(85px) scale(0.9) translateY(5px); filter: brightness(1); }
+        
+        /* Arrows and Dots */
         .carousel-arrows {
             position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between;
             padding: 0 5px; z-index: 10; transform: translateY(-50%); pointer-events: none;
+            transition: opacity 0.3s;
         }
         .carousel-arrows i { pointer-events: auto; font-size: 22px; color: white; cursor: pointer; padding: 15px; opacity: 0.9; }
-        
-        .carousel-dots { display: flex; gap: 6px; justify-content: center; z-index: 5; position: relative; margin-top: -10px; }
+        .carousel-dots { display: flex; gap: 6px; justify-content: center; z-index: 5; position: relative; margin-top: -10px; transition: opacity 0.3s; }
         .carousel-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); transition: 0.3s; }
         .carousel-dot.active { background: white; transform: scale(1.3); }
+
+        /* Hide controls on welcome screen */
+        .welcome-mode .carousel-arrows, .welcome-mode .carousel-dots { opacity: 0; pointer-events: none; }
         
-        .onboarding-text-area { 
-            text-align: center; margin-top: 20px; margin-bottom: 10px;
-            display: flex; flex-direction: column; align-items: center; 
-        }
-        .onboarding-title { font-family: 'Inter', sans-serif; font-size: 23px; font-weight: 800; line-height: 1.1; text-transform: uppercase; }
-        .onboarding-subtitle { font-family: 'Inter', sans-serif; font-size: 21px; font-weight: 600; line-height: 1.1; margin-top: 4px; }
-        .onboarding-curve { width: 150px; margin: 12px 0; }
+        /* Typography & Tight Spacing */
+        .onboarding-text-area { text-align: center; margin-top: 15px; margin-bottom: 5px; display: flex; flex-direction: column; align-items: center; }
+        .onboarding-title { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800; line-height: 1.1; text-transform: uppercase; }
+        .onboarding-subtitle { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 600; line-height: 1.1; margin-top: 2px; }
+        .onboarding-curve { width: 160px; margin: 8px 0; }
+        .onboarding-desc { font-size: 13px; color: #a1a1aa; max-width: 290px; margin: 0 auto; line-height: 1.3; font-weight: 400; }
         
-        .onboarding-desc { font-size: 13px; color: #a1a1aa; max-width: 280px; margin: 0 auto; line-height: 1.4; font-weight: 400; }
-        
+        /* New Button Colors */
         .onboarding-btn {
-            background: linear-gradient(90deg, #A855F7, #BA60FF);
+            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
             color: white; border: none; padding: 18px; border-radius: 30px;
             width: 100%; font-size: 16px; font-weight: 600; cursor: pointer;
-            font-family: 'Inter', sans-serif; box-shadow: 0 4px 15px rgba(186, 96, 255, 0.3);
-            margin-bottom: 10px; transition: transform 0.2s; flex-shrink: 0;
+            font-family: 'Inter', sans-serif; margin-bottom: 10px; transition: transform 0.2s; flex-shrink: 0;
         }
         .onboarding-btn:active { transform: scale(0.97); }
         
@@ -407,7 +407,7 @@
 <body>
 
     <!-- ONBOARDING SCREEN -->
-    <div id="view-onboarding" style="display: none;">
+    <div id="view-onboarding" class="welcome-mode" style="display: none;">
         <div class="onboarding-top">
             <div class="onboarding-carousel" id="onboarding-carousel">
                 <div class="carousel-arrows">
@@ -415,9 +415,9 @@
                     <i class="fa-solid fa-arrow-right" onclick="moveCarousel(1)"></i>
                 </div>
                 <!-- 0: Major, 1: Worker, 2: Stencil -->
-                <div class="carousel-item" onclick="setCarousel(0)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/483c9ad2-0744-4609-b4b5-46f42a9cddf6-Photoroom%201.png?raw=true"></div>
-                <div class="carousel-item" onclick="setCarousel(1)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/IMG_5159-Photoroom%201.png?raw=true"></div>
-                <div class="carousel-item" onclick="setCarousel(2)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/IMG_5163-Photoroom%201.png?raw=true"></div>
+                <div class="carousel-item" onclick="handleCharClick(0)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/da6f973c-0ada-4ca2-9262-566068c2aeaa-Photoroom%202.png?raw=true"></div>
+                <div class="carousel-item" onclick="handleCharClick(1)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/IMG_5161-Photoroom%202.png?raw=true"></div>
+                <div class="carousel-item" onclick="handleCharClick(2)"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/IMG_5162-Photoroom%202.png?raw=true"></div>
             </div>
             
             <div class="carousel-dots" id="carousel-dots">
@@ -754,23 +754,35 @@
             }, {passive: true});
             
             carouselEl.addEventListener('touchend', e => { 
+                if (isWelcomeScreen) return; // Disable swipe on initial welcome screen
                 let touchEndX = e.changedTouches[0].screenX; 
-                if (touchEndX < touchStartX - 40) moveCarousel(1); // Swipe left -> next
-                if (touchEndX > touchStartX + 40) moveCarousel(-1); // Swipe right -> prev
+                if (touchEndX < touchStartX - 40) moveCarousel(1); 
+                if (touchEndX > touchStartX + 40) moveCarousel(-1); 
             }, {passive: true});
             
             updateCarouselUI();
         }
 
+        // Triggered when clicking a character
+        function handleCharClick(index) {
+            if (isWelcomeScreen) {
+                isWelcomeScreen = false;
+                document.getElementById('view-onboarding').classList.remove('welcome-mode');
+                currentCharIndex = index; // Move clicked character to front
+                updateCarouselUI();
+            } else {
+                setCarousel(index);
+            }
+        }
+
         function moveCarousel(direction) {
-            isWelcomeScreen = false;
+            if (isWelcomeScreen) return;
             currentCharIndex = (currentCharIndex + direction + 3) % 3;
             updateCarouselUI();
         }
 
         function setCarousel(index) {
-            if (currentCharIndex !== index) {
-                isWelcomeScreen = false;
+            if (currentCharIndex !== index && !isWelcomeScreen) {
                 currentCharIndex = index;
                 updateCarouselUI();
             }
@@ -813,16 +825,13 @@
 
         function finishOnboarding() {
             localStorage.setItem('hasOnboarded', 'true');
-            // Store their selection (for the backend logic tomorrow)
             localStorage.setItem('selectedCurator', currentCharIndex); 
             
-            // Hide Onboarding, Reveal Game UI
             document.getElementById('view-onboarding').style.display = 'none';
             document.querySelector('header').style.display = 'flex';
             document.querySelector('nav').style.display = 'flex';
             document.querySelector('main').style.display = 'flex';
             
-            // Make sure the home menu aligns properly
             switchView('view-home');
         }
         
