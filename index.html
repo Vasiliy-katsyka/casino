@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -339,7 +338,8 @@
         #view-onboarding {
             position: fixed; top: 0; left: 0; width: 100%; 
             height: 100%; height: 100dvh; 
-            background: linear-gradient(180deg, #3a0d78 0%, #6D24D3 35%, #050505 65%, #000000 100%);
+            /* Updated Gradient: Smaller purple at top, more black at bottom */
+            background: linear-gradient(180deg, #3a0d78 0%, #5b1baf 15%, #050505 40%, #000000 100%);
             z-index: 9999; display: flex; flex-direction: column; justify-content: space-between;
             padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); 
             font-family: 'Inter', sans-serif; color: white;
@@ -349,28 +349,36 @@
         .onboarding-top { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
         
         .onboarding-carousel {
-            position: relative; width: 100%; height: 45vh; 
-            max-height: 400px; min-height: 280px; 
+            position: relative; width: 100%; 
+            /* Images a little bit bigger in height */
+            height: 72vh; 
+            max-height: 560px; min-height: 300px; 
             display: flex; align-items: center; justify-content: center;
         }
         
         .carousel-item {
-            position: absolute; height: 95%; 
+            position: absolute; height: 100%; 
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             z-index: 1; display: flex; align-items: flex-end; justify-content: center;
             will-change: transform, filter; cursor: pointer;
         }
         .carousel-item img { height: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)); }
+
+        /* Invert Major (first character) horizontally */
+        .carousel-item:nth-child(1) img {
+            transform: scaleX(-1);
+        }
         
         /* Standard Selection Mode */
-        .carousel-item.active { transform: scale(1.1) translateY(10px); z-index: 3; filter: brightness(1); }
+        .carousel-item.active { transform: scale(1.1) translateY(-10px); z-index: 3; filter: brightness(1); }
         .carousel-item.prev { transform: translateX(-100px) scale(0.85); z-index: 2; filter: brightness(0.35); }
         .carousel-item.next { transform: translateX(100px) scale(0.85); z-index: 2; filter: brightness(0.35); }
         
-        /* Welcome Mode (All visible, grouped tightly) */
-        .welcome-mode .carousel-item.active { transform: scale(1.1) translateY(10px); }
-        .welcome-mode .carousel-item.prev { transform: translateX(-85px) scale(0.9) translateY(5px); filter: brightness(1); }
-        .welcome-mode .carousel-item.next { transform: translateX(85px) scale(0.9) translateY(5px); filter: brightness(1); }
+        /* Welcome Mode (All visible, grouped tightly and standing closer) */
+        .welcome-mode .carousel-item.active { transform: scale(1.15) translateY(-10px); }
+        /* Adjusted translateX to make them stand ~1/4 behind the active character */
+        .welcome-mode .carousel-item.prev { transform: translateX(-90px) scale(0.95) translateY(5px); filter: brightness(1); }
+        .welcome-mode .carousel-item.next { transform: translateX(90px) scale(0.95) translateY(5px); filter: brightness(1); }
         
         /* Arrows and Dots */
         .carousel-arrows {
