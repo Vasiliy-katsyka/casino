@@ -32,6 +32,7 @@
         .btn:active { transform: scale(0.97); } .btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; } .btn-back { background: transparent; border: 1px solid var(--glass-border); box-shadow: none; width: auto; display: inline-flex; }
         
         /* HEADER - Redesigned for Fullscreen safe-area and exact match */
+        /* HEADER - Redesigned for Fullscreen safe-area and exact match */
         header { 
             /* 45px top padding guarantees safe space for Telegram's requestFullscreen() top controls */
             /* env(safe-area-inset-top) */
@@ -39,18 +40,19 @@
             display: flex; justify-content: space-between; align-items: center; 
             z-index: 10; 
             background: #12002C; 
+            border-bottom: 1px solid #2B0068; /* ADDED SEPARATOR LINE */
         }
         
         .header-left { position: relative; display: flex; align-items: center; }
         .logo { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; z-index: 2; }
-        .logo-glow { position: absolute; width: 120%; height: 25px; background: radial-gradient(ellipse, rgba(138, 43, 226, 0.7) 0%, transparent 60%); bottom: -12px; left: -10%; z-index: 1; filter: blur(10px); }
+        .logo-glow { position: absolute; width: 120%; height: 35px; background: radial-gradient(ellipse, #631FC0 0%, transparent 60%); bottom: -22px; left: -10%; z-index: 1; filter: blur(10px); }
 
         .header-right { display: flex; align-items: center; gap: 8px; }
         
-        .icon-btn { width: 36px; height: 36px; background: #3f1489; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; position: relative; font-size: 16px; cursor: pointer; }
-        .notification-dot { position: absolute; top: 8px; right: 9px; width: 6px; height: 6px; background-color: #d946ef; border-radius: 50%; }
+        .icon-btn { width: 40px; height: 36px; background: #3f1489; border-radius: 16px; display: flex; justify-content: center; align-items: center; color: white; position: relative; font-size: 16px; cursor: pointer; }
+        .notification-dot { position: absolute; top: 8px; right: 9px; width: 6px; height: 6px; background-color: #d946ef; border-radius: 50%; display: none; }
 
-        .balance-pill { display: flex; align-items: stretch; background: #3f1489; border-radius: 12px; overflow: hidden; cursor: pointer; height: 36px; transition: transform 0.1s; }
+        .balance-pill { display: flex; align-items: stretch; background: #3f1489; border-radius: 16px; overflow: hidden; cursor: pointer; height: 36px; transition: transform 0.1s; }
         .balance-pill:active { transform: scale(0.97); }
         .balance-info { display: flex; align-items: center; gap: 6px; padding: 0 12px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: white; }
         .wallet-icon-box { background: #903df5; padding: 0 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
@@ -490,7 +492,15 @@
         <div class="header-right">
             <!-- Notification Bell -->
             <div class="icon-btn bell-btn">
-                <i class="fa-solid fa-bell"></i>
+                <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <rect width="25" height="25" fill="url(#pattern0_620_13815)"/>
+                    <defs>
+                    <pattern id="pattern0_620_13815" patternContentUnits="objectBoundingBox" width="1" height="1">
+                    <use xlink:href="#image0_620_13815" transform="scale(0.0104167)"/>
+                    </pattern>
+                    <image id="image0_620_13815" width="96" height="96" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAACO0lEQVR4nO3dO2sVURTF8dVoGQUlClYW4uObKIitha2ghYWojZWlEJMofhkfpQqCYqON+BkE9RqCr/xlyFQW0TvJdZ+1z/5Vtxlmn73mzp5pzkillFJKKaWU0ijmFF1vOlQAsagAYlEBxKICiEUFEIsKIBYVQBzg8LwBDMdE120NOABcBZ4DPycEMBzzDLgCLEWvxwZwBLgHfGXvzIAVYDl6fc0C9gE3x2YtyhfgxnCu6PU2BTgOvOD/eQWciF53E4DzC77qd/o3nFPP2B6QUwbsXhnOfVk9Gp9wtoi31V0IwNngK/9Pv4AL6gFwMuie/y8zIfdgBvYDb2jX69SPqMBt2ndLGQHHgA3aNwOOKhvgIT5WlQlwCNjExwZwUFkA1/FzTVmMTxduXirR8G3hjXfKy5n/MAYu4eui3AEP8LUud8BTfD2SO+ADvt7LHfAJXx/lDviOr29yhzm5w5zcYU7uMCd3mJM7zMkd5uQOc3KHObnDnNxhTu4wJ3eYkzvMyR3m5A5zcoc5ucOc3GFO7jAnd5iTO8zJHebkDnNyBtzB3105StJ8zxCSNd8rhKTN9wghefPbDqGT5rcZQmfNbyuETpvfTgh0TtHonKLROUWjcyqllFKyYns7yak+R9dvD3i3iwDeRtdvD1jbRQAr0fXbA85M3Ob4B3Aquv4UmLbp01p03dm+rvFkjuY/Tr0FcWAI98dby063nWFmVPMXPBNWhyeccZvh2fh7+PDP6ej6SimllFJKKUV/8Rv3JrR7QNyK+wAAAABJRU5ErkJggg=="/>
+                    </defs>
+                </svg>
                 <div class="notification-dot"></div>
             </div>
             
@@ -501,7 +511,15 @@
                     <span id="user-balance">...</span>
                 </div>
                 <div class="wallet-icon-box">
-                    <i class="fa-solid fa-wallet"></i>
+                    <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <rect width="20.2903" height="20.2903" fill="url(#pattern0_620_13810)"/>
+                        <defs>
+                        <pattern id="pattern0_620_13810" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_620_13810" transform="scale(0.01)"/>
+                        </pattern>
+                        <image id="image0_620_13810" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADTElEQVR4nO3dQYgOYRzH8UES1iLExQEXuVC05bRrcbKbg3JYkTiJohwWCSdxcFZsUi7UYlkpubk4rJAiSVZIbCRkLWm/eurBtoc1887z7vOfmd+n3ts2O8/z3Xdmdmbed5JERERERCQoYAKwFNgOnAHuAE+B98B94CKw3v1c2N8sfwELgK3ABeAd6XQDU/4tRWrmJhJYC5wEHgDD1OZ07WtRccAyYB9wE/hGGL/c5i322AoBmANsBrqAV9TPkdhjNQmYBKwEOoHbwE/Gx63YYzcDWALsAq4Cn4mjP6kqYDqwDjgBPMaGD0lVABNHbYZ+YM9gUmbAQmAncMn99VEASZkAU0dshu7l+J8gmqTogMXAXr8Z+k7BJQXdF2zIeGqiMJKiAGb7d8ILSiyxDpjr9wmDVEBi/KTdMeArFZJYBKzy1wtuAPuB1f4QdlrsdascoA044K4rxF6XyvM77nmx10OkGIBGYIe/EPQGGKJ6vviTn5eBbcCsWKdAjlflUDcjd9R51J2tHq8Yy4FnWdeygvqBFfWO0QR8jD3SAnHX89vrFWMR8Cn2CAsapSl0jMnA3dgjK7C3wMyQQXbHHlEJnAp5zup17NGUgLszZn6IIJtij6RE9oQIcj72KEok/31dwJPYoyiR5yGCxLoprYyGQgSRgBTEGAUxRkGMURBjFMQYBTFGQYxREGMUxBgFMUZBjFEQYxTEGAUxRkGMUZBweoBm/4UG7tUCXM+6EAUJo3OM+TmUZUEKkl9PijnqTbswBcmvOcUcrUm7MAXJryHFHM1IuzAFGZ8g7oNLqShIfi0p5qg17cIUJL9rKebIfTw8FQUJ4+AY83M4y4IUJJxefzTV4F+tWd4ZfyiIMQpijIIYoyDGKIgxCmKMghijIMYoiDEKYoyCGKMgxiiIMQpijIIYoyAlDFK4Z3wYNhwiSCGefFMQAyGCPIo9ihJ5GCLIudijKJGzIYJsjD2KEmkL9Z2LL2OPpCRfrBzmidP+cdeST0eQGCMeBO+eNSi1ueLmMFgQH8XdHNZX4wpVWV/dvpjff5SrO/YIC3a3Y2NdYozafG3Rjv6/O/CO4JupFEdf7f6h8u6fxwGqa8DPQZefkzBHUyIiIiIiIkn9/QYHdJPbsDyUuwAAAABJRU5ErkJggg=="/>
+                        </defs>
+                    </svg>
                 </div>
             </div>
         </div>
