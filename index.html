@@ -15,16 +15,44 @@
         /* GLASS & NEON THEME */
         :root { --bg-color: #0f0f13; --glass-bg: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --primary: #0088cc; --accent: #ff0055; --gold: #ffd700; --success: #00ff88; --text: #ffffff; --text-secondary: #8b9bb4; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { margin: 0; padding: 0; background-color: var(--bg-color); background-image: radial-gradient(circle at 10% 20%, rgba(0, 136, 204, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.1) 0%, transparent 40%); font-family: 'Inter', sans-serif; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #060606;
+            background-image: linear-gradient(0deg, #33007A 0%, #12002C 101.83%); 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text); 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
         .glass { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; }
         .btn { background: linear-gradient(135deg, var(--primary), #005f8f); border: none; color: white; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 16px; width: 100%; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4); font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
         .btn:active { transform: scale(0.97); } .btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; } .btn-back { background: transparent; border: 1px solid var(--glass-border); box-shadow: none; width: auto; display: inline-flex; }
         
-        header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .logo { font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 800; background: linear-gradient(to right, #fff, var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .balance { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-weight: 600; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); cursor: pointer; }
-        .ton-icon { width: 20px; height: 20px; border-radius: 50%; background: #0088cc; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; }
+        /* HEADER - Redesigned for Fullscreen safe-area and exact match */
+        header { 
+            /* 45px top padding guarantees safe space for Telegram's requestFullscreen() top controls */
+            padding: calc(45px + env(safe-area-inset-top)) 20px 15px 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 10; 
+            background: #12002C; 
+        }
+        
+        .header-left { position: relative; display: flex; align-items: center; }
+        .logo { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; z-index: 2; }
+        .logo-glow { position: absolute; width: 120%; height: 25px; background: radial-gradient(ellipse, rgba(138, 43, 226, 0.7) 0%, transparent 60%); bottom: -12px; left: -10%; z-index: 1; filter: blur(10px); }
 
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        
+        .icon-btn { width: 36px; height: 36px; background: #3f1489; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; position: relative; font-size: 16px; cursor: pointer; }
+        .notification-dot { position: absolute; top: 8px; right: 9px; width: 6px; height: 6px; background-color: #d946ef; border-radius: 50%; }
+
+        .balance-pill { display: flex; align-items: stretch; background: #3f1489; border-radius: 12px; overflow: hidden; cursor: pointer; height: 36px; transition: transform 0.1s; }
+        .balance-pill:active { transform: scale(0.97); }
+        .balance-info { display: flex; align-items: center; gap: 6px; padding: 0 12px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: white; }
+        .wallet-icon-box { background: #903df5; padding: 0 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
         /* REPLACE THIS BLOCK IN YOUR CSS */
         /* REPLACE YOUR EXISTING "main" AND "nav" CSS WITH THIS: */
 
@@ -45,7 +73,7 @@
             padding: 12px 0; 
             /* Safe-area fixes the layout on modern phones with bottom swipe bars */
             padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
-            background: rgba(15, 15, 19, 0.95); 
+            background: rgba(6, 6, 6, 0.95); 
             border-top: 1px solid var(--glass-border); 
             position: fixed; 
             bottom: 0; 
@@ -453,20 +481,36 @@
         <button id="onboard-start-btn" class="onboarding-btn" disabled onclick="finishOnboarding()">Start Playing</button>
     </div>
     
-    <header class="glass">
-        <div class="logo">TG CASINO</div>
-        <div class="balance" onclick="openDepositModal()">
-            <div class="ton-icon"><i class="fa-solid fa-gem"></i></div>
-            <span id="user-balance">...</span>
-            <i class="fa-solid fa-plus-circle" style="font-size:12px; color:#aaa; margin-left:5px;"></i>
+    <header>
+        <div class="header-left">
+            <div class="logo">ROLLER GIFT</div>
+            <div class="logo-glow"></div>
+        </div>
+        <div class="header-right">
+            <!-- Notification Bell -->
+            <div class="icon-btn bell-btn">
+                <i class="fa-solid fa-bell"></i>
+                <div class="notification-dot"></div>
+            </div>
+            
+            <!-- Balance & Wallet Pill -->
+            <div class="balance-pill" onclick="openDepositModal()">
+                <div class="balance-info">
+                    <i class="fa-solid fa-gem" style="font-size: 11px;"></i>
+                    <span id="user-balance">...</span>
+                </div>
+                <div class="wallet-icon-box">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+            </div>
         </div>
     </header>
 
     <main>
         <!-- REDESIGNED HOME MENU -->
         <div id="view-home" class="game-view active">
-            <div style="margin-bottom: 5px;"><h2 style="margin:0; font-family:'Rajdhani'; font-size:32px;">CASINO FLOOR</h2><span style="color:var(--text-secondary); font-size: 14px;">Select a mode to play</span></div>
-            
+            <!-- <div style="margin-bottom: 5px;"><h2 style="margin:0; font-family:'Rajdhani'; font-size:32px;">CASINO FLOOR</h2><span style="color:var(--text-secondary); font-size: 14px;">Select a mode to play</span></div>
+        -->
             <div class="menu-list">
                 <!-- INVENTORY (White Glow + Original NFT) -->
                 <div class="menu-btn btn-inventory" onclick="switchView('view-inventory')">
@@ -856,7 +900,9 @@
         
         // 1. Check for onboarding IMMEDIATELY as the DOM loads (Instant display)
         document.addEventListener('DOMContentLoaded', () => {
+            window.Telegram.WebApp.requestFullscreen();
             if (!localStorage.getItem('hasOnboarded1')) {
+
                 // Hide main UI immediately
                 document.querySelector('header').style.display = 'none';
                 document.querySelector('nav').style.display = 'none';
