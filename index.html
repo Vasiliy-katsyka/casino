@@ -34,7 +34,8 @@
         /* HEADER - Redesigned for Fullscreen safe-area and exact match */
         header { 
             /* 45px top padding guarantees safe space for Telegram's requestFullscreen() top controls */
-            padding: calc(45px + env(safe-area-inset-top)) 20px 15px 20px; 
+            /* env(safe-area-inset-top) */
+            padding: calc(45px + 30px) 20px 15px 20px; 
             display: flex; justify-content: space-between; align-items: center; 
             z-index: 10; 
             background: #12002C; 
