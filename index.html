@@ -744,6 +744,18 @@
             <button class="btn" id="check-payment-btn" onclick="checkDeposit()" style="background: #222;">
                 <i class="fa-solid fa-rotate"></i> MANUAL CHECK
             </button>
+
+            <!-- ADD THIS BELOW YOUR EXISTING DEPOSIT BUTTONS -->
+            <div style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+                <div style="font-size: 12px; color: #888; margin-bottom: 10px; text-align: center;">OR DEPOSIT WITH NFT GIFTS</div>
+                <button class="btn" id="deposit-gifts-btn" onclick="showGiftDepositInfo()" style="background: linear-gradient(90deg, #6D24D3, #BA60FF);">
+                    <i class="fa-solid fa-gift"></i> DEPOSIT WITH GIFTS
+                </button>
+                <div id="gift-deposit-info" style="display: none; margin-top: 15px; padding: 15px; background: rgba(186, 96, 255, 0.1); border: 1px dashed #BA60FF; border-radius: 12px; text-align: center;">
+                    <div style="font-weight: bold; color: white; margin-bottom: 5px;">Write @ImSheeran and deposit any gift!</div>
+                    <div style="font-size: 11px; color: #aaa;">Your balance will be credited automatically.</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1275,6 +1287,11 @@
                 tiles.forEach(t => { t.className = 'mine-tile'; t.style.pointerEvents = 'auto'; });
             }
         }
+
+        function showGiftDepositInfo() {
+            document.getElementById('gift-deposit-info').style.display = 'block';
+            document.getElementById('deposit-gifts-btn').style.display = 'none';
+        }
         
         async function clickMine(index) {
             if (!isMinesRunning) return;
@@ -1666,7 +1683,47 @@
             }
         }
 
-        function renderInventory(){ const g=document.getElementById('main-inventory-grid'); g.innerHTML=''; if(!inventory.length){document.getElementById('empty-inv').style.display='block';return;} document.getElementById('empty-inv').style.display='none'; inventory.slice().reverse().forEach(i=>{ const d=document.createElement('div'); d.className='glass inv-card'; d.innerHTML=`<img src="https://cdn.changes.tg/gifts/originals/${i.gift_id}/Original.png"><div class="inv-info"><div class="inv-name">${i.gift_name}</div><div class="inv-price">${i.gift_price}</div></div><button class="btn sell-btn" onclick="sellItem(${i.id})">SELL</button>`; g.appendChild(d); }); }
+        async function withdrawItem(id) { 
+            if(confirm("Withdraw this gift? It will be sent to your Telegram account.")) { 
+                const res = await api("/api/inventory/withdraw", "POST", { itemId: id }); 
+                if(res.error) alert(res.error); 
+                else { 
+                    alert("Withdrawal requested! Please wait for the bot to send it."); 
+                    refreshUser(); 
+                } 
+            } 
+        }
+        
+        function renderInventory() { 
+            const g = document.getElementById('main-inventory-grid'); 
+            g.innerHTML = ''; 
+            
+            // Check if inventory is empty
+            if (!inventory || !inventory.length) {
+                document.getElementById('empty-inv').style.display = 'block';
+                return;
+            } 
+            
+            document.getElementById('empty-inv').style.display = 'none'; 
+            
+            // Render each item (newest first)
+            inventory.slice().reverse().forEach(i => { 
+                const d = document.createElement('div'); 
+                d.className = 'glass inv-card'; 
+                d.innerHTML = `
+                    <img src="https://cdn.changes.tg/gifts/originals/${i.gift_id}/Original.png">
+                    <div class="inv-info">
+                        <div class="inv-name">${i.gift_name}</div>
+                        <div class="inv-price">${i.gift_price} TON</div>
+                    </div>
+                    <div style="display:flex; gap:5px; margin-top:auto; width:100%;">
+                        <button class="btn sell-btn" onclick="sellItem(${i.id})">SELL</button>
+                        <button class="btn sell-btn" style="background:rgba(186,96,255,0.2); border-color:rgba(186,96,255,0.4);" onclick="withdrawItem(${i.id})">WITHDRAW</button>
+                    </div>
+                `; 
+                g.appendChild(d); 
+            }); 
+        }
         async function sellItem(id){ if(confirm("Sell?")) { await api("/api/inventory/sell","POST",{itemId:id}); refreshUser(); } }
         function openCasesMenu(){ switchView('view-cases-menu'); checkDailyTimer(); }
         function closeModal(id){ document.getElementById(id).classList.remove('open'); }
