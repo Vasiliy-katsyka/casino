@@ -659,14 +659,14 @@
             font-size: 26px; 
             color: #FFFFFF;
             text-transform: uppercase;
-            margin-bottom: 3px;
+            margin-bottom: 10px;
             line-height: 1.1;
         }
 
         .p-banner-sub {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
-            font-size: 14px;
+            font-size: 12px;
             color: #FFFFFF;
             line-height: 1.2;
         }
@@ -694,6 +694,7 @@
             text-align: center;
             margin-right: 15px;
             font-size: 15px;
+            opacity: 0.6;
         }
 
         .p-list-item span {
@@ -942,7 +943,15 @@
                         <div class="p-bal-val">
                             <span id="profile-balance-val">0.00</span>
                             <div style="width:31px; height:31px; background:#6D24D3; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-left: 5px;">
-                                <i class="fa-solid fa-gem" style="font-size: 15px;"></i>
+                                <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <rect width="23" height="23" fill="url(#pattern0_620_13217)"/>
+                                    <defs>
+                                    <pattern id="pattern0_620_13217" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                    <use xlink:href="#image0_620_13217" transform="scale(0.0104167)"/>
+                                    </pattern>
+                                    <image id="image0_620_13217" width="96" height="96" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
+                                    </defs>
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -1090,7 +1099,17 @@
     <div class="modal-overlay" id="modal-deposit">
         <div class="modal-sheet">
             <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-gem" style="color:var(--primary); margin-right:10px;"></i>Top Up Balance</div>
+                <div class="modal-title">
+                <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <rect width="23" height="23" fill="url(#pattern0_620_13217)"/>
+                    <defs>
+                    <pattern id="pattern0_620_13217" patternContentUnits="objectBoundingBox" width="1" height="1">
+                    <use xlink:href="#image0_620_13217" transform="scale(0.0104167)"/>
+                    </pattern>
+                    <image id="image0_620_13217" width="96" height="96" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
+                    </defs>
+                </svg>
+                </i>Top Up Balance</div>
                 <button class="close-btn" onclick="closeModal('modal-deposit')">&times;</button>
             </div>
             
