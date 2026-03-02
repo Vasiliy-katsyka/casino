@@ -448,6 +448,254 @@
         }
         .onboarding-btn:active { transform: scale(0.97); }
         
+        /* --- NEW PROFILE PAGE STYLES --- */
+        #view-profile {
+            background: #060606;
+            padding-top: 25px;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        .profile-top-section {
+            position: relative;
+            width: 100%;
+            max-width: 410px;
+            display: flex;
+            flex-direction: row; /* Changed from column */
+            align-items: center;
+            justify-content: flex-start; /* Align left */
+            gap: 15px; /* Space between avatar and text */
+            margin-bottom: 25px;
+            padding-top: 10px;
+        }
+
+        /* Add this new class */
+        .p-user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Left-align the text */
+        }
+
+        /* Update to move gear to the bottom RIGHT */
+        .p-btn-settings {
+            position: absolute;
+            width: 33px;
+            height: 33px;
+            right: 0px; /* Changed from left */
+            bottom: 0px;
+            background: #161616;
+            border: 1px solid #060606;
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .p-btn-inventory {
+            position: absolute;
+            right: 0px;
+            top: 30px; 
+            width: 111px;
+            height: 50px;
+            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
+            border-radius: 100px;
+            border: none;
+            color: #FFF;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .p-btn-inventory:active { transform: scale(0.95); }
+
+        .p-avatar-wrap {
+            position: relative;
+            width: 115px;
+            height: 115px;
+            margin-bottom: 12px;
+        }
+        .p-avatar-wrap img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #D9D9D9;
+            object-fit: cover;
+        }
+        .p-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: #FFFFFF;
+            margin-bottom: 6px;
+        }
+        .p-info-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .p-cards-wrap {
+            width: 100%;
+            max-width: 410px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 30px;
+        }
+        .p-card {
+            background: #1D1D1D;
+            border: 1px solid rgba(255, 255, 255, 0.19);
+            border-radius: 13px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Balance Card */
+        .p-card-balance {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+        .p-bal-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 2px;
+        }
+        .p-bal-val {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 32px;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .p-btn-deposit {
+            width: 149px;
+            height: 50px;
+            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
+            border-radius: 100px;
+            border: none;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .p-btn-deposit:active { transform: scale(0.95); }
+
+        /* Full width pill */
+        .p-btn-full {
+            width: 100%;
+            height: 55px;
+            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
+            border-radius: 100px;
+            border: none;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Banners (Referral, Quests) */
+        .p-banner-card {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 76px;
+        }
+        .p-blur-blob {
+            position: absolute;
+            width: 102px;
+            height: 92px;
+            left: -17px;
+            top: -9px;
+            background: #6D24D3;
+            filter: blur(19.6px);
+            z-index: 0;
+            border-radius: 50%;
+        }
+        .p-banner-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+        .p-banner-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 30px; 
+            color: #FFFFFF;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+            line-height: 1.1;
+        }
+        .p-banner-sub {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        /* Lists */
+        .p-list-card {
+            display: flex;
+            flex-direction: column;
+            padding: 5px 0;
+        }
+        .p-list-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 15px;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            position: relative;
+        }
+        .p-list-icon {
+            width: 20px;
+            text-align: center;
+            margin-right: 15px;
+            font-size: 15px;
+        }
+        .p-list-item span {
+            flex: 1;
+        }
+        .p-arrow {
+            color: #FFFFFF;
+            font-size: 20px;
+            font-weight: 300;
+        }
+        .p-arrow-small {
+            color: #FFFFFF;
+            font-size: 16px;
+        }
+        .p-lang-val {
+            font-size: 12px;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Force unclickable elements visually */
+        [disabled] { pointer-events: none; }
+
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
 </head>
@@ -636,28 +884,112 @@
 
         <!-- PROFILE -->
         <div id="view-profile" class="game-view">
-            <div class="profile-header glass">
-                <img id="profile-avatar" src="" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=0088cc&color=fff'">
-                <div>
-                    <div id="profile-name" style="font-family:'Rajdhani'; font-size:24px; font-weight:bold;">Name</div>
-                    <div id="profile-username" style="color:var(--primary); font-size:14px;">@username</div>
+            <div class="profile-top-section">
+                <button class="p-btn-inventory" onclick="switchView('view-inventory')">Inventory</button>
+                
+                <div class="p-avatar-wrap">
+                    <img id="profile-avatar" src="" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=D9D9D9&color=fff'">
+                    <div class="p-btn-settings" disabled><i class="fa-solid fa-gear" style="font-size: 16px;"></i></div>
+                </div>
+                
+                <!-- Wrap the text elements in this new div -->
+                <div class="p-user-details">
+                    <div class="p-name" id="profile-name">Name</div>
+                    <div class="p-info-text"><span id="profile-username">@username</span> <i class="fa-regular fa-copy" style="font-size: 14px; cursor: pointer;"></i></div>
+                    <div class="p-info-text">Rating #123</div>
+                    <div class="p-info-text">My mentors</div>
                 </div>
             </div>
 
-            <div class="profile-stats glass">
-                <div class="stat-box">
-                    <div class="stat-label">TOTAL VOLUME</div>
-                    <div class="stat-val" id="profile-volume">0.00 TON</div>
+            <div class="p-cards-wrap">
+                <!-- Balance Card -->
+                <div class="p-card p-card-balance">
+                    <div>
+                        <div class="p-bal-label">Balance</div>
+                        <div class="p-bal-val">
+                            <span id="profile-balance-val">0.00</span>
+                            <div style="width:31px; height:31px; background:#6D24D3; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-left: 5px;">
+                                <i class="fa-solid fa-gem" style="font-size: 15px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="p-btn-deposit" onclick="openDepositModal()">Deposit</button>
+                </div>
+
+                <!-- Connect Wallet (Unimplemented style) -->
+                <button class="p-btn-full" disabled>Connect wallet</button>
+
+                <!-- Referral -->
+                <div class="p-card p-banner-card" disabled>
+                    <div class="p-blur-blob"></div>
+                    <div class="p-banner-content">
+                        <div>
+                            <div class="p-banner-title">REFERRAL PROGRAM</div>
+                            <div class="p-banner-sub">Earn money through the<br>referral program commission</div>
+                        </div>
+                        <svg width="36" height="23" viewBox="0 0 36 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.5 9.5459C0.671573 9.5459 0 10.2175 0 11.0459C0 11.8743 0.671573 12.5459 1.5 12.5459V11.0459V9.5459ZM35.5607 12.1066C36.1464 11.5208 36.1464 10.571 35.5607 9.98524L26.0147 0.439297C25.4289 -0.14649 24.4792 -0.14649 23.8934 0.439297C23.3076 1.02508 23.3076 1.97483 23.8934 2.56062L32.3787 11.0459L23.8934 19.5312C23.3076 20.117 23.3076 21.0667 23.8934 21.6525C24.4792 22.2383 25.4289 22.2383 26.0147 21.6525L35.5607 12.1066ZM1.5 11.0459V12.5459H34.5V11.0459V9.5459H1.5V11.0459Z" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Quests -->
+                <div class="p-card p-banner-card" disabled>
+                    <div class="p-blur-blob" style="width: 77px; height: 70px;"></div>
+                    <div class="p-banner-content">
+                        <div class="p-banner-title">QUESTS</div>
+                        <svg width="36" height="23" viewBox="0 0 36 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.5 9.5459C0.671573 9.5459 0 10.2175 0 11.0459C0 11.8743 0.671573 12.5459 1.5 12.5459V11.0459V9.5459ZM35.5607 12.1066C36.1464 11.5208 36.1464 10.571 35.5607 9.98524L26.0147 0.439297C25.4289 -0.14649 24.4792 -0.14649 23.8934 0.439297C23.3076 1.02508 23.3076 1.97483 23.8934 2.56062L32.3787 11.0459L23.8934 19.5312C23.3076 20.117 23.3076 21.0667 23.8934 21.6525C24.4792 22.2383 25.4289 22.2383 26.0147 21.6525L35.5607 12.1066ZM1.5 11.0459V12.5459H34.5V11.0459V9.5459H1.5V11.0459Z" fill="white"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- List 1 -->
+                <div class="p-card p-list-card">
+                    <div class="p-list-item" disabled>
+                        <i class="fa-solid fa-clock-rotate-left p-list-icon"></i>
+                        <span>Transaction history</span>
+                        <i class="fa-solid fa-arrow-right p-arrow-small"></i>
+                    </div>
+                    <div class="p-list-item" disabled>
+                        <i class="fa-solid fa-wallet p-list-icon"></i>
+                        <span>Wallet management</span>
+                    </div>
+                    <div class="p-list-item" disabled>
+                        <i class="fa-solid fa-globe p-list-icon"></i>
+                        <span>Language</span>
+                        <div class="p-lang-val">
+                            English 
+                            <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 5px;">
+                                <path d="M8.36377 1C8.36377 0.447715 7.91605 2.41411e-08 7.36377 0C6.81148 -2.41411e-08 6.36377 0.447715 6.36377 1L7.36377 1L8.36377 1ZM6.65666 11.7071C7.04719 12.0976 7.68035 12.0976 8.07088 11.7071L14.4348 5.34315C14.8254 4.95262 14.8254 4.31946 14.4348 3.92893C14.0443 3.53841 13.4111 3.53841 13.0206 3.92893L7.36377 9.58579L1.70692 3.92893C1.31639 3.53841 0.683226 3.53841 0.292702 3.92893C-0.0978228 4.31946 -0.0978228 4.95262 0.292702 5.34315L6.65666 11.7071ZM7.36377 1L6.36377 1L6.36377 11L7.36377 11L8.36377 11L8.36377 1L7.36377 1Z" fill="white"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List 2 -->
+                <div class="p-card p-list-card">
+                    <div class="p-list-item" disabled>
+                        <i class="fa-solid fa-circle-question p-list-icon"></i>
+                        <span>FAQ</span>
+                        <i class="fa-solid fa-arrow-right p-arrow-small"></i>
+                    </div>
+                    <div class="p-list-item" disabled>
+                        <i class="fa-solid fa-headset p-list-icon"></i>
+                        <span>Support bot</span>
+                        <i class="fa-solid fa-arrow-right p-arrow-small" style="transform: rotate(-45deg);"></i>
+                    </div>
+                    <div class="p-list-item" disabled>
+                        <i class="fa-brands fa-telegram p-list-icon"></i>
+                        <span>Roller gift channel</span>
+                        <i class="fa-solid fa-arrow-right p-arrow-small" style="transform: rotate(-45deg);"></i>
+                    </div>
                 </div>
             </div>
 
-            <!-- TonConnect Button Moved Here -->
-            <div style="margin-top:20px; display:flex; justify-content:center;">
-                <div id="ton-connect-button"></div>
-            </div>
-
-            <div style="margin-top: 30px;"><h3 style="font-family:'Rajdhani'; margin-bottom:10px;">SETTINGS</h3></div>
-            <div class="glass" style="padding:15px; color:#888; text-align:center; font-size:12px;">No settings available yet.</div>
+            <!-- Hidden elements to prevent your existing Javascript from crashing! -->
+            <div id="profile-volume" style="display:none;"></div>
+            <div id="ton-connect-button" style="display:none;"></div>
         </div>
         
         <!-- MINES GAME -->
@@ -970,6 +1302,7 @@
                 if(document.getElementById('crash-balance-display')) document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
                 if(document.getElementById('mines-balance-display')) document.getElementById('mines-balance-display').innerText = balance.toFixed(2);
                 if(document.getElementById('case-balance-display')) document.getElementById('case-balance-display').innerText = balance.toFixed(2);
+                if(document.getElementById('profile-balance-val')) document.getElementById('profile-balance-val').innerText = balance.toFixed(2);
                 
                 // Update Profile UI
                 document.getElementById('profile-name').innerText = TG_USER.first_name;
