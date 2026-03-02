@@ -450,70 +450,31 @@
         
         /* --- NEW PROFILE PAGE STYLES --- */
         #view-profile {
-            background: #060606;
-            padding-top: 25px;
+            background: transparent; /* Fixes the black box scrolling bug */
+            padding-top: 5px;
             align-items: center;
-            overflow-x: hidden;
+            width: 100%;
         }
+
         .profile-top-section {
             position: relative;
             width: 100%;
-            max-width: 410px;
             display: flex;
-            flex-direction: row; /* Changed from column */
+            flex-direction: row;
             align-items: center;
-            justify-content: flex-start; /* Align left */
-            gap: 15px; /* Space between avatar and text */
+            justify-content: flex-start;
+            gap: 15px;
             margin-bottom: 25px;
             padding-top: 10px;
         }
 
-        /* Add this new class */
-        .p-user-details {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start; /* Left-align the text */
-        }
-
-        /* Update to move gear to the bottom RIGHT */
-        .p-btn-settings {
-            position: absolute;
-            width: 33px;
-            height: 33px;
-            right: 0px; /* Changed from left */
-            bottom: 0px;
-            background: #161616;
-            border: 1px solid #060606;
-            border-radius: 50%;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .p-btn-inventory {
-            position: absolute;
-            right: 0px;
-            top: 30px; 
-            width: 111px;
-            height: 50px;
-            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
-            border-radius: 100px;
-            border: none;
-            color: #FFF;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 10;
-        }
-        .p-btn-inventory:active { transform: scale(0.95); }
-
         .p-avatar-wrap {
             position: relative;
-            width: 115px;
-            height: 115px;
-            margin-bottom: 12px;
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
         }
+
         .p-avatar-wrap img {
             width: 100%;
             height: 100%;
@@ -521,32 +482,79 @@
             background: #D9D9D9;
             object-fit: cover;
         }
+
+        .p-btn-settings {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            right: -2px;
+            bottom: -2px;
+            background: #161616;
+            border: 1px solid #060606;
+            border-radius: 50%;
+            color: #898989;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .p-user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            flex: 1; 
+            padding-right: 90px;
+        }
+
         .p-name {
             font-family: 'Inter', sans-serif;
             font-weight: 600;
-            font-size: 24px;
+            font-size: 22px; 
             color: #FFFFFF;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
+            line-height: 1.2;
         }
+
         .p-info-text {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
-            font-size: 15px;
+            font-size: 14px;
             color: #FFFFFF;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+        }
+
+        .p-btn-inventory {
+            position: absolute;
+            right: 0px;
+            top: 15px;
+            padding: 0 16px;
+            height: 38px;
+            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
+            border-radius: 100px;
+            border: none;
+            color: #FFF;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .p-btn-inventory:active { 
+            transform: scale(0.95); 
         }
 
         .p-cards-wrap {
             width: 100%;
-            max-width: 410px;
             display: flex;
             flex-direction: column;
             gap: 15px;
             padding-bottom: 30px;
         }
+
         .p-card {
             background: #1D1D1D;
             border: 1px solid rgba(255, 255, 255, 0.19);
@@ -565,6 +573,7 @@
             justify-content: space-between;
             padding: 0 15px;
         }
+
         .p-bal-label {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
@@ -572,15 +581,17 @@
             color: rgba(255, 255, 255, 0.5);
             margin-bottom: 2px;
         }
+
         .p-bal-val {
             font-family: 'Inter', sans-serif;
             font-weight: 500;
-            font-size: 32px;
+            font-size: 28px;
             color: #FFFFFF;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
+
         .p-btn-deposit {
             width: 149px;
             height: 50px;
@@ -592,8 +603,12 @@
             font-weight: 600;
             font-size: 16px;
             cursor: pointer;
+            flex-shrink: 0;
         }
-        .p-btn-deposit:active { transform: scale(0.95); }
+
+        .p-btn-deposit:active { 
+            transform: scale(0.95); 
+        }
 
         /* Full width pill */
         .p-btn-full {
@@ -616,6 +631,7 @@
             align-items: center;
             min-height: 76px;
         }
+
         .p-blur-blob {
             position: absolute;
             width: 102px;
@@ -627,6 +643,7 @@
             z-index: 0;
             border-radius: 50%;
         }
+
         .p-banner-content {
             position: relative;
             z-index: 1;
@@ -635,15 +652,17 @@
             width: 100%;
             align-items: center;
         }
+
         .p-banner-title {
             font-family: 'Inter', sans-serif;
             font-weight: 500;
-            font-size: 30px; 
+            font-size: 26px; 
             color: #FFFFFF;
             text-transform: uppercase;
             margin-bottom: 3px;
             line-height: 1.1;
         }
+
         .p-banner-sub {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
@@ -658,6 +677,7 @@
             flex-direction: column;
             padding: 5px 0;
         }
+
         .p-list-item {
             display: flex;
             align-items: center;
@@ -668,24 +688,29 @@
             font-size: 16px;
             position: relative;
         }
+
         .p-list-icon {
             width: 20px;
             text-align: center;
             margin-right: 15px;
             font-size: 15px;
         }
+
         .p-list-item span {
             flex: 1;
         }
+
         .p-arrow {
             color: #FFFFFF;
             font-size: 20px;
             font-weight: 300;
         }
+
         .p-arrow-small {
             color: #FFFFFF;
             font-size: 16px;
         }
+
         .p-lang-val {
             font-size: 12px;
             color: #FFFFFF;
@@ -694,7 +719,9 @@
         }
 
         /* Force unclickable elements visually */
-        [disabled] { pointer-events: none; }
+        [disabled] { 
+            pointer-events: none; 
+        }
 
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
@@ -885,20 +912,26 @@
         <!-- PROFILE -->
         <div id="view-profile" class="game-view">
             <div class="profile-top-section">
-                <button class="p-btn-inventory" onclick="switchView('view-inventory')">Inventory</button>
-                
                 <div class="p-avatar-wrap">
                     <img id="profile-avatar" src="" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=User&background=D9D9D9&color=fff'">
-                    <div class="p-btn-settings" disabled><i class="fa-solid fa-gear" style="font-size: 16px;"></i></div>
+                    <div class="p-btn-settings" disabled><i class="fa-solid fa-gear" style="font-size: 14px;"></i></div>
                 </div>
                 
-                <!-- Wrap the text elements in this new div -->
                 <div class="p-user-details">
                     <div class="p-name" id="profile-name">Name</div>
-                    <div class="p-info-text"><span id="profile-username">@username</span> <i class="fa-regular fa-copy" style="font-size: 14px; cursor: pointer;"></i></div>
+                    <div class="p-info-text">
+                        <span id="profile-username">@username</span> 
+                        <!-- Exact SVG copy icon from design -->
+                        <svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor: pointer;">
+                            <rect x="0.5" y="0.5" width="9.5" height="11.5" rx="1.5" stroke="#898989"/>
+                            <rect x="2.5" y="2.5" width="9.5" height="11.5" rx="1.5" fill="#2C2C2C" stroke="#898989"/>
+                        </svg>
+                    </div>
                     <div class="p-info-text">Rating #123</div>
                     <div class="p-info-text">My mentors</div>
                 </div>
+
+                <button class="p-btn-inventory" onclick="switchView('view-inventory')">Inventory</button>
             </div>
 
             <div class="p-cards-wrap">
