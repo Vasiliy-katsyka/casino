@@ -726,46 +726,52 @@
 
         /* --- NEW INVENTORY (FIGMA DESIGN) --- */
         .n-inv-topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        /* Updated Buttons with Liquid Glass Border */
+        /* Updated Buttons with Top-Left & Bottom-Right Corner Highlights */
+        /* BUTTONS: Highlight ONLY Top-Left and Bottom-Right corners */
+        /* Updated Buttons: Highlight ONLY Top-Left and Bottom-Right corners */
         .n-inv-btn { 
-            background: rgba(18, 18, 18, 0.68); 
-            border-radius: 87px; 
-            color: #FFFFFF; 
-            font-family: 'Inter', sans-serif; 
-            font-weight: 500; 
-            font-size: 14px; 
-            padding: 11px 26px; 
-            cursor: pointer; 
-            transition: 0.2s; 
+            /* Shape & Text */
+            border-radius: 87px;
+            color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 11px 26px;
+            cursor: pointer;
+            transition: 0.2s;
             white-space: nowrap;
-            /* Liquid Glass Effect */
+            
+            /* THE CORNER TRICK */
+            /* 1. Make the actual border transparent so we can paint behind it */
             border: 1px solid transparent;
-            border-top-color: rgba(255, 255, 255, 0.25);
-            border-left-color: rgba(255, 255, 255, 0.15);
-            border-bottom-color: rgba(0, 0, 0, 0.8);
-            border-right-color: rgba(0, 0, 0, 0.5);
-            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.05);
+            
+            /* 2. Layer the backgrounds:
+               - Top Layer: Dark Grey (covers the inside of the button) -> clipped to padding-box
+               - Bottom Layer: White Gradient (shows through the transparent border) -> clipped to border-box
+            */
+            background: 
+                linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)) padding-box, 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0) 80%, rgba(255, 255, 255, 0.6) 100%) border-box;
         }
+        
         .n-inv-btn:active { transform: scale(0.95); }
-        .n-inv-btn.n-inv-primary { background: #BA60FF; border-top-color: rgba(255, 255, 255, 0.4); border-bottom-color: rgba(0, 0, 0, 0.4); }
+        
+        .n-inv-btn.n-inv-primary { 
+            /* Purple version: Purple inside, brighter white corners */
+            background: 
+                linear-gradient(#BA60FF, #BA60FF) padding-box, 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255, 0.9) 100%) border-box;
+        }
+        
         .n-inv-btn.hidden { display: none; }
-        
-        .n-inv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 50px; }
-        
-        .n-inv-card { box-sizing: border-box; position: relative; width: 100%; aspect-ratio: 199 / 256; background: #1C1C1C; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; overflow: hidden; transition: border-color 0.2s; cursor: pointer; }
-        .n-inv-card.selected { border: 1px solid #BA60FF; }
-        
-        .n-inv-glow { position: absolute; width: 95px; height: 97px; left: calc(50% - 47.5px); top: calc(50% - 48.5px); background: #BA60FF; filter: blur(35.6px); z-index: 0; opacity: 0.8; pointer-events: none; }
-        
-        .n-inv-img { position: absolute; width: 85%; height: 85%; object-fit: contain; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none; }
-        
-        /* Updated Price Tag with Liquid Glass Border */
+
+        /* Updated Price Tag: Highlight ONLY corners + Top Left Position */
         .n-inv-price { 
             position: absolute; 
-            top: 14px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: rgba(18, 18, 18, 0.68); 
+            top: 12px;           /* Pinned Top */
+            left: 12px;          /* Pinned Left */
+            transform: none;
+            
             border-radius: 20px; 
             padding: 5px 14px; 
             display: flex; 
@@ -773,14 +779,22 @@
             gap: 6px; 
             z-index: 2; 
             pointer-events: none; 
-            /* Liquid Glass Effect */
+            
+            /* THE CORNER TRICK (Same as button) */
             border: 1px solid transparent;
-            border-top-color: rgba(255, 255, 255, 0.25);
-            border-left-color: rgba(255, 255, 255, 0.15);
-            border-bottom-color: rgba(0, 0, 0, 0.8);
-            border-right-color: rgba(0, 0, 0, 0.5);
-            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.05);
+            background: 
+                linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)) padding-box, 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0) 80%, rgba(255, 255, 255, 0.6) 100%) border-box;
         }
+        .n-inv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 50px; }
+        
+        .n-inv-card { box-sizing: border-box; position: relative; width: 100%; aspect-ratio: 199 / 256; background: #1C1C1C; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; overflow: hidden; transition: border-color 0.2s; cursor: pointer; }
+        .n-inv-card.selected { border: 1px solid #BA60FF; }
+        
+        .n-inv-glow { position: absolute; width: 95px; height: 97px; left: calc(50% - 47.5px); top: calc(50% - 48.5px); background: #BA60FF; filter: blur(35.6px); z-index: 0; opacity: 0.8; pointer-events: none; }
+        
+        .n-inv-img { position: absolute; width: 60%; height: 60%; object-fit: contain; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none; }
+       
         .n-inv-price-val { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; text-transform: uppercase; color: #FFFFFF; }
         .n-inv-price-icon { width: 9px; height: 9px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .n-inv-price-icon img { width: 5px; height: 5px; }
@@ -864,7 +878,16 @@
             <!-- Balance & Wallet Pill -->
             <div class="balance-pill" onclick="openDepositModal()">
                 <div class="balance-info">
-                    <i class="fa-solid fa-gem" style="font-size: 11px;"></i>
+                    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <rect width="23" height="23" fill="url(#pattern0_620_13217)"/>
+                        <defs>
+                        <pattern id="pattern0_620_13217" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_620_13217" transform="scale(0.0104167)"/>
+                        </pattern>
+                        <image id="image0_620_13217" width="96" height="96" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
+                        </defs>
+                    </svg>
+
                     <span id="user-balance">...</span>
                 </div>
                 <div class="wallet-icon-box">
@@ -1164,7 +1187,7 @@
         <!-- INVENTORY -->
         <div id="view-inventory" class="game-view">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom: 20px;">
-                <button class="btn-back" style="color:white; border:none; padding:0; font-size:20px;" onclick="switchView('view-profile')"><i class="fa-solid fa-arrow-left"></i></button>
+                <button class="btn-back" style="color:white; border:none; padding:0; font-size:20px;" onclick="switchView('view-home')"><i class="fa-solid fa-arrow-left"></i></button>
                 <h2 style="margin:0; font-family:'Inter'; font-weight:500; font-size:24px;">Inventory:</h2>
             </div>
             
@@ -1834,7 +1857,16 @@
                     <div class="n-inv-price">
                         <span class="n-inv-price-val">${i.gift_price}</span>
                         <div class="n-inv-price-icon">
-                            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='white' d='M116.7 34.6l-85.3 114c-6.8 9.1-8.5 21-4.7 31.7l158.4 443.5c4.6 13 18.2 20.8 31.6 18l193.8-40.4c12.1-2.5 21.2-12.1 23-24.5l36.3-255c2-14.2-4.5-28.3-16.5-35.8l-237.5-148c-10-6.2-22.3-6.5-32.5-1l-66.6 37.5z'/></svg>">
+                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <rect width="23" height="23" fill="url(#pattern0_620_13217)"/>
+                                <defs>
+                                <pattern id="pattern0_620_13217" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                <use xlink:href="#image0_620_13217" transform="scale(0.0104167)"/>
+                                </pattern>
+                                <image id="image0_620_13217" width="96" height="96" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
+                                </defs>
+                            </svg>
+
                         </div>
                     </div>
                     <div class="n-inv-circle"></div>
