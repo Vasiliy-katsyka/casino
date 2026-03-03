@@ -726,9 +726,28 @@
 
         /* --- NEW INVENTORY (FIGMA DESIGN) --- */
         .n-inv-topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .n-inv-btn { background: rgba(18, 18, 18, 0.68); border-radius: 87px; color: #FFFFFF; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px; padding: 11px 26px; border: none; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        /* Updated Buttons with Liquid Glass Border */
+        .n-inv-btn { 
+            background: rgba(18, 18, 18, 0.68); 
+            border-radius: 87px; 
+            color: #FFFFFF; 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 500; 
+            font-size: 14px; 
+            padding: 11px 26px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            white-space: nowrap;
+            /* Liquid Glass Effect */
+            border: 1px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.25);
+            border-left-color: rgba(255, 255, 255, 0.15);
+            border-bottom-color: rgba(0, 0, 0, 0.8);
+            border-right-color: rgba(0, 0, 0, 0.5);
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.05);
+        }
         .n-inv-btn:active { transform: scale(0.95); }
-        .n-inv-btn.n-inv-primary { background: #BA60FF; }
+        .n-inv-btn.n-inv-primary { background: #BA60FF; border-top-color: rgba(255, 255, 255, 0.4); border-bottom-color: rgba(0, 0, 0, 0.4); }
         .n-inv-btn.hidden { display: none; }
         
         .n-inv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 50px; }
@@ -740,7 +759,28 @@
         
         .n-inv-img { position: absolute; width: 85%; height: 85%; object-fit: contain; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none; }
         
-        .n-inv-price { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); background: rgba(18, 18, 18, 0.68); border-radius: 20px; padding: 6px 15px; display: flex; align-items: center; gap: 6px; z-index: 2; pointer-events: none; }
+        /* Updated Price Tag with Liquid Glass Border */
+        .n-inv-price { 
+            position: absolute; 
+            top: 14px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: rgba(18, 18, 18, 0.68); 
+            border-radius: 20px; 
+            padding: 5px 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            z-index: 2; 
+            pointer-events: none; 
+            /* Liquid Glass Effect */
+            border: 1px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.25);
+            border-left-color: rgba(255, 255, 255, 0.15);
+            border-bottom-color: rgba(0, 0, 0, 0.8);
+            border-right-color: rgba(0, 0, 0, 0.5);
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.05);
+        }
         .n-inv-price-val { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; text-transform: uppercase; color: #FFFFFF; }
         .n-inv-price-icon { width: 9px; height: 9px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .n-inv-price-icon img { width: 5px; height: 5px; }
