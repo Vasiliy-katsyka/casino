@@ -823,6 +823,32 @@
         .n-tx-val-white { font-family: 'Inter'; font-weight: 400; font-size: 15px; color: #FFFFFF; }
         .n-tx-crystal { width: 20px; height: 20px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
+        /* --- TASKS / QUESTS TAB (FIGMA DESIGN) --- */
+        .n-task-hero { position: relative; width: 100%; height: 190px; min-height: 190px; flex-shrink: 0; background: linear-gradient(97.96deg, #3B0783 2.16%, #6D24D3 90.27%); border-radius: 20px; padding: 20px; overflow: hidden; box-sizing: border-box; display: flex; align-items: center; margin-bottom: 20px; }
+        .n-task-hero-title { font-family: 'Inter'; font-weight: 700; font-size: 26px; line-height: 104%; color: #FFFFFF; max-width: 60%; z-index: 5; text-transform: uppercase; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .n-task-slider-container { position: absolute; right: 0; bottom: 0; width: 150px; height: 100%; z-index: 4; }
+        .n-task-char { position: absolute; right: 5px; bottom: 0; height: 100%; object-fit: contain; opacity: 0; transform: translateX(20px); transition: opacity 1.2s ease, transform 1.2s ease; }
+        .n-task-char.active { opacity: 1; transform: translateX(0); }
+        .n-task-h-glow { position: absolute; width: 161px; height: 155px; right: -20px; top: 20px; background: #BA60FF; filter: blur(29.5px); z-index: 1; opacity: 0.6; }
+        .n-task-h-d1 { position: absolute; width: 34px; height: 28px; left: 60%; top: 20px; background: url('https://github.com/Vasiliy-katsyka/casino/blob/main/image.png?raw=true') no-size/contain; transform: rotate(23deg); filter: blur(1px); z-index: 2; background-size: contain; background-repeat: no-repeat; }
+        .n-task-h-d2 { position: absolute; width: 39px; height: 32px; right: 10px; top: 60px; background: url('https://github.com/Vasiliy-katsyka/casino/blob/main/image.png?raw=true') no-size/contain; transform: rotate(-15deg); filter: blur(1px); z-index: 2; background-size: contain; background-repeat: no-repeat; }
+        .n-task-h-d3 { position: absolute; width: 44px; height: 36px; left: 55%; bottom: 10px; background: url('https://github.com/Vasiliy-katsyka/casino/blob/main/image.png?raw=true') no-size/contain; transform: rotate(-15deg); filter: blur(1px); z-index: 6; background-size: contain; background-repeat: no-repeat; }
+        .n-task-label { font-family: 'Inter'; font-weight: 400; font-size: 15px; color: #FFFFFF; margin-bottom: 15px; }
+        .n-task-card { position: relative; width: 100%; min-height: 190px; border-radius: 15px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 15px; }
+        .n-task-c1 { background: #12002C; }
+        .n-task-c2 { background: radial-gradient(68.23% 68.23% at 50% 50%, #BA60FF 0%, #6D24D3 100%); }
+        .n-task-c3 { background: radial-gradient(53.31% 53.31% at 50% 50.28%, #6D24D3 0%, #12002C 100%); }
+        .n-task-c-glow { position: absolute; width: 140px; height: 140px; background: #6D24D3; filter: blur(34px); border-radius: 50%; opacity: 0.8; z-index: 0; }
+        .n-task-c-glow.tl { top: -40px; left: -40px; } .n-task-c-glow.br { bottom: -40px; right: -40px; }
+        .n-task-c-diamond { position: absolute; width: 54px; height: 45px; left: 10px; top: 15px; background: url('https://github.com/Vasiliy-katsyka/casino/blob/main/image.png?raw=true'); background-size: contain; background-repeat: no-repeat; transform: rotate(15deg); z-index: 1; }
+        .n-task-c-num { position: absolute; right: 20px; top: 20px; font-family: 'Inter'; font-weight: 400; font-size: 12px; color: #FFFFFF; opacity: 0.6; z-index: 2; }
+        .n-task-c-title { font-family: 'Inter'; font-weight: 500; font-size: 24px; line-height: 104%; color: #FFFFFF; max-width: 85%; margin-top: 45px; margin-bottom: 20px; z-index: 2; position: relative; }
+        .n-task-c-bot { display: flex; justify-content: space-between; align-items: center; z-index: 2; position: relative; }
+        .n-task-c-sub { font-family: 'Inter'; font-weight: 400; font-size: 14px; color: #FFFFFF; }
+        .n-task-c-prog { font-family: 'Inter'; font-weight: 400; font-size: 12px; color: #FFFFFF; opacity: 0.6; margin-right: 15px; }
+        .n-task-btn { background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%); border-radius: 100px; border: none; padding: 10px 24px; font-family: 'Inter'; font-weight: 600; font-size: 15px; color: #FFFFFF; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .n-task-btn:active { transform: scale(0.95); }
+
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
 </head>
@@ -1084,7 +1110,7 @@
                 </div>
 
                 <!-- Quests -->
-                <div class="p-card p-banner-card" disabled>
+                <div class="p-card p-banner-card" style="cursor: pointer;" onclick="switchView('view-tasks')">
                     <div class="p-blur-blob" style="width: 77px; height: 70px;"></div>
                     <div class="p-banner-content">
                         <div class="p-banner-title">QUESTS</div>
@@ -1142,7 +1168,7 @@
             <div id="ton-connect-button" style="display:none;"></div>
         </div>
         
-<!-- REFERRAL MAIN PAGE -->
+        <!-- REFERRAL MAIN PAGE -->
         <div id="view-referral-main" class="game-view">
             <div class="n-ref-header-row">
                 <button class="btn-back" style="color:white; border:none; padding:0; font-size:20px;" onclick="switchView('view-profile')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -1271,6 +1297,83 @@
                             </svg>
 
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TASKS PAGE -->
+        <div id="view-tasks" class="game-view">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 20px;">
+                <button class="btn-back" style="color:white; border:none; padding:0; font-size:20px;" onclick="switchView('view-profile')"><i class="fa-solid fa-arrow-left"></i></button>
+            </div>
+
+            <!-- Hero Banner -->
+            <div class="n-task-hero">
+                <div class="n-task-h-glow"></div>
+                <div class="n-task-h-d1"></div>
+                <div class="n-task-h-d2"></div>
+                <div class="n-task-h-d3"></div>
+                
+                
+                <!-- Character Slider -->
+                <div class="n-task-slider-container">
+                    <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/Frame%2076.png?raw=true" class="n-task-char active" id="ts-char-1">
+                    <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/Frame%2076%20(2).png?raw=true" class="n-task-char" id="ts-char-2">
+                    <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/Frame%2076%20(3).png?raw=true" class="n-task-char" id="ts-char-3">
+                </div>
+            </div>
+
+            <div class="n-task-label">Your assignments:</div>
+
+            <!-- Card 1 -->
+            <div class="n-task-card n-task-c1">
+                <div class="n-task-c-glow tl"></div>
+                <div class="n-task-c-glow br"></div>
+                <div class="n-task-c-diamond"></div>
+                <div class="n-task-c-num">First task</div>
+                
+                <div class="n-task-c-title">Play 3 games for a total of 100 tokens</div>
+                
+                <div class="n-task-c-bot">
+                    <div class="n-task-c-sub">Prize of 50 tokens</div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="n-task-c-prog">0/3</div>
+                        <button class="n-task-btn">To play</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="n-task-card n-task-c2">
+                <div class="n-task-c-diamond"></div>
+                <div class="n-task-c-num">The second task</div>
+                
+                <div class="n-task-c-title">Subscribe to the channel</div>
+                
+                <div class="n-task-c-bot">
+                    <div class="n-task-c-sub">Prize of 5 tokens</div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="n-task-c-prog">-</div>
+                        <button class="n-task-btn">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="n-task-card n-task-c3">
+                <div class="n-task-c-glow tl"></div>
+                <div class="n-task-c-glow br"></div>
+                <div class="n-task-c-diamond"></div>
+                <div class="n-task-c-num">Third task</div>
+                
+                <div class="n-task-c-title">Invite three friends</div>
+                
+                <div class="n-task-c-bot">
+                    <div class="n-task-c-sub">Prize of 5 tokens</div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="n-task-c-prog">0/3</div>
+                        <button class="n-task-btn">Invite</button>
                     </div>
                 </div>
             </div>
@@ -2228,6 +2331,20 @@
             document.getElementById('deposit-gifts-btn').style.display = 'none';
         }
         
+        // --- TASKS SLIDER LOGIC ---
+        let currentTaskChar = 1;
+        setInterval(() => {
+            // Remove active class from all
+            for (let i = 1; i <= 3; i++) {
+                const el = document.getElementById(`ts-char-${i}`);
+                if (el) el.classList.remove('active');
+            }
+            // Increment and add to next
+            currentTaskChar = currentTaskChar >= 3 ? 1 : currentTaskChar + 1;
+            const nextEl = document.getElementById(`ts-char-${currentTaskChar}`);
+            if (nextEl) nextEl.classList.add('active');
+        }, 5000); // Changes every 5 seconds
+
         async function clickMine(index) {
             if (!isMinesRunning) return;
             const tile = document.getElementById(`mine-tile-${index}`);
@@ -2598,7 +2715,7 @@
         
             // 3. Header Visibility
             const header = document.querySelector('header');
-            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history', 'view-transactions'];
+            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history', 'view-transactions', 'view-tasks'];
         
             if (viewsWithHeader.includes(id)) {
                 header.classList.remove('hidden');
