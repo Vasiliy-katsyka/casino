@@ -824,11 +824,59 @@
         .n-tx-crystal { width: 20px; height: 20px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
         /* --- TASKS / QUESTS TAB (FIGMA DESIGN) --- */
-        .n-task-hero { position: relative; width: 100%; height: 190px; min-height: 190px; flex-shrink: 0; background: linear-gradient(97.96deg, #3B0783 2.16%, #6D24D3 90.27%); border-radius: 20px; padding: 20px; overflow: hidden; box-sizing: border-box; display: flex; align-items: center; margin-bottom: 20px; }
-        .n-task-hero-title { font-family: 'Inter'; font-weight: 700; font-size: 26px; line-height: 104%; color: #FFFFFF; max-width: 60%; z-index: 5; text-transform: uppercase; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .n-task-slider-container { position: absolute; right: 0; bottom: 0; width: 150px; height: 100%; z-index: 4; }
-        .n-task-char { position: absolute; right: 5px; bottom: 0; height: 100%; object-fit: contain; opacity: 0; transform: translateX(20px); transition: opacity 1.2s ease, transform 1.2s ease; }
-        .n-task-char.active { opacity: 1; transform: translateX(0); }
+        .n-task-hero { 
+            position: relative; 
+            width: 100%; 
+            
+            /* 1. Remove fixed heights and use aspect-ratio. 
+            2/1 ratio is standard for mobile banners. It will always scale perfectly. */
+            aspect-ratio: 410 / 173; 
+            
+            flex-shrink: 0; 
+            background: linear-gradient(97.96deg, #3B0783 2.16%, #6D24D3 90.27%); 
+            border-radius: 20px; 
+            
+            /* 2. Remove padding so the image goes edge-to-edge */
+            padding: 0; 
+            
+            overflow: hidden; 
+            box-sizing: border-box; 
+            display: block; /* Changed from flex to block */
+            margin-bottom: 20px; 
+        }
+
+        .n-task-slider-container { 
+            position: absolute; 
+            top: 0;
+            left: 0; 
+            
+            /* 3. Make the slider container fill the whole banner instead of just 150px */
+            width: 100%; 
+            height: 100%; 
+            z-index: 4; 
+        }
+
+        .n-task-char { 
+            position: absolute; 
+            top: 0;
+            left: 0; 
+            
+            /* 4. Make the image fill the container entirely */
+            width: 100%; 
+            height: 100%; 
+            
+            /* 5. 'cover' ensures the image perfectly masks the border-radius without distortion */
+            object-fit: cover; 
+            
+            opacity: 0; 
+            transform: translateX(20px); 
+            transition: opacity 1.2s ease, transform 1.2s ease; 
+        }
+
+        .n-task-char.active { 
+            opacity: 1; 
+            transform: translateX(0); 
+        }
         .n-task-h-glow { position: absolute; width: 161px; height: 155px; right: -20px; top: 20px; background: #BA60FF; filter: blur(29.5px); z-index: 1; opacity: 0.6; }
         .n-task-h-d1 { position: absolute; width: 34px; height: 28px; left: 60%; top: 20px; background: url('https://github.com/Vasiliy-katsyka/casino/blob/main/image.png?raw=true') no-size/contain; transform: rotate(23deg); filter: blur(1px); z-index: 2; background-size: contain; background-repeat: no-repeat; }
         .n-task-h-d2 { position: absolute; width: 39px; height: 32px; right: 10px; top: 60px; background: url('https://github.com/Vasiliy-katsyka/casino/blob/main/image.png?raw=true') no-size/contain; transform: rotate(-15deg); filter: blur(1px); z-index: 2; background-size: contain; background-repeat: no-repeat; }
