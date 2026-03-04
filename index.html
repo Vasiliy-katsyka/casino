@@ -796,6 +796,33 @@
         .n-ref-bonus-icon { width: 16px; height: 16px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .n-ref-bonus-icon img { width: 8px; height: 8px; }
 
+        /* --- TRANSACTION HISTORY (FIGMA DESIGN) --- */
+        .n-tx-bg-blur-top { position: absolute; width: 257px; height: 198px; right: -50px; top: 10%; background: #6D24D3; opacity: 0.6; filter: blur(67px); z-index: 0; pointer-events: none; }
+        .n-tx-bg-blur-bot { position: absolute; width: 227px; height: 198px; right: -20px; bottom: 10%; background: #6D24D3; opacity: 0.6; filter: blur(67px); z-index: 0; pointer-events: none; }
+        .n-tx-header-row { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; position: relative; z-index: 1; }
+        .n-tx-header-row h2 { margin: 0; font-family: 'Inter'; font-weight: 500; font-size: 24px; color: #FFFFFF; }
+        .n-tx-tabs-wrap { display: flex; width: 100%; height: 49px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; position: relative; z-index: 1; margin-bottom: 30px; box-sizing: border-box; }
+        .n-tx-tab { flex: 1; display: flex; align-items: center; justify-content: center; font-family: 'Inter'; font-weight: 500; font-size: 18px; color: #FFFFFF; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .n-tx-tab.active { background: #6D24D3; }
+        .n-tx-empty-state { display: flex; justify-content: center; align-items: center; height: 200px; font-family: 'Inter'; font-weight: 400; font-size: 20px; line-height: 104%; text-align: center; color: #FFFFFF; opacity: 0.6; position: relative; z-index: 1; }
+        .n-tx-card { background: rgba(22, 22, 22, 0.8); border-radius: 20px; padding: 20px; position: relative; z-index: 1; display: none; flex-direction: column; }
+        .n-tx-card.active { display: flex; }
+        .n-tx-date-title { font-family: 'Inter'; font-weight: 600; font-size: 17px; color: #FFFFFF; margin-bottom: 15px; }
+        .n-tx-row { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #1E1E1E; }
+        .n-tx-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .n-tx-icon-wrap { width: 30px; height: 30px; border-radius: 50%; background: #D9D9D9; margin-right: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .n-tx-icon-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .n-tx-icon-generic { width: 30px; height: 30px; border-radius: 50%; background: #6D24D3; margin-right: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+        .n-tx-icon-generic::before, .n-tx-icon-generic::after { content: ''; position: absolute; background: #FFFFFF; }
+        .n-tx-icon-generic.plus::before { width: 8px; height: 1px; } .n-tx-icon-generic.plus::after { width: 1px; height: 8px; }
+        .n-tx-icon-generic.minus::before { width: 8px; height: 1px; }
+        .n-tx-info { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+        .n-tx-title { font-family: 'Inter'; font-weight: 500; font-size: 16px; color: #FFFFFF; }
+        .n-tx-sub { font-family: 'Inter'; font-weight: 400; font-size: 14px; color: #FFFFFF; opacity: 0.8; }
+        .n-tx-val-green { display: flex; align-items: center; gap: 5px; font-family: 'Inter'; font-weight: 400; font-size: 15px; color: #00FF00; }
+        .n-tx-val-white { font-family: 'Inter'; font-weight: 400; font-size: 15px; color: #FFFFFF; }
+        .n-tx-crystal { width: 20px; height: 20px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
 </head>
@@ -1069,7 +1096,7 @@
 
                 <!-- List 1 -->
                 <div class="p-card p-list-card">
-                    <div class="p-list-item" disabled>
+                    <div class="p-list-item" style="cursor: pointer;" onclick="switchView('view-transactions')">
                         <i class="fa-solid fa-clock-rotate-left p-list-icon"></i>
                         <span>Transaction history</span>
                         <i class="fa-solid fa-arrow-right p-arrow-small"></i>
@@ -1245,6 +1272,92 @@
 
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSACTION HISTORY PAGE -->
+        <div id="view-transactions" class="game-view" style="position: relative; overflow: hidden; margin: -20px; width: calc(100% + 40px); padding: 20px; min-height: 100vh; background: #060606;">
+            <!-- Background Blurs -->
+            <div class="n-tx-bg-blur-top"></div>
+            <div class="n-tx-bg-blur-bot"></div>
+
+            <div class="n-tx-header-row">
+                <button class="btn-back" style="color:white; border:none; padding:0; font-size:20px;" onclick="switchView('view-profile')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2>Transaction history</h2>
+            </div>
+
+            <!-- Tabs -->
+            <div class="n-tx-tabs-wrap">
+                <div class="n-tx-tab" id="n-tx-tab-add" onclick="nTxSwitchTab('add')">Adding</div>
+                <div class="n-tx-tab" id="n-tx-tab-with" onclick="nTxSwitchTab('with')">Withdrawal</div>
+            </div>
+
+            <!-- Empty State (Default) -->
+            <div class="n-tx-empty-state" id="n-tx-content-empty">
+                Choose what you want<br>to watch
+            </div>
+
+            <!-- Adding Content -->
+            <div class="n-tx-card" id="n-tx-content-add">
+                <div class="n-tx-date-title">January 12</div>
+                
+                <div class="n-tx-row">
+                    <div class="n-tx-icon-generic plus"></div>
+                    <div class="n-tx-info">
+                        <div class="n-tx-title">Adding</div>
+                        <div class="n-tx-sub">$120</div>
+                    </div>
+                    <div class="n-tx-val-green">+80 
+                        <div class="n-tx-crystal">
+                            <img style="width: 12px; height: 12px; object-fit: contain;" src="data:image/png;base64,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">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="n-tx-row">
+                    <div class="n-tx-icon-wrap"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/1f0670b7-e6b2-6e60-a21d-3b38b5f65586.jpg?raw=true"></div>
+                    <div class="n-tx-info">
+                        <div class="n-tx-title">NFT gift</div>
+                        <div class="n-tx-sub">Serphira</div>
+                    </div>
+                    <div class="n-tx-val-green">+80 
+                        <div class="n-tx-crystal">
+                            <img style="width: 12px; height: 12px; object-fit: contain;" src="data:image/png;base64,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">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdrawal Content -->
+            <div class="n-tx-card" id="n-tx-content-with">
+                <div class="n-tx-date-title">January 12</div>
+                
+                <div class="n-tx-row">
+                    <div class="n-tx-icon-generic minus"></div>
+                    <div class="n-tx-info">
+                        <div class="n-tx-title">Withdrawal</div>
+                        <div class="n-tx-sub">5 Tokens</div>
+                    </div>
+                    <div class="n-tx-val-white">$10</div>
+                </div>
+
+                <div class="n-tx-row">
+                    <div class="n-tx-icon-wrap"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/1f0670b7-e6b2-6e60-a21d-3b38b5f65586.jpg?raw=true"></div>
+                    <div class="n-tx-info">
+                        <div class="n-tx-title">NFT gift</div>
+                        <div class="n-tx-sub">Serphira</div>
+                    </div>
+                    <div class="n-tx-val-white">$120</div>
+                </div>
+
+                <div class="n-tx-row">
+                    <div class="n-tx-icon-wrap"><img src="https://github.com/Vasiliy-katsyka/casino/blob/main/1f0670b7-e6b2-6e60-a21d-3b38b5f65586.jpg?raw=true"></div>
+                    <div class="n-tx-info">
+                        <div class="n-tx-title">NFT gift</div>
+                        <div class="n-tx-sub">Serphira</div>
+                    </div>
+                    <div class="n-tx-val-white">In the profile</div>
                 </div>
             </div>
         </div>
@@ -2485,7 +2598,7 @@
         
             // 3. Header Visibility
             const header = document.querySelector('header');
-            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history'];
+            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history', 'view-transactions'];
         
             if (viewsWithHeader.includes(id)) {
                 header.classList.remove('hidden');
@@ -2516,6 +2629,24 @@
             } 
         }
         
+        // --- TRANSACTIONS LOGIC ---
+        function nTxSwitchTab(tabName) {
+            // Reset tabs and content
+            document.getElementById('n-tx-tab-add').classList.remove('active');
+            document.getElementById('n-tx-tab-with').classList.remove('active');
+            document.getElementById('n-tx-content-empty').style.display = 'none';
+            document.getElementById('n-tx-content-add').classList.remove('active');
+            document.getElementById('n-tx-content-with').classList.remove('active');
+
+            // Activate selected
+            if (tabName === 'add') {
+                document.getElementById('n-tx-tab-add').classList.add('active');
+                document.getElementById('n-tx-content-add').classList.add('active');
+            } else if (tabName === 'with') {
+                document.getElementById('n-tx-tab-with').classList.add('active');
+                document.getElementById('n-tx-content-with').classList.add('active');
+            }
+        }
         
         async function sellItem(id){ if(confirm("Sell?")) { await api("/api/inventory/sell","POST",{itemId:id}); refreshUser(); } }
         function openCasesMenu(){ switchView('view-cases-menu'); checkDailyTimer(); }
