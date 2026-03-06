@@ -147,8 +147,8 @@
         .onboarding-btn:disabled { opacity: 1; filter: none; cursor: default; transform: none; }
         .welcome-mode .carousel-arrows, .welcome-mode .carousel-dots { opacity: 0; pointer-events: none; }
         .onboarding-text-area { text-align: center; margin-top: 15px; margin-bottom: 5px; display: flex; flex-direction: column; align-items: center; }
-        .onboarding-title { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 800; line-height: 1.1; text-transform: uppercase; margin-bottom: 2px; }
-        .onboarding-subtitle { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; line-height: 1.1; margin-top: 0; }
+        .onboarding-title { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800; line-height: 1.1; text-transform: uppercase; margin-bottom: 2px; }
+        .onboarding-subtitle { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 600; line-height: 1.1; margin-top: 0; }
         .onboarding-curve { width: 160px; margin: -10px 20 8px 0; position: relative; z-index: 2; }
         .onboarding-desc { font-size: 13px; color: #a1a1aa; max-width: 240px; margin: 0 auto; line-height: 1.4; font-weight: 400; }
         .onboarding-btn { background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%); color: white; border: none; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; margin-bottom: 10px; transition: transform 0.2s; flex-shrink: 0; }
@@ -1326,8 +1326,8 @@
         }
 
         function finishOnboarding() {
-            localStorage.setItem('hasOnboarded3', 'true');
-            localStorage.setItem('selectedCurator3', currentCharIndex); 
+            localStorage.setItem('hasOnboarded2', 'true');
+            localStorage.setItem('selectedCurator2', currentCharIndex); 
             
             document.getElementById('view-onboarding').style.display = 'none';
             document.querySelector('header').style.display = 'flex';
@@ -1343,7 +1343,7 @@
             console.log("Checking Onboarding...");
             
             // TEMPORARY: Remove the '!' to force it to show even if you think you've passed it !localStorage.getItem('hasOnboarded2'
-            if (!localStorage.getItem('hasOnboarded3')) { 
+            if (!localStorage.getItem('hasOnboarded2')) { 
                 console.log("Showing Onboarding Screen");
                 document.querySelector('header').style.display = 'none';
                 document.querySelector('nav').style.display = 'none';
