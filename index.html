@@ -1326,8 +1326,8 @@
         }
 
         function finishOnboarding() {
-            localStorage.setItem('hasOnboarded2', 'true');
-            localStorage.setItem('selectedCurator2', currentCharIndex); 
+            localStorage.setItem('hasOnboarded3', 'true');
+            localStorage.setItem('selectedCurator3', currentCharIndex); 
             
             document.getElementById('view-onboarding').style.display = 'none';
             document.querySelector('header').style.display = 'flex';
@@ -1343,7 +1343,7 @@
             console.log("Checking Onboarding...");
             
             // TEMPORARY: Remove the '!' to force it to show even if you think you've passed it !localStorage.getItem('hasOnboarded2'
-            if (!localStorage.getItem('hasOnboarded2')) { 
+            if (!localStorage.getItem('hasOnboarded3')) { 
                 console.log("Showing Onboarding Screen");
                 document.querySelector('header').style.display = 'none';
                 document.querySelector('nav').style.display = 'none';
