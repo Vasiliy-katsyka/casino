@@ -14,6 +14,12 @@
     <style>
         :root { --bg-color: #0f0f13; --glass-bg: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --primary: #0088cc; --accent: #ff0055; --gold: #ffd700; --success: #00ff88; --text: #ffffff; --text-secondary: #8b9bb4; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body, html {
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
         body { margin: 0; padding: 0; background-color: #060606; font-family: 'Inter', sans-serif; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         .glass { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; }
         .btn { background: linear-gradient(135deg, var(--primary), #005f8f); border: none; color: white; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 16px; width: 100%; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4); font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
@@ -157,7 +163,7 @@
         .p-name { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 22px; color: #FFFFFF; margin-bottom: 2px; line-height: 1.2; }
         .p-info-text { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 13px; color: #FFFFFF; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; }
         .p-info-text svg { width: 11px; height: 13px; }
-        .p-btn-inventory { position: absolute; right: 0px; top: 50%; transform: translateY(-50%); width: 95px; height: 35px; background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%); border-radius: 100px; border: none; color: #FFF; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; z-index: 10; padding: 0; }
+        .p-btn-inventory { position: absolute; right: 0px; top: 50%; width: 95px; height: 35px; background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%); border-radius: 100px; border: none; color: #FFF; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; z-index: 10; padding: 0; }
         .p-btn-inventory:active { transform: translateY(-50%) scale(0.95); }
         .p-cards-wrap { width: 100%; display: flex; flex-direction: column; gap: 12px; padding-bottom: 30px; }
         .p-card { background: #1D1D1D; border: 1px solid rgba(255, 255, 255, 0.19); border-radius: 12px; position: relative; overflow: hidden; width: 100%; box-sizing: border-box; }
