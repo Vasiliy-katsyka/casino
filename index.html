@@ -129,7 +129,7 @@
         .leader-vol { font-family: 'Rajdhani'; color: var(--success); font-weight: bold; }
         #view-onboarding { position: fixed; top: 0; left: 0; width: 100%; height: 100%; height: 100dvh; background: linear-gradient(180deg, #3a0d78 0%, #5b1baf 15%, #050505 40%, #000000 100%); z-index: 9999; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); font-family: 'Inter', sans-serif; color: white; overflow-y: auto; }
         .onboarding-top { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
-        .onboarding-carousel { position: relative; width: 100%; height: 60vh; max-height: 480px; min-height: 300px; display: flex; align-items: center; justify-content: center; }
+        .onboarding-carousel { position: relative; width: 100%; height: 65vh; max-height: 900px; min-height: 400px; display: flex; align-items: center; justify-content: center; }
         .carousel-item { position: absolute; height: 100%; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 1; display: flex; align-items: flex-end; justify-content: center; will-change: transform, filter; cursor: pointer; }
         .carousel-item img { height: 100%; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)); }
         .carousel-item:nth-child(1) img { transform: scaleX(-1); }
@@ -147,9 +147,9 @@
         .onboarding-btn:disabled { opacity: 1; filter: none; cursor: default; transform: none; }
         .welcome-mode .carousel-arrows, .welcome-mode .carousel-dots { opacity: 0; pointer-events: none; }
         .onboarding-text-area { text-align: center; margin-top: 15px; margin-bottom: 5px; display: flex; flex-direction: column; align-items: center; }
-        .onboarding-title { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; line-height: 1.1; text-transform: uppercase; margin-bottom: 2px; }
-        .onboarding-subtitle { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 600; line-height: 1.1; margin-top: 0; }
-        .onboarding-curve { width: 160px; margin: -10px 0 8px 0; position: relative; z-index: 2; }
+        .onboarding-title { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 800; line-height: 1.1; text-transform: uppercase; margin-bottom: 2px; }
+        .onboarding-subtitle { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 600; line-height: 1.1; margin-top: 0; }
+        .onboarding-curve { width: 160px; margin: -10px 20 8px 0; position: relative; z-index: 2; }
         .onboarding-desc { font-size: 13px; color: #a1a1aa; max-width: 240px; margin: 0 auto; line-height: 1.4; font-weight: 400; }
         .onboarding-btn { background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%); color: white; border: none; padding: 18px; border-radius: 30px; width: 100%; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; margin-bottom: 10px; transition: transform 0.2s; flex-shrink: 0; }
         .onboarding-btn:active { transform: scale(0.97); }
@@ -306,7 +306,7 @@
         .n-task-btn:active { transform: scale(0.95); }
         .n-home-wrap { position: relative; width: 100%; display: flex; flex-direction: column; z-index: 1; padding-top: 5px; }
         .n-home-bg-1 { position: absolute; width: 227px; height: 198px; left: -101px; top: 40%; background: #6D24D3; opacity: 0.8; filter: blur(67px); z-index: 0; pointer-events: none; }
-        .n-home-bg-2 { position: absolute; width: 227px; height: 198px; right: -80px; top: 15%; background: #6D24D3; opacity: 0.8; filter: blur(67px); z-index: 0; pointer-events: none; }
+        .n-home-bg-2 { position: absolute; width: 227px; height: 198px; right: 0px; top: 15%; background: #6D24D3; opacity: 0.8; filter: blur(67px); z-index: 0; pointer-events: none; }
         .n-home-banner { width: 100%; aspect-ratio: 410 / 283; border-radius: 20px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .n-home-img-full { width: 100%; height: 100%; object-fit: cover; display: block; }
         .n-home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
@@ -314,7 +314,7 @@
         .n-home-card { width: 100%; border-radius: 15px; overflow: hidden; cursor: pointer; transition: transform 0.2s; position: relative; box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
         .n-home-card:active { transform: scale(0.96); }
         .n-ratio-1 { aspect-ratio: 200 / 180; }
-        .n-ratio-2 { aspect-ratio: 200 / 370; }
+        .n-ratio-2 { height: 100%; min-height: 100%; }
         .n-win-title { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 20px; color: #FFFFFF; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .n-win-table { background: #161616; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; padding-bottom: 10px; margin-bottom: 20px; position: relative; z-index: 2; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         .n-win-th { background: #1E1E1E; display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 18px 20px; }
@@ -356,7 +356,7 @@
             <div class="onboarding-text-area">
                 <div id="onboard-title" class="onboarding-title">WELCOME TO ROLLER GIFT</div>
                 <div id="onboard-subtitle" class="onboarding-subtitle">Choose a curator</div>
-                <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/Group%202.png?raw=true" class="onboarding-curve" id="onboard-curve">
+                <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/mainpage/separator.png?raw=true" class="onboarding-curve" id="onboard-curve">
                 <div class="onboarding-desc" id="onboard-desc">Each curator gives you a specific<br>bonus. Click on a curator to find out<br>their bonus and choose yours!</div>
             </div>
         </div>
@@ -656,7 +656,7 @@
                 <div class="p-card p-banner-card" style="cursor: pointer;" onclick="switchView('view-tasks')">
                     <div class="p-blur-blob" style="width: 77px; height: 70px;"></div>
                     <div class="p-banner-content">
-                        <div class="p-banner-title">QUESTS</div>
+                        <div class="p-banner-title" style="margin-bottom: 0px">QUESTS</div>
                         <svg width="36" height="23" viewBox="0 0 36 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.5 9.5459C0.671573 9.5459 0 10.2175 0 11.0459C0 11.8743 0.671573 12.5459 1.5 12.5459V11.0459V9.5459ZM35.5607 12.1066C36.1464 11.5208 36.1464 10.571 35.5607 9.98524L26.0147 0.439297C25.4289 -0.14649 24.4792 -0.14649 23.8934 0.439297C23.3076 1.02508 23.3076 1.97483 23.8934 2.56062L32.3787 11.0459L23.8934 19.5312C23.3076 20.117 23.3076 21.0667 23.8934 21.6525C24.4792 22.2383 25.4289 22.2383 26.0147 21.6525L35.5607 12.1066ZM1.5 11.0459V12.5459H34.5V11.0459V9.5459H1.5V11.0459Z" fill="white"/>
                         </svg>
@@ -1233,7 +1233,7 @@
         const charactersData = [
             { name: "MAJOR", desc: "For topping up your account, you get 5% more than with other curators." },
             { name: "WORKER", desc: "For completing tasks, you receive 10% more rewards than with other mentors." },
-            { name: "STENCIL", desc: "For each user you invite, you receive 2 more tokens than with other curators." }
+            { name: "STENCIL", desc: "For each user you invite, you receive 2% more tokens than with other curators." }
         ];
 
         let currentCharIndex = 1; // Default starts at 1 (Worker)
@@ -1338,11 +1338,11 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            window.Telegram.WebApp.requestFullscreen();
+            
             // Force show for debugging purposes
             console.log("Checking Onboarding...");
             
-            // TEMPORARY: Remove the '!' to force it to show even if you think you've passed it
+            // TEMPORARY: Remove the '!' to force it to show even if you think you've passed it !localStorage.getItem('hasOnboarded2'
             if (!localStorage.getItem('hasOnboarded2')) { 
                 console.log("Showing Onboarding Screen");
                 document.querySelector('header').style.display = 'none';
@@ -1355,7 +1355,9 @@
             } else {
                 // Normal logic
                 if (window.Telegram.WebApp) window.Telegram.WebApp.ready();
+
             }
+            window.Telegram.WebApp.requestFullscreen();
         });
 
         // 2. Load heavy API data in the background
