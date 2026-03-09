@@ -328,6 +328,371 @@
         .n-win-val.right { justify-content: flex-end; }
         .n-win-crystal { width: 20px; height: 20px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .n-win-crystal svg { width: 12px; height: 12px; }
+        /* --- CRASH MONITOR --- */
+        .n-crash-monitor {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            min-height: 260px; /* <--- ADD THIS: Prevents the height from collapsing to 0 */
+            flex-shrink: 0;    /* <--- ADD THIS: Stops the flexbox from squishing it */
+            background: linear-gradient(180deg, #1E0047 53.75%, #4800AD 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            transition: background 0.3s;
+        }
+        .n-crash-monitor.crashed {
+            background: linear-gradient(180deg, #1E0047 52.62%, #9C2241 100%);
+        }
+
+        .n-crash-dots {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(#6D24D3 2px, transparent 2px);
+            background-size: 20px 20px;
+            background-position: 0 0;
+            mask-image: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,1));
+            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,1));
+            pointer-events: none;
+            z-index: 1;
+            transition: background-image 0.3s;
+        }
+        .n-crash-monitor.crashed .n-crash-dots {
+            background-image: radial-gradient(#BB2B40 2px, transparent 2px);
+        }
+
+        .n-crash-ui-top {
+            position: absolute;
+            top: 15px;
+            width: 100%;
+            text-align: left;
+            margin-left: 20px;
+            z-index: 2;
+        }
+        .n-crash-mult {
+            font-family: 'Inter';
+            font-weight: 700;
+            font-size: 28px;
+            color: #FFFFFF;
+        }
+        .n-crash-status {
+            font-family: 'Inter';
+            font-weight: 400;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+        }
+        .n-crash-monitor.crashed .n-crash-status {
+            color: #FF3D3D;
+        }
+
+        .n-crash-info-bot {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            gap: 15px;
+            z-index: 2;
+        }
+        .n-crash-info-item {
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+        .n-crash-monitor.crashed .n-crash-info-item {
+            color: #BB2B40;
+        }
+
+        #rocket-entry {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            z-index: 3;
+            transform-origin: center center;
+        }
+
+        /* --- PAST MULTIPLIERS --- */
+        .n-crash-past-mults {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        .n-crash-past-mults::-webkit-scrollbar { display: none; }
+        .n-cpm-item {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 13px;
+            color: #FFF;
+            white-space: nowrap;
+        }
+        .cpm-purple { background: linear-gradient(180deg, #6D24D3 -44%, #BA60FF 118%); }
+        .cpm-pink { background: linear-gradient(180deg, #C102CC -86%, #F260FF 118%); }
+        .cpm-red { background: linear-gradient(180deg, #FF0207 -86%, #FF6063 118%); }
+        .cpm-light { background: linear-gradient(180deg, #C260FF -44%, #D39AFF 118%); }
+
+        /* --- BET AREA --- */
+        .n-crash-bet-area {
+            background: #161616;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .n-cba-label {
+            font-family: 'Inter';
+            font-weight: 400;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .n-cba-tabs {
+            display: flex;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .n-cba-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 16px;
+            color: #FFF;
+            cursor: pointer;
+        }
+        .n-cba-tab.active {
+            background: #6D24D3;
+            border-radius: 20px;
+        }
+
+        .n-cba-amount-row {
+            display: flex;
+            align-items: center;
+            background: #131313;
+            border: 1px solid rgba(255, 255, 255, 0.19);
+            border-radius: 20px;
+            height: 55px;
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+        .n-cba-btn-icon {
+            width: 31px;
+            height: 31px;
+            background: #202020;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .n-cba-btn-icon:active { transform: scale(0.9); }
+        .n-cba-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            text-align: center;
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+
+        .n-cba-quick-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .n-cba-quick-btn {
+            flex: 1;
+            height: 50px;
+            background: #202020;
+            border: 1px solid rgba(255, 255, 255, 0.19);
+            border-radius: 15px;
+            color: #FFF;
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .n-cba-quick-btn.wide { flex: 2; }
+        .n-cba-quick-btn:active { background: #333; }
+
+        .n-cba-auto-row {
+            background: #202020;
+            border: 1px solid rgba(255, 255, 255, 0.19);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .n-cba-auto-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.19);
+        }
+        .n-cba-auto-val {
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 15px;
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .n-cba-auto-val .purple { color: #BA60FF; }
+        .n-cba-auto-input {
+            background: transparent;
+            border: none;
+            color: #FFF;
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 15px;
+            outline: none;
+            width: 60px;
+            pointer-events: none;
+            padding: 0;
+        }
+        .n-cba-auto-input.editing {
+            pointer-events: auto;
+            border-bottom: 1px solid #BA60FF;
+        }
+        .n-cba-edit-btn {
+            background: transparent;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .n-cba-auto-quick {
+            display: flex;
+        }
+        .n-cba-aq-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.19);
+            cursor: pointer;
+        }
+        .n-cba-aq-item:last-child { border-right: none; }
+        .n-cba-aq-item.active {
+            background: linear-gradient(282.85deg, #6D24D3 15.92%, #BA60FF 80.66%);
+            color: #FFF;
+        }
+
+        .n-cba-bet-btn {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(90deg, #BA60FF 0%, #6D24D3 100%);
+            border-radius: 100px;
+            border: none;
+            font-family: 'Inter';
+            font-weight: 600;
+            font-size: 16px;
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s;
+        }
+        .n-cba-bet-btn:active { transform: scale(0.98); }
+        .n-cba-bet-btn.cashout { background: linear-gradient(90deg, #ff0055, #cc0044); }
+        .n-cba-bet-btn .right {
+            position: absolute;
+            right: 25px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .n-cba-bet-btn i {
+            position: absolute;
+            left: 25px;
+            font-size: 20px;
+        }
+
+        /* --- USER BETS LIST --- */
+        .n-crash-bets-title {
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 24px;
+            color: #FFF;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .n-crash-bets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-bottom: 40px;
+        }
+        .n-cb-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: #161616;
+            border-radius: 20px;
+            min-height: 70px;
+        }
+        .n-cb-item.status-win-bg { background: linear-gradient(90deg, #161616 0%, rgba(36, 211, 150, 0.3) 155.52%); }
+        .n-cb-item.status-crash-bg { background: linear-gradient(90deg, #161616 0%, rgba(211, 36, 59, 0.3) 155.52%); }
+
+        .n-cb-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .n-cb-bet, .n-cb-win {
+            font-family: 'Inter';
+            font-weight: 400;
+            font-size: 14px;
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .n-cb-win { margin-left: auto; margin-right: 15px; }
+        .n-cb-crystal {
+            width: 20px; height: 20px;
+            background: #6D24D3;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .n-cb-status {
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-family: 'Inter';
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #FFF;
+            margin-left: auto;
+        }
+        .n-cb-status.status-in-game { background: rgba(30, 30, 30, 0.8); border: 1px solid rgba(255,255,255,0.19); }
+        .n-cb-status.status-x2 { background: rgba(17, 88, 64, 0.8); border: 1px solid rgba(255,255,255,0.19); margin-left: 0; }
+        .n-cb-status.status-crash { background: rgba(88, 17, 18, 0.8); border: 1px solid rgba(255,255,255,0.19); }
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
 </head>
@@ -557,27 +922,142 @@
 
         <!-- CRASH GAME -->
         <div id="view-crash" class="game-view">
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 5px;">
-                <div><h2 style="margin:0; font-family:'Rajdhani'; font-size: 32px;">CRASH</h2><span style="color:var(--text-secondary); font-size: 12px;">Eject before explosion</span></div>
-                <div style="text-align:right;"><div style="font-size:10px; color:#8b9bb4;">BALANCE</div><div id="crash-balance-display" style="font-family:'Rajdhani'; font-size:18px; color:white;">0.00</div></div>
+            
+            <!-- Hidden SVGs for Rocket States -->
+            <div id="n-rocket-normal" style="display:none;">
+                <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <mask id="mask0_717_960" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="2" y="2" width="41" height="41">
+                    <rect x="17.0096" y="2.00977" width="30" height="30" transform="rotate(30 17.0096 2.00977)" fill="url(#pattern0_717_960)"/>
+                    </mask>
+                    <g mask="url(#mask0_717_960)">
+                    <rect x="12.1776" y="4.67041" width="30" height="30" transform="rotate(15 12.1776 4.67041)" fill="#BA60FF"/>
+                    </g>
+                    <defs>
+                    <pattern id="pattern0_717_960" patternContentUnits="objectBoundingBox" width="1" height="1">
+                    <use xlink:href="#image0_717_960" transform="scale(0.01)"/>
+                    </pattern>
+                    <image id="image0_717_960" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFG0lEQVR4nO3dW4hVVRjA8U+7PWRl0+WhHqIsyjIfrHQMC3WimmCymy85dLEoIqGMyHwoyyCS6EIRgQhlSYFRFEREgiaFTE0FlZFamplTUZlOdxtn/rE462F32GfO3vusOfvba60fzNuc2Xvt7+y9v7XWt9aIRFEURVEURVEURVEUeQXoADqB64GHgdXAW8BHwA5ga9nn6CVgPDAZuA54GngP+JnmdpR97t4AzgIWAa8Ceyjmw7LbUVnAwcAs4BFgG268WXa7KgU4CLgEeBH4DfeeK7uNlQBMAR4HvmdsPVR2W7W/mHuAdcAI7dFbdrvVAY4E7gV20X7Ty26/GsAEYEkLGZILEyV0wBHAfSUHwvhRQkbtHXEj8AM6bJRQAecBm9DlCQkNcKztQ7Qra8pjgYQE6AYG0OtUCQEwEXge3X4CxonvgLnAd+i3VnwGjAPuAIaohtvE8w7eK1TLZPERcBrwOdWyU3wEzAb2UT1PiW+AecDfDi/SMPCynfs4HjgEOAm4CfgMt7rEJ9QKBoYcp6AXNhlyecBR53KvCbb4ArjTca/7T2BaxmOboLTKnxlCYCnu3Z9zOrfVx9dc8QFw8xiMR5nHXkeB8yjKdFjHS9XZSo8h3MtdggOc3MLxVkgVAIcBJwJTTQYCzAcuBS4Czgd2MzbeKHiuRYyo7QzaYQ7zrX8S+AT4l3JsKHDuJiUu4h3RCLgY+Bgdfs2bggKXFTxWjyi8K5YrnCi6Omc71hY4xnZ1L3PgUXTaZsqAMrahq+AXarFoYk4I3dY1C4qdk89SzZ42CnC4KJswqsIcxVfANfXvFDsnv7yFcbN7RAvgqIrM3tW/6DcCrwP9wAGKM3fUBNECWEnYlogWwByFGVU77VZzd9iFLVsIW69oASwkbJvUlPgAh9rVpaEaVrXEwJS3ELZVomx45EvCNQAcLcoGDkPWLZrYzlSoVoomwHElzmuU7RuzKks0AW4nTEOjlRCVBnifMC0WbezjyuTfoXlJFFcSFmFWwfYpXPuXxaeq5jmSgBcyXPQ1wDLgWtOTTdZD2SqTqg3RTxKtbOXIB4mLvqD+ojf5fJUC8pepmBGfVSggB4ArxXcVCciI2XRAQlCRgNwloQDOBAbRe2csldDYnTsHFfbCF0qogHNsSqllTnyWhAI43ZQJKb5TLpAQAGcA6+2zuU9xUGaL74CrgN8TjTZFdFMa/G7ZQekWn9n1IPsTDf6nWTFAyUG5QnxlK1G+rmvwsxk/W1ZQ5oivgBtSGjwtx+c7SwjK2eIjW4myua6xf5glxjn/Tmebg3KC+Mh801Iau72FHv38lB/X8yn7vdptIcmsj0hp8ECGz01NS4nT2PTZpX7xlf3nJWnD2A0fWcBMW3SW2k+pB/ziOCCPia9GWbDTk3ws2Ip5M6m1KlFOZObpT8nwH2xcmyke76k+mhG7qfG3DZaMvZ3hGNMdB6NfTeW6a2Yb1BYuzGCWbVSpTRe7MuzdXlZJwLkFL4zpxV+e8RjLHAbkQfGZ3askL1M9PyPHMdY4CsYKbx9VdYOJeeqcegtsddHXYiBMArFIQmD3RWxkl02J72404pvxGHtaCMbOYOY9Eovu59k7pcvOCE7K2uHL8Pc7CgbCZHfPqKtYrzpgRoFgfKGyWt0H1N45eR5Pt+Qd1IxyIFvKu9nuk+jnYKEmNE55Teb0mjc7gFYF/095zYDlu8CtwDFln1uQqFXdr7bvkhiEKIqiKIqiKIqiKIqkff4D23bQVd7xp6sAAAAASUVORK5CYII="/>
+                    </defs>
+                </svg>
             </div>
-        
-            <div class="crash-monitor">
+            <div id="n-rocket-crashed" style="display:none;">
+                <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <mask id="mask0_717_773" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="43" height="43">
+                    <rect x="21.2132" width="30" height="30" transform="rotate(45 21.2132 0)" fill="url(#pattern0_717_773)"/>
+                    </mask>
+                    <g mask="url(#mask0_717_773)">
+                    <rect x="18.7269" y="2.48608" width="30" height="30" transform="rotate(45 18.7269 2.48608)" fill="#D3001F"/>
+                    </g>
+                    <defs>
+                    <pattern id="pattern0_717_773" patternContentUnits="objectBoundingBox" width="1" height="1">
+                    <use xlink:href="#image0_717_773" transform="scale(0.01)"/>
+                    </pattern>
+                    <image id="image0_717_773" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFG0lEQVR4nO3dW4hVVRjA8U+7PWRl0+WhHqIsyjIfrHQMC3WimmCymy85dLEoIqGMyHwoyyCS6EIRgQhlSYFRFEREgiaFTE0FlZFamplTUZlOdxtn/rE462F32GfO3vusOfvba60fzNuc2Xvt7+y9v7XWt9aIRFEURVEURVEURVEUeQXoADqB64GHgdXAW8BHwA5ga9nn6CVgPDAZuA54GngP+JnmdpR97t4AzgIWAa8Ceyjmw7LbUVnAwcAs4BFgG268WXa7KgU4CLgEeBH4DfeeK7uNlQBMAR4HvmdsPVR2W7W/mHuAdcAI7dFbdrvVAY4E7gV20X7Ty26/GsAEYEkLGZILEyV0wBHAfSUHwvhRQkbtHXEj8AM6bJRQAecBm9DlCQkNcKztQ7Qra8pjgYQE6AYG0OtUCQEwEXge3X4CxonvgLnAd+i3VnwGjAPuAIaohtvE8w7eK1TLZPERcBrwOdWyU3wEzAb2UT1PiW+AecDfDi/SMPCynfs4HjgEOAm4CfgMt7rEJ9QKBoYcp6AXNhlyecBR53KvCbb4ArjTca/7T2BaxmOboLTKnxlCYCnu3Z9zOrfVx9dc8QFw8xiMR5nHXkeB8yjKdFjHS9XZSo8h3MtdggOc3MLxVkgVAIcBJwJTTQYCzAcuBS4Czgd2MzbeKHiuRYyo7QzaYQ7zrX8S+AT4l3JsKHDuJiUu4h3RCLgY+Bgdfs2bggKXFTxWjyi8K5YrnCi6Omc71hY4xnZ1L3PgUXTaZsqAMrahq+AXarFoYk4I3dY1C4qdk89SzZ42CnC4KJswqsIcxVfANfXvFDsnv7yFcbN7RAvgqIrM3tW/6DcCrwP9wAGKM3fUBNECWEnYlogWwByFGVU77VZzd9iFLVsIW69oASwkbJvUlPgAh9rVpaEaVrXEwJS3ELZVomx45EvCNQAcLcoGDkPWLZrYzlSoVoomwHElzmuU7RuzKks0AW4nTEOjlRCVBnifMC0WbezjyuTfoXlJFFcSFmFWwfYpXPuXxaeq5jmSgBcyXPQ1wDLgWtOTTdZD2SqTqg3RTxKtbOXIB4mLvqD+ojf5fJUC8pepmBGfVSggB4ArxXcVCciI2XRAQlCRgNwloQDOBAbRe2csldDYnTsHFfbCF0qogHNsSqllTnyWhAI43ZQJKb5TLpAQAGcA6+2zuU9xUGaL74CrgN8TjTZFdFMa/G7ZQekWn9n1IPsTDf6nWTFAyUG5QnxlK1G+rmvwsxk/W1ZQ5oivgBtSGjwtx+c7SwjK2eIjW4myua6xf5glxjn/Tmebg3KC+Mh801Iau72FHv38lB/X8yn7vdptIcmsj0hp8ECGz01NS4nT2PTZpX7xlf3nJWnD2A0fWcBMW3SW2k+pB/ziOCCPia9GWbDTk3ws2Ip5M6m1KlFOZObpT8nwH2xcmyke76k+mhG7qfG3DZaMvZ3hGNMdB6NfTeW6a2Yb1BYuzGCWbVSpTRe7MuzdXlZJwLkFL4zpxV+e8RjLHAbkQfGZ3askL1M9PyPHMdY4CsYKbx9VdYOJeeqcegtsddHXYiBMArFIQmD3RWxkl02J72404pvxGHtaCMbOYOY9Eovu59k7pcvOCE7K2uHL8Pc7CgbCZHfPqKtYrzpgRoFgfKGyWt0H1N45eR5Pt+Qd1IxyIFvKu9nuk+jnYKEmNE55Teb0mjc7gFYF/095zYDlu8CtwDFln1uQqFXdr7bvkhiEKIqiKIqiKIqiKIqkff4D23bQVd7xp6sAAAAASUVORK5CYII="/>
+                    </defs>
+                </svg>
+            </div>
+
+            <!-- CRASH MONITOR -->
+            <div class="n-crash-monitor" id="n-crash-monitor">
+                <div class="n-crash-dots"></div>
                 <canvas id="crashCanvas"></canvas>
-                <div id="rocket-entry"></div>
-                <div id="boom-anim"></div>
                 
-                <div class="crash-ui">
-                    <div class="crash-multiplier" id="crash-text">1.00x</div>
-                    <div class="crash-status" id="crash-status">PLACE YOUR BET</div>
-                    <div class="crash-win-msg" id="crash-win-msg"></div>
+                <div class="n-crash-ui-top">
+                    <div class="n-crash-mult" id="crash-text">0.00s</div>
+                    <div class="n-crash-status" id="crash-status">Round Through</div>
                 </div>
+
+                <div class="n-crash-info-bot">
+                    <div class="n-crash-info-item"><i class="fa-solid fa-user-group"></i> 24</div>
+                    <div class="n-crash-info-item">
+                        <svg width="14" height="14" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg>
+                        1200
+                    </div>
+                    <div class="n-crash-info-item"><i class="fa-solid fa-gift"></i> 11</div>
+                </div>
+
+                <!-- WE REMOVED THE SVGS. JUST THIS EMPTY DIV! -->
+                <div id="rocket-entry"></div>
             </div>
-        
-            <div class="crash-controls-area">
-                <div class="bet-selector"><span class="input-label">AMOUNT</span><input type="number" id="crash-bet" value="1.0" step="0.5" min="0.5" class="bet-input"><span class="ton-badge">TON</span></div>
-                <div class="button-group"><button class="btn-half" onclick="setHalfBet()">1/2</button><button class="btn-half" onclick="setDoubleBet()">x2</button></div>
-                <button class="btn-launch" id="crash-action-btn" onclick="toggleCrash()">LAUNCH ROCKET</button>
+
+            <!-- PAST MULTIPLIERS -->
+            <div class="n-crash-past-mults">
+                <div class="n-cpm-item cpm-purple">6.67x</div>
+                <div class="n-cpm-item cpm-pink">4.80x</div>
+                <div class="n-cpm-item cpm-light">1.46x</div>
+                <div class="n-cpm-item cpm-red">1.15x</div>
+                <div class="n-cpm-item cpm-pink">3.23x</div>
+                <div class="n-cpm-item cpm-purple">4.12x</div>
+            </div>
+
+            <!-- BET AREA -->
+            <div class="n-crash-bet-area">
+                <div class="n-cba-label">SELECT RATE TYPE</div>
+                <div class="n-cba-tabs">
+                    <div class="n-cba-tab active">BALANCE</div>
+                    <div class="n-cba-tab">INVENTORY</div>
+                </div>
+
+                <div class="n-cba-label">ENTER THE BET AMOUNT</div>
+                <div class="n-cba-amount-row">
+                    <button class="n-cba-btn-icon" onclick="nCrashChangeBet(-0.1)"><i class="fa-solid fa-minus"></i></button>
+                    <input type="number" id="n-cba-bet-input" class="n-cba-input" value="0.1" step="0.1">
+                    <button class="n-cba-btn-icon" onclick="nCrashChangeBet(0.1)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+
+                <div class="n-cba-quick-row">
+                    <button class="n-cba-quick-btn" onclick="nCrashSetBet('half')">1/2</button>
+                    <button class="n-cba-quick-btn wide" onclick="nCrashSetBet('all')">ALL IN</button>
+                    <button class="n-cba-quick-btn" onclick="nCrashSetBet('double')">x2</button>
+                </div>
+
+                <div class="n-cba-auto-row" id="n-cba-auto-row">
+                    <div class="n-cba-auto-top">
+                        <div class="n-cba-auto-val"><span class="purple">X</span> <input type="number" id="n-auto-cashout-input" class="n-cba-auto-input" value="2" readonly step="0.1"></div>
+                        <button class="n-cba-edit-btn" id="n-cba-edit-btn" onclick="toggleCrashEdit()"><i class="fa-solid fa-pen"></i></button>
+                    </div>
+                    <div class="n-cba-auto-quick">
+                        <div class="n-cba-aq-item" onclick="nCrashSetAuto(this, 1.1)">1.1x</div>
+                        <div class="n-cba-aq-item" onclick="nCrashSetAuto(this, 1.2)">1.2x</div>
+                        <div class="n-cba-aq-item" onclick="nCrashSetAuto(this, 1.5)">1.5x</div>
+                        <div class="n-cba-aq-item active" id="n-cba-aq-custom" onclick="nCrashSetAuto(this, document.getElementById('n-auto-cashout-input').value)">2x</div>
+                    </div>
+                </div>
+
+                <button class="n-cba-bet-btn" id="crash-action-btn" onclick="toggleCrash()">
+                    <i class="fa-solid fa-wallet"></i> BET <span class="right" id="crash-bet-display">$10</span>
+                </button>
+            </div>
+
+            <!-- USER BETS -->
+            <div class="n-crash-bets-title">User bets:</div>
+            <div class="n-crash-bets-list">
+                <div class="n-cb-item">
+                    <img class="n-cb-avatar" src="https://ui-avatars.com/api/?name=U&background=D9D9D9&color=000">
+                    <div class="n-cb-bet">100 
+                        <div class="n-cb-crystal"><svg width="12" height="12" viewBox="0 0 23 23" fill="none"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg></div>
+                    </div>
+                    <div class="n-cb-status status-in-game">IN GAME</div>
+                </div>
+                
+                <div class="n-cb-item status-win-bg">
+                    <img class="n-cb-avatar" src="https://ui-avatars.com/api/?name=A&background=D9D9D9&color=000">
+                    <div class="n-cb-bet">100 
+                        <div class="n-cb-crystal"><svg width="12" height="12" viewBox="0 0 23 23" fill="none"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg></div>
+                    </div>
+                    <div class="n-cb-win">200 
+                        <div class="n-cb-crystal"><svg width="12" height="12" viewBox="0 0 23 23" fill="none"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg></div>
+                    </div>
+                    <div class="n-cb-status status-x2">x2</div>
+                </div>
+                
+                <div class="n-cb-item status-crash-bg">
+                    <img class="n-cb-avatar" src="https://ui-avatars.com/api/?name=C&background=D9D9D9&color=000">
+                    <div class="n-cb-bet">100 
+                        <div class="n-cb-crystal"><svg width="12" height="12" viewBox="0 0 23 23" fill="none"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg></div>
+                    </div>
+                    <div class="n-cb-status status-crash">CRASH</div>
+                </div>
             </div>
         </div>
 
@@ -1954,72 +2434,38 @@
         }
         
         const RocketEngine = {
-            canvas: null, ctx: null, lottieAnim: null, boomLottie: null,
-            rocketEl: null, boomEl: null, width: 0, height: 0, animId: null,
-            
+            canvas: null, ctx: null, rocketEl: null, width: 0, height: 0, animId: null,
             status: 'IDLE', startTime: 0, multiplier: 1.00, crashPoint: 0, bet: 0,
             hasCashedOut: false, scaleX: 45, scaleY: 80, 
             
             init: function() {
                 this.canvas = document.getElementById('crashCanvas');
                 this.rocketEl = document.getElementById('rocket-entry');
-                this.boomEl = document.getElementById('boom-anim');
+                this.ctx = this.canvas.getContext('2d', { alpha: true }); 
                 
-                // Get context with alpha false for better performance
-                this.ctx = this.canvas.getContext('2d', { alpha: false });
-    
-                // Load Lottie - Rocket
-                // Inside RocketEngine.init function:
-                
-                // 1. Load Rocket Lottie with RAW link
-                this.lottieAnim = lottie.loadAnimation({
-                    container: this.rocketEl, 
-                    renderer: 'svg', 
-                    loop: true, 
-                    autoplay: false,
-                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5237694784767826212.json' 
-                });
-                
-                // 2. Load Boom Lottie with RAW link
-                this.boomLottie = lottie.loadAnimation({
-                    container: this.boomEl, 
-                    renderer: 'svg', 
-                    loop: false, 
-                    autoplay: false,
-                    path: 'https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/2_5242579622872256599.json'
-                });
-        
-                // Add resize listener
                 window.addEventListener('resize', () => this.resize());
-                
-                // Initial resize attempt (might fail if hidden)
                 this.resize();
             },
-        
+
             resize: function() {
                 if(!this.canvas) return;
                 const parent = this.canvas.parentElement;
-                
-                // 1. Get exact display size
                 const rect = parent.getBoundingClientRect();
-                if(rect.width === 0) return; // Tab is hidden, skip resize
+                if(rect.width === 0) return; 
                 
                 this.width = rect.width;
                 this.height = rect.height;
                 
-                // 2. Fix Blurry Canvas on Mobile (High DPI)
                 const dpr = window.devicePixelRatio || 1;
                 this.canvas.width = this.width * dpr;
                 this.canvas.height = this.height * dpr;
-                
-                // Scale context to match
                 this.ctx.scale(dpr, dpr);
                 
                 if(this.status === 'IDLE') this.drawIdle();
             },
-        
+
             startGame: function(betAmount, finalCrashPoint) {
-                this.resize(); // Force resize right before start to be safe
+                this.resize(); 
                 this.bet = betAmount;
                 this.crashPoint = finalCrashPoint;
                 this.startTime = Date.now();
@@ -2027,50 +2473,45 @@
                 this.hasCashedOut = false;
                 this.multiplier = 1.00;
                 
+                document.getElementById('n-crash-monitor').classList.remove('crashed');
+                
+                // Show purple SVG, hide red SVG
+                document.getElementById('rocket-svg-normal').style.display = 'block';
+                document.getElementById('rocket-svg-crashed').style.display = 'none';
                 this.rocketEl.style.display = 'block';
-                this.boomEl.style.display = 'none';
-                this.boomLottie.stop();
-                this.lottieAnim.play();
                 
                 if (this.animId) cancelAnimationFrame(this.animId);
                 this.loop();
             },
-        
+
             cashOut: function() {
                 this.hasCashedOut = true;
                 return this.multiplier;
             },
-        
+
             crash: function() {
                 this.status = 'CRASHED';
-                this.rocketEl.style.display = 'none'; 
-                this.lottieAnim.stop(); 
+                document.getElementById('n-crash-monitor').classList.add('crashed');
                 
-                // Draw one last frame to ensure explosion is at exact point
+                // Hide purple SVG, show red SVG
+                document.getElementById('rocket-svg-normal').style.display = 'none';
+                document.getElementById('rocket-svg-crashed').style.display = 'block';
+                
                 const t = this.getErrorTime();
                 this.draw(t);
-                
-                // Position Boom exactly where Rocket was
-                this.boomEl.style.left = this.rocketEl.style.left;
-                this.boomEl.style.top = this.rocketEl.style.top;
-                this.boomEl.style.transform = "translate(-50%, -50%) scale(1.5)"; // Center explosion
-                
-                this.boomEl.style.display = 'block';
-                this.boomLottie.goToAndPlay(0, true);
-        
                 cancelAnimationFrame(this.animId);
             },
-        
+
             getMultiplier: function(t) { return Math.max(1, Math.pow(1.15, t)); },
             getErrorTime: function() { return (Date.now() - this.startTime) / 1000; },
-        
+
             loop: function() {
                 if(this.status !== 'RUNNING') return;
                 const t = this.getErrorTime();
                 this.multiplier = this.getMultiplier(t);
-        
+
                 document.getElementById('crash-text').innerText = this.multiplier.toFixed(2) + "x";
-        
+
                 if(this.multiplier >= this.crashPoint) {
                     this.multiplier = this.crashPoint;
                     document.getElementById('crash-text').innerText = this.crashPoint.toFixed(2) + "x";
@@ -2080,11 +2521,10 @@
                 this.draw(t);
                 this.animId = requestAnimationFrame(() => this.loop());
             },
-        
+
             draw: function(t) {
                 const ctx = this.ctx; const w = this.width; const h = this.height;
-        
-                // Zoom Logic
+
                 let curScaleX = this.scaleX;
                 let curScaleY = this.scaleY;
                 if (this.multiplier > 2.0) {
@@ -2092,34 +2532,26 @@
                     curScaleY = this.scaleY * zoom;
                     curScaleX = this.scaleX * Math.sqrt(zoom);
                 }
-        
+
                 const worldX = t * curScaleX; 
                 const worldY = (this.multiplier - 1) * curScaleY;
                 
                 const baseScreenX = 40; 
                 const baseScreenY = h - 40; 
-        
+
                 let camX = 0, camY = 0;
                 if (worldX > w * 0.5) camX = worldX - w * 0.5;
                 if (worldY > h * 0.5) camY = worldY - h * 0.5;
-        
-                // Clear Screen
-                ctx.fillStyle = "#09090b"; 
-                ctx.fillRect(0, 0, w, h);
-        
-                // Grid
-                const gridSize = 50;
-                ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20";
-                ctx.beginPath();
-                const offsetX = camX % gridSize; const offsetY = camY % gridSize;
-                for (let x = baseScreenX - offsetX; x <= w; x += gridSize) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
-                for (let y = baseScreenY + offsetY; y >= 0; y -= gridSize) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
-                ctx.stroke();
-        
-                // Graph Curve
+
+                // Clear transparently
+                ctx.clearRect(0, 0, w, h);
+                
+                // Solid Curved Graphic stroke
                 ctx.save();
-                ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
-                ctx.strokeStyle = (this.status === 'CRASHED') ? "#ff0055" : "#ff9900"; 
+                ctx.lineWidth = 3; 
+                ctx.lineCap = "round"; 
+                ctx.lineJoin = "round";
+                ctx.strokeStyle = (this.status === 'CRASHED') ? "#D3001F" : "#BA60FF"; 
                 
                 ctx.beginPath();
                 ctx.moveTo(baseScreenX - camX, baseScreenY + camY); 
@@ -2135,54 +2567,90 @@
                 const rocketScreenY = baseScreenY - worldY + camY;
                 ctx.lineTo(rocketScreenX, rocketScreenY);
                 ctx.stroke();
-        
-                // Gradient Fill
-                ctx.lineTo(rocketScreenX, h); ctx.lineTo(baseScreenX - camX, h); ctx.closePath();
-                const grad = ctx.createLinearGradient(0, 0, 0, h);
-                if(this.status === 'CRASHED') {
-                    grad.addColorStop(0, "rgba(255, 0, 85, 0.2)"); grad.addColorStop(1, "rgba(255, 0, 85, 0)");
-                } else {
-                    grad.addColorStop(0, "rgba(255, 153, 0, 0.25)"); grad.addColorStop(1, "rgba(255, 153, 0, 0)");
-                }
-                ctx.fillStyle = grad; ctx.fill(); ctx.restore();
-        
-                // Rocket Positioning (DOM Elements)
+                ctx.restore();
+
+                // Calculate and position rocket angle
                 if (this.status !== 'CRASHED') {
-                    // Calculate Rotation Angle
                     const nextTime = t + 0.1;
                     const nextMult = this.getMultiplier(nextTime);
                     const nextWorldX = nextTime * curScaleX;
                     const nextWorldY = (nextMult - 1) * curScaleY;
                     const angle = Math.atan2(-(nextWorldY - worldY), nextWorldX - worldX); 
                     
-                    // Position Rocket
                     this.rocketEl.style.left = `${rocketScreenX}px`;
                     this.rocketEl.style.top = `${rocketScreenY}px`;
-                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`; // Manual offset adjustment
+                    this.rocketEl.style.transform = `translate(-30%, -75%) rotate(${angle + 0.785}rad)`; 
                 }
             },
-        
+
             drawIdle: function() {
-                const w = this.width; const h = this.height; const ctx = this.ctx;
-                ctx.fillStyle = "#09090b"; ctx.fillRect(0,0,w,h);
-                ctx.lineWidth = 1; ctx.strokeStyle = "#1a1a20"; ctx.beginPath();
-                for(let x=0; x<=w; x+=50) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
-                for(let y=0; y<=h; y+=50) { ctx.moveTo(0,y); ctx.lineTo(w,y); }
-                ctx.stroke();
+                this.ctx.clearRect(0,0,this.width,this.height);
             }
         };
-        
-        setTimeout(() => RocketEngine.init(), 500);
-        function setHalfBet() { const b = document.getElementById('crash-bet'); b.value = Math.max(0.5, parseFloat(b.value)/2).toFixed(1); }
-        function setDoubleBet() { const b = document.getElementById('crash-bet'); b.value = (parseFloat(b.value)*2).toFixed(1); }
-        
+
+        // --- CONTROLLER FUNCTIONS ---
+
+        function nCrashChangeBet(amt) {
+            const input = document.getElementById('n-cba-bet-input');
+            let val = parseFloat(input.value) + amt;
+            if(val < 0.1) val = 0.1;
+            input.value = val.toFixed(1);
+            document.getElementById('crash-bet-display').innerText = "$" + val.toFixed(1);
+        }
+
+        function nCrashSetBet(type) {
+            const input = document.getElementById('n-cba-bet-input');
+            let val = parseFloat(input.value);
+            if(type === 'half') val = Math.max(0.1, val / 2);
+            if(type === 'double') val = val * 2;
+            if(type === 'all') val = balance; 
+            input.value = val.toFixed(1);
+            document.getElementById('crash-bet-display').innerText = "$" + val.toFixed(1);
+        }
+
+        // Editable Auto Cashout Keyboard Logic
+        let isCrashEditing = false;
+        function toggleCrashEdit() {
+            const input = document.getElementById('n-auto-cashout-input');
+            const btn = document.getElementById('n-cba-edit-btn');
+            const customAq = document.getElementById('n-cba-aq-custom');
+            
+            if (!isCrashEditing) {
+                // Open edit 
+                isCrashEditing = true;
+                input.removeAttribute('readonly');
+                input.classList.add('editing');
+                input.focus();
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else {
+                // Save
+                isCrashEditing = false;
+                input.setAttribute('readonly', true);
+                input.classList.remove('editing');
+                btn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+                
+                let val = parseFloat(input.value);
+                if (isNaN(val) || val < 1.01) { val = 1.01; input.value = val; }
+                customAq.innerText = val + 'x';
+            }
+        }
+
+        // Auto Cashout Selection
+        function nCrashSetAuto(el, val) {
+            document.querySelectorAll('.n-cba-aq-item').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('n-auto-cashout-input').value = val;
+            if (el.id !== 'n-cba-aq-custom') {
+                document.getElementById('n-cba-aq-custom').innerText = document.getElementById('n-auto-cashout-input').value + 'x';
+            }
+        }
+
+        // Replace the old toggleCrash and crashEnd completely to map to the new HTML layout
         async function toggleCrash() {
             const btn = document.getElementById('crash-action-btn');
             const msg = document.getElementById('crash-status');
-            const winMsg = document.getElementById('crash-win-msg');
             const uiMult = document.getElementById('crash-text');
-        
-            // 1. CASHOUT (Secure Flow)
+
             if (RocketEngine.status === 'RUNNING' && !RocketEngine.hasCashedOut) {
                 const finalMult = RocketEngine.cashOut();
                 const winAmt = RocketEngine.bet * finalMult;
@@ -2192,65 +2660,67 @@
                 const res = await api("/api/game/crash/cashout", "POST", { winAmt: winAmt });
                 btn.disabled = false;
                 if(res.error) { alert(res.error); return; }
-        
+
                 balance += winAmt;
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-                document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
                 
-                btn.innerHTML = "LAUNCH ROCKET"; btn.classList.remove('cashout');
+                btn.innerHTML = `<i class="fa-solid fa-wallet"></i> BET <span class="right" id="crash-bet-display">$10</span>`; 
+                btn.classList.remove('cashout');
                 
-                msg.innerText = ""; // Hide text
-                winMsg.innerText = `+${winAmt.toFixed(2)} TON`;
+                msg.innerText = `+${winAmt.toFixed(2)} TON`;
+                msg.style.color = "#24D396";
                 return;
             }
-        
-            // 2. START GAME (Secure Flow)
+
             if (RocketEngine.status !== 'RUNNING') {
-                const betAmt = parseFloat(document.getElementById('crash-bet').value);
+                const input = document.getElementById('n-cba-bet-input');
+                const betAmt = parseFloat(input ? input.value : 0.1);
+
                 if(balance < betAmt) { alert("Insufficient funds!"); return; }
-        
+
                 btn.innerHTML = "PREPARING..."; btn.disabled = true;
-        
+
                 const res = await api("/api/game/crash/start", "POST", { bet: betAmt });
                 btn.disabled = false;
                 if (res.error) { alert(res.error); return; }
-        
+
                 balance = res.balance; 
                 document.getElementById('user-balance').innerText = balance.toFixed(2);
-                document.getElementById('crash-balance-display').innerText = balance.toFixed(2);
-        
-                uiMult.style.color = "#ff9900"; // Orange while running
-                uiMult.style.textShadow = "0 0 20px rgba(255, 153, 0, 0.6)";
-                msg.innerText = ""; // Empty string, no more "Rocket in flight"
-                winMsg.innerText = "";
-                btn.innerHTML = "EJECT NOW"; btn.classList.add('cashout');
-        
+
+                uiMult.style.color = "#FFFFFF"; 
+                msg.innerText = "In the round";
+                msg.style.color = "rgba(255,255,255,0.7)";
+                btn.innerHTML = "EJECT NOW"; 
+                btn.classList.add('cashout');
+
                 let crashAt = 1.0; const r = Math.random();
                 if(r < 0.3) crashAt = 1.0 + Math.random()*0.2;     
                 else if(r < 0.6) crashAt = 1.2 + Math.random()*1.8; 
                 else if(r < 0.9) crashAt = 3.0 + Math.random()*7.0; 
                 else crashAt = 10 + Math.random()*50;               
-        
+
                 RocketEngine.startGame(betAmt, crashAt);
             }
         }
-        
+
         function crashEnd() {
             RocketEngine.crash();
             const btn = document.getElementById('crash-action-btn');
-            btn.innerHTML = "TRY AGAIN"; btn.classList.remove('cashout');
+            btn.innerHTML = `<i class="fa-solid fa-wallet"></i> BET <span class="right" id="crash-bet-display">$10</span>`; 
+            btn.classList.remove('cashout');
             
-            if (RocketEngine.hasCashedOut) {
-                document.getElementById('crash-status').innerText = ""; 
-                document.getElementById('crash-text').style.color = "#8b9bb4"; 
-                document.getElementById('crash-text').style.textShadow = "none";
-            } else {
-                document.getElementById('crash-text').style.color = "#ff0055"; 
-                document.getElementById('crash-text').style.textShadow = "0 0 20px rgba(255, 0, 85, 0.6)";
-                document.getElementById('crash-status').innerText = ""; // Removed "ROCKET EXPLODED"
-                document.getElementById('crash-win-msg').innerText = "";
+            if (!RocketEngine.hasCashedOut) {
+                document.getElementById('crash-status').innerText = "Crash"; 
+                document.getElementById('crash-status').style.color = "#FF3D3D";
             }
         }
+
+        // Initialize Rocket AFTER you replace it
+        setTimeout(() => RocketEngine.init(), 500);
+        
+        function setHalfBet() { const b = document.getElementById('crash-bet'); b.value = Math.max(0.5, parseFloat(b.value)/2).toFixed(1); }
+        function setDoubleBet() { const b = document.getElementById('crash-bet'); b.value = (parseFloat(b.value)*2).toFixed(1); }
+        
 
         // --- UTILS ---
         function switchView(id) {
@@ -2270,8 +2740,8 @@
         
             // 3. Header Visibility
             const header = document.querySelector('header');
-            const viewsWithHeader = ['view-home', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history', 'view-transactions', 'view-tasks'];
-        
+            const viewsWithHeader =['view-home', 'view-crash', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history', 'view-transactions', 'view-tasks'];
+
             if (viewsWithHeader.includes(id)) {
                 header.classList.remove('hidden');
             } else {
