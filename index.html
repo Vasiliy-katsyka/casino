@@ -693,6 +693,24 @@
         .n-cb-status.status-in-game { background: rgba(30, 30, 30, 0.8); border: 1px solid rgba(255,255,255,0.19); }
         .n-cb-status.status-x2 { background: rgba(17, 88, 64, 0.8); border: 1px solid rgba(255,255,255,0.19); margin-left: 0; }
         .n-cb-status.status-crash { background: rgba(88, 17, 18, 0.8); border: 1px solid rgba(255,255,255,0.19); }
+        .n-task-image {
+            padding: 0;
+            background: transparent;
+            aspect-ratio: 820 / 362;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 15px;
+        }
+        .n-task-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
         @keyframes shake { 0% { transform: rotateY(180deg) translateX(0); } 25% { transform: rotateY(180deg) translateX(-5px); } 50% { transform: rotateY(180deg) translateX(5px); } 75% { transform: rotateY(180deg) translateX(-5px); } 100% { transform: rotateY(180deg) translateX(0); } }
     </style>
 </head>
@@ -980,37 +998,11 @@
                 <div id="rocket-entry">
                     <!-- Normal Rocket -->
                     <div id="rocket-svg-normal">
-                        <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <mask id="mask0_717_960" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="2" y="2" width="41" height="41">
-                        <rect x="17.0096" y="2.00977" width="30" height="30" transform="rotate(30 17.0096 2.00977)" fill="url(#pattern0_717_960)"/>
-                        </mask>
-                        <g mask="url(#mask0_717_960)">
-                        <rect x="12.1776" y="4.67041" width="30" height="30" transform="rotate(15 12.1776 4.67041)" fill="#BA60FF"/>
-                        </g>
-                        <defs>
-                        <pattern id="pattern0_717_960" patternContentUnits="objectBoundingBox" width="1" height="1">
-                        <use xlink:href="#image0_717_960" transform="scale(0.01)"/>
-                        </pattern>
-                        <image id="image0_717_960" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFG0lEQVR4nO3dW4hVVRjA8U+7PWRl0+WhHqIsyjIfrHQMC3WimmCymy85dLEoIqGMyHwoyyCS6EIRgQhlSYFRFEREgiaFTE0FlZFamplTUZlOdxtn/rE462F32GfO3vusOfvba60fzNuc2Xvt7+y9v7XWt9aIRFEURVEURVEURVEUeQXoADqB64GHgdXAW8BHwA5ga9nn6CVgPDAZuA54GngP+JnmdpR97t4AzgIWAa8Ceyjmw7LbUVnAwcAs4BFgG268WXa7KgU4CLgEeBH4DfeeK7uNlQBMAR4HvmdsPVR2W7W/mHuAdcAI7dFbdrvVAY4E7gV20X7Ty26/GsAEYEkLGZILEyV0wBHAfSUHwvhRQkbtHXEj8AM6bJRQAecBm9DlCQkNcKztQ7Qra8pjgYQE6AYG0OtUCQEwEXge3X4CxonvgLnAd+i3VnwGjAPuAIaohtvE8w7eK1TLZPERcBrwOdWyU3wEzAb2UT1PiW+AecDfDi/SMPCynfs4HjgEOAm4CfgMt7rEJ9QKBoYcp6AXNhlyecBR53KvCbb4ArjTca/7T2BaxmOboLTKnxlCYCnu3Z9zOrfVx9dc8QFw8xiMR5nHXkeB8yjKdFjHS9XZSo8h3MtdggOc3MLxVkgVAIcBJwJTTQYCzAcuBS4Czgd2MzbeKHiuRYyo7QzaYQ7zrX8S+AT4l3JsKHDuJiUu4h3RCLgY+Bgdfs2bggKXFTxWjyi8K5YrnCi6Omc71hY4xnZ1L3PgUXTaZsqAMrahq+AXarFoYk4I3dY1C4qdk89SzZ42CnC4KJswqsIcxVfANfXvFDsnv7yFcbN7RAvgqIrM3tW/6DcCrwP9wAGKM3fUBNECWEnYlogWwByFGVU77VZzd9iFLVsIW69oASwkbJvUlPgAh9rVpaEaVrXEwJS3ELZVomx45EvCNQAcLcoGDkPWLZrYzlSoVoomwHElzmuU7RuzKks0AW4nTEOjlRCVBnifMC0WbezjyuTfoXlJFFcSFmFWwfYpXPuXxaeq5jmSgBcyXPQ1wDLgWtOTTdZD2SqTqg3RTxKtbOXIB4mLvqD+ojf5fJUC8pepmBGfVSggB4ArxXcVCciI2XRAQlCRgNwloQDOBAbRe2csldDYnTsHFfbCF0qogHNsSqllTnyWhAI43ZQJKb5TLpAQAGcA6+2zuU9xUGaL74CrgN8TjTZFdFMa/G7ZQekWn9n1IPsTDf6nWTFAyUG5QnxlK1G+rmvwsxk/W1ZQ5oivgBtSGjwtx+c7SwjK2eIjW4myua6xf5glxjn/Tmebg3KC+Mh801Iau72FHv38lB/X8yn7vdptIcmsj0hp8ECGz01NS4nT2PTZpX7xlf3nJWnD2A0fWcBMW3SW2k+pB/ziOCCPia9GWbDTk3ws2Ip5M6m1KlFOZObpT8nwH2xcmyke76k+mhG7qfG3DZaMvZ3hGNMdB6NfTeW6a2Yb1BYuzGCWbVSpTRe7MuzdXlZJwLkFL4zpxV+e8RjLHAbkQfGZ3askL1M9PyPHMdY4CsYKbx9VdYOJeeqcegtsddHXYiBMArFIQmD3RWxkl02J72404pvxGHtaCMbOYOY9Eovu59k7pcvOCE7K2uHL8Pc7CgbCZHfPqKtYrzpgRoFgfKGyWt0H1N45eR5Pt+Qd1IxyIFvKu9nuk+jnYKEmNE55Teb0mjc7gFYF/095zYDlu8CtwDFln1uQqFXdr7bvkhiEKIqiKIqiKIqiKIqkff4D23bQVd7xp6sAAAAASUVORK5CYII="/>
-                        </defs>
-                        </svg>
+                        <img width="45" height="45" style="object-fit: contain;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFG0lEQVR4nO3dW4hVVRjA8U+7PWRl0+WhHqIsyjIfrHQMC3WimmCymy85dLEoIqGMyHwoyyCS6EIRgQhlSYFRFEREgiaFTE0FlZFamplTUZlOdxtn/rE462F32GfO3vusOfvba60fzNuc2Xvt7+y9v7XWt9aIRFEURVEURVEURVEUeQXoADqB64GHgdXAW8BHwA5ga9nn6CVgPDAZuA54GngP+JnmdpR97t4AzgIWAa8Ceyjmw7LbUVnAwcAs4BFgG268WXa7KgU4CLgEeBH4DfeeK7uNlQBMAR4HvmdsPVR2W7W/mHuAdcAI7dFbdrvVAY4E7gV20X7Ty26/GsAEYEkLGZILEyV0wBHAfSUHwvhRQkbtHXEj8AM6bJRQAecBm9DlCQkNcKztQ7Qra8pjgYQE6AYG0OtUCQEwEXge3X4CxonvgLnAd+i3VnwGjAPuAIaohtvE8w7eK1TLZPERcBrwOdWyU3wEzAb2UT1PiW+AecDfDi/SMPCynfs4HjgEOAm4CfgMt7rEJ9QKBoYcp6AXNhlyecBR53KvCbb4ArjTca/7T2BaxmOboLTKnxlCYCnu3Z9zOrfVx9dc8QFw8xiMR5nHXkeB8yjKdFjHS9XZSo8h3MtdggOc3MLxVkgVAIcBJwJTTQYCzAcuBS4Czgd2MzbeKHiuRYyo7QzaYQ7zrX8S+AT4l3JsKHDuJiUu4h3RCLgY+Bgdfs2bggKXFTxWjyi8K5YrnCi6Omc71hY4xnZ1L3PgUXTaZsqAMrahq+AXarFoYk4I3dY1C4qdk89SzZ42CnC4KJswqsIcxVfANfXvFDsnv7yFcbN7RAvgqIrM3tW/6DcCrwP9wAGKM3fUBNECWEnYlogWwByFGVU77VZzd9iFLVsIW69oASwkbJvUlPgAh9rVpaEaVrXEwJS3ELZVomx45EvCNQAcLcoGDkPWLZrYzlSoVoomwHElzmuU7RuzKks0AW4nTEOjlRCVBnifMC0WbezjyuTfoXlJFFcSFmFWwfYpXPuXxaeq5jmSgBcyXPQ1wDLgWtOTTdZD2SqTqg3RTxKtbOXIB4mLvqD+ojf5fJUC8pepmBGfVSggB4ArxXcVCciI2XRAQlCRgNwloQDOBAbRe2csldDYnTsHFfbCF0qogHNsSqllTnyWhAI43ZQJKb5TLpAQAGcA6+2zuU9xUGaL74CrgN8TjTZFdFMa/G7ZQekWn9n1IPsTDf6nWTFAyUG5QnxlK1G+rmvwsxk/W1ZQ5oivgBtSGjwtx+c7SwjK2eIjW4myua6xf5glxjn/Tmebg3KC+Mh801Iau72FHv38lB/X8yn7vdptIcmsj0hp8ECGz01NS4nT2PTZpX7xlf3nJWnD2A0fWcBMW3SW2k+pB/ziOCCPia9GWbDTk3ws2Ip5M6m1KlFOZObpT8nwH2xcmyke76k+mhG7qfG3DZaMvZ3hGNMdB6NfTeW6a2Yb1BYuzGCWbVSpTRe7MuzdXlZJwLkFL4zpxV+e8RjLHAbkQfGZ3askL1M9PyPHMdY4CsYKbx9VdYOJeeqcegtsddHXYiBMArFIQmD3RWxkl02J72404pvxGHtaCMbOYOY9Eovu59k7pcvOCE7K2uHL8Pc7CgbCZHfPqKtYrzpgRoFgfKGyWt0H1N45eR5Pt+Qd1IxyIFvKu9nuk+jnYKEmNE55Teb0mjc7gFYF/095zYDlu8CtwDFln1uQqFXdr7bvkhiEKIqiKIqiKIqiKIqkff4D23bQVd7xp6sAAAAASUVORK5CYII=">
                     </div>
                     <!-- Crashed Rocket -->
                     <div id="rocket-svg-crashed" style="display:none;">
-                        <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <mask id="mask0_717_773" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="43" height="43">
-                        <rect x="21.2132" width="30" height="30" transform="rotate(45 21.2132 0)" fill="url(#pattern0_717_773)"/>
-                        </mask>
-                        <g mask="url(#mask0_717_773)">
-                        <rect x="18.7269" y="2.48608" width="30" height="30" transform="rotate(45 18.7269 2.48608)" fill="#D3001F"/>
-                        </g>
-                        <defs>
-                        <pattern id="pattern0_717_773" patternContentUnits="objectBoundingBox" width="1" height="1">
-                        <use xlink:href="#image0_717_773" transform="scale(0.01)"/>
-                        </pattern>
-                        <image id="image0_717_773" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFG0lEQVR4nO3dW4hVVRjA8U+7PWRl0+WhHqIsyjIfrHQMC3WimmCymy85dLEoIqGMyHwoyyCS6EIRgQhlSYFRFEREgiaFTE0FlZFamplTUZlOdxtn/rE462F32GfO3vusOfvba60fzNuc2Xvt7+y9v7XWt9aIRFEURVEURVEURVEUeQXoADqB64GHgdXAW8BHwA5ga9nn6CVgPDAZuA54GngP+JnmdpR97t4AzgIWAa8Ceyjmw7LbUVnAwcAs4BFgG268WXa7KgU4CLgEeBH4DfeeK7uNlQBMAR4HvmdsPVR2W7W/mHuAdcAI7dFbdrvVAY4E7gV20X7Ty26/GsAEYEkLGZILEyV0wBHAfSUHwvhRQkbtHXEj8AM6bJRQAecBm9DlCQkNcKztQ7Qra8pjgYQE6AYG0OtUCQEwEXge3X4CxonvgLnAd+i3VnwGjAPuAIaohtvE8w7eK1TLZPERcBrwOdWyU3wEzAb2UT1PiW+AecDfDi/SMPCynfs4HjgEOAm4CfgMt7rEJ9QKBoYcp6AXNhlyecBR53KvCbb4ArjTca/7T2BaxmOboLTKnxlCYCnu3Z9zOrfVx9dc8QFw8xiMR5nHXkeB8yjKdFjHS9XZSo8h3MtdggOc3MLxVkgVAIcBJwJTTQYCzAcuBS4Czgd2MzbeKHiuRYyo7QzaYQ7zrX8S+AT4l3JsKHDuJiUu4h3RCLgY+Bgdfs2bggKXFTxWjyi8K5YrnCi6Omc71hY4xnZ1L3PgUXTaZsqAMrahq+AXarFoYk4I3dY1C4qdk89SzZ42CnC4KJswqsIcxVfANfXvFDsnv7yFcbN7RAvgqIrM3tW/6DcCrwP9wAGKM3fUBNECWEnYlogWwByFGVU77VZzd9iFLVsIW69oASwkbJvUlPgAh9rVpaEaVrXEwJS3ELZVomx45EvCNQAcLcoGDkPWLZrYzlSoVoomwHElzmuU7RuzKks0AW4nTEOjlRCVBnifMC0WbezjyuTfoXlJFFcSFmFWwfYpXPuXxaeq5jmSgBcyXPQ1wDLgWtOTTdZD2SqTqg3RTxKtbOXIB4mLvqD+ojf5fJUC8pepmBGfVSggB4ArxXcVCciI2XRAQlCRgNwloQDOBAbRe2csldDYnTsHFfbCF0qogHNsSqllTnyWhAI43ZQJKb5TLpAQAGcA6+2zuU9xUGaL74CrgN8TjTZFdFMa/G7ZQekWn9n1IPsTDf6nWTFAyUG5QnxlK1G+rmvwsxk/W1ZQ5oivgBtSGjwtx+c7SwjK2eIjW4myua6xf5glxjn/Tmebg3KC+Mh801Iau72FHv38lB/X8yn7vdptIcmsj0hp8ECGz01NS4nT2PTZpX7xlf3nJWnD2A0fWcBMW3SW2k+pB/ziOCCPia9GWbDTk3ws2Ip5M6m1KlFOZObpT8nwH2xcmyke76k+mhG7qfG3DZaMvZ3hGNMdB6NfTeW6a2Yb1BYuzGCWbVSpTRe7MuzdXlZJwLkFL4zpxV+e8RjLHAbkQfGZ3askL1M9PyPHMdY4CsYKbx9VdYOJeeqcegtsddHXYiBMArFIQmD3RWxkl02J72404pvxGHtaCMbOYOY9Eovu59k7pcvOCE7K2uHL8Pc7CgbCZHfPqKtYrzpgRoFgfKGyWt0H1N45eR5Pt+Qd1IxyIFvKu9nuk+jnYKEmNE55Teb0mjc7gFYF/095zYDlu8CtwDFln1uQqFXdr7bvkhiEKIqiKIqiKIqiKIqkff4D23bQVd7xp6sAAAAASUVORK5CYII="/>
-                        </defs>
-                        </svg>
+                        <img width="43" height="43" style="object-fit: contain;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFG0lEQVR4nO3dW4hVVRjA8U+7PWRl0+WhHqIsyjIfrHQMC3WimmCymy85dLEoIqGMyHwoyyCS6EIRgQhlSYFRFEREgiaFTE0FlZFamplTUZlOdxtn/rE462F32GfO3vusOfvba60fzNuc2Xvt7+y9v7XWt9aIRFEURVEURVEURVEUeQXoADqB64GHgdXAW8BHwA5ga9nn6CVgPDAZuA54GngP+JnmdpR97t4AzgIWAa8Ceyjmw7LbUVnAwcAs4BFgG268WXa7KgU4CLgEeBH4DfeeK7uNlQBMAR4HvmdsPVR2W7W/mHuAdcAI7dFbdrvVAY4E7gV20X7Ty26/GsAEYEkLGZILEyV0wBHAfSUHwvhRQkbtHXEj8AM6bJRQAecBm9DlCQkNcKztQ7Qra8pjgYQE6AYG0OtUCQEwEXge3X4CxonvgLnAd+i3VnwGjAPuAIaohtvE8w7eK1TLZPERcBrwOdWyU3wEzAb2UT1PiW+AecDfDi/SMPCynfs4HjgEOAm4CfgMt7rEJ9QKBoYcp6AXNhlyecBR53KvCbb4ArjTca/7T2BaxmOboLTKnxlCYCnu3Z9zOrfVx9dc8QFw8xiMR5nHXkeB8yjKdFjHS9XZSo8h3MtdggOc3MLxVkgVAIcBJwJTTQYCzAcuBS4Czgd2MzbeKHiuRYyo7QzaYQ7zrX8S+AT4l3JsKHDuJiUu4h3RCLgY+Bgdfs2bggKXFTxWjyi8K5YrnCi6Omc71hY4xnZ1L3PgUXTaZsqAMrahq+AXarFoYk4I3dY1C4qdk89SzZ42CnC4KJswqsIcxVfANfXvFDsnv7yFcbN7RAvgqIrM3tW/6DcCrwP9wAGKM3fUBNECWEnYlogWwByFGVU77VZzd9iFLVsIW69oASwkbJvUlPgAh9rVpaEaVrXEwJS3ELZVomx45EvCNQAcLcoGDkPWLZrYzlSoVoomwHElzmuU7RuzKks0AW4nTEOjlRCVBnifMC0WbezjyuTfoXlJFFcSFmFWwfYpXPuXxaeq5jmSgBcyXPQ1wDLgWtOTTdZD2SqTqg3RTxKtbOXIB4mLvqD+ojf5fJUC8pepmBGfVSggB4ArxXcVCciI2XRAQlCRgNwloQDOBAbRe2csldDYnTsHFfbCF0qogHNsSqllTnyWhAI43ZQJKb5TLpAQAGcA6+2zuU9xUGaL74CrgN8TjTZFdFMa/G7ZQekWn9n1IPsTDf6nWTFAyUG5QnxlK1G+rmvwsxk/W1ZQ5oivgBtSGjwtx+c7SwjK2eIjW4myua6xf5glxjn/Tmebg3KC+Mh801Iau72FHv38lB/X8yn7vdptIcmsj0hp8ECGz01NS4nT2PTZpX7xlf3nJWnD2A0fWcBMW3SW2k+pB/ziOCCPia9GWbDTk3ws2Ip5M6m1KlFOZObpT8nwH2xcmyke76k+mhG7qfG3DZaMvZ3hGNMdB6NfTeW6a2Yb1BYuzGCWbVSpTRe7MuzdXlZJwLkFL4zpxV+e8RjLHAbkQfGZ3askL1M9PyPHMdY4CsYKbx9VdYOJeeqcegtsddHXYiBMArFIQmD3RWxkl02J72404pvxGHtaCMbOYOY9Eovu59k7pcvOCE7K2uHL8Pc7CgbCZHfPqKtYrzpgRoFgfKGyWt0H1N45eR5Pt+Qd1IxyIFvKu9nuk+jnYKEmNE55Teb0mjc7gFYF/095zYDlu8CtwDFln1uQqFXdr7bvkhiEKIqiKIqiKIqiKIqkff4D23bQVd7xp6sAAAAASUVORK5CYII=">
                     </div>
                 </div>
             </div>
@@ -1385,55 +1377,18 @@
             <div class="n-task-label">Your assignments:</div>
 
             <!-- Card 1 -->
-            <div class="n-task-card n-task-c1">
-                <div class="n-task-c-glow tl"></div>
-                <div class="n-task-c-glow br"></div>
-                <div class="n-task-c-diamond"></div>
-                <div class="n-task-c-num">First task</div>
-                
-                <div class="n-task-c-title">Play 3 games for a total of 100 tokens</div>
-                
-                <div class="n-task-c-bot">
-                    <div class="n-task-c-sub">Prize of 50 tokens</div>
-                    <div style="display: flex; align-items: center;">
-                        <div class="n-task-c-prog">0/3</div>
-                        <button class="n-task-btn">To play</button>
-                    </div>
-                </div>
+            <div class="n-task-card n-task-image">
+                <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/tasks/Frame%2077.png?raw=true" alt="Task 1">
             </div>
-
+            
             <!-- Card 2 -->
-            <div class="n-task-card n-task-c2">
-                <div class="n-task-c-diamond"></div>
-                <div class="n-task-c-num">The second task</div>
-                
-                <div class="n-task-c-title">Subscribe to the channel</div>
-                
-                <div class="n-task-c-bot">
-                    <div class="n-task-c-sub">Prize of 5 tokens</div>
-                    <div style="display: flex; align-items: center;">
-                        <div class="n-task-c-prog">-</div>
-                        <button class="n-task-btn">Subscribe</button>
-                    </div>
-                </div>
+            <div class="n-task-card n-task-image">
+                <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/tasks/Frame%2078.png?raw=true" alt="Task 2">
             </div>
-
+            
             <!-- Card 3 -->
-            <div class="n-task-card n-task-c3">
-                <div class="n-task-c-glow tl"></div>
-                <div class="n-task-c-glow br"></div>
-                <div class="n-task-c-diamond"></div>
-                <div class="n-task-c-num">Third task</div>
-                
-                <div class="n-task-c-title">Invite three friends</div>
-                
-                <div class="n-task-c-bot">
-                    <div class="n-task-c-sub">Prize of 5 tokens</div>
-                    <div style="display: flex; align-items: center;">
-                        <div class="n-task-c-prog">0/3</div>
-                        <button class="n-task-btn">Invite</button>
-                    </div>
-                </div>
+            <div class="n-task-card n-task-image">
+                <img src="https://github.com/Vasiliy-katsyka/casino/blob/main/tasks/Frame%2079.png?raw=true" alt="Task 3">
             </div>
         </div>
 
