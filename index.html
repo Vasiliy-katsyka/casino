@@ -1081,6 +1081,63 @@
         }
         .n-mines-multiplier { font-family: 'Inter'; font-size: 24px; font-weight: 700; color: #BA60FF; }
         .n-mines-profit { font-family: 'Inter'; font-size: 24px; font-weight: 700; color: white; }
+
+        /* --- REDESIGNED CASES CSS --- */
+        .n-case-live-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding: 0 5px; }
+        .n-case-live-badge { width: 50px; height: 40px; background: #151515; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .n-case-live-dot { width: 5px; height: 5px; background: #2DFF3B; border-radius: 50%; box-shadow: 0 0 5px #2DFF3B; }
+        .n-case-live-text { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; line-height: 1; color: #2DFF3B; }
+        
+        .n-case-ticker-track { display: flex; gap: 10px; }
+        .n-case-ticker-item { width: 50px; height: 40px; background: #151515; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: nTickerPop 0.3s ease-out forwards; }
+        @keyframes nTickerPop { from { opacity: 0; transform: scale(0.5) translateX(-20px); } to { opacity: 1; transform: scale(1) translateX(0); } }
+        .n-case-ticker-item img { width: 31px; height: 26px; object-fit: contain; }
+
+        .n-case-main-container { background: #161616; border-radius: 20px; padding: 10px 15px 25px 15px; position: relative; display: flex; flex-direction: column; margin-bottom: 20px; }
+        .n-case-handle { width: 60px; height: 13px; background: #222222; border-radius: 10px; margin: 0 auto 15px auto; }
+        
+        .n-case-main-price { position: absolute; left: 15px; top: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(18, 18, 18, 0.68); border-radius: 20px; padding: 8px 14px; z-index: 10; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 15px; color: #FFFFFF; text-transform: uppercase; }
+
+        .n-case-roulette-section { position: relative; width: 100%; margin-bottom: 25px; padding-top: 45px; } 
+
+        .n-case-strips-container { display: flex; flex-direction: column; gap: 15px; position: relative; width: 100%; }
+        .n-case-strip-wrap { position: relative; height: 138px; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); }
+        .n-case-strip { display: flex; height: 100%; align-items: center; will-change: transform; transition: transform 4s cubic-bezier(0.15,0,0,1); }
+
+        .n-case-marker-top, .n-case-marker-bot { position: absolute; left: 50%; transform: translateX(-50%); width: 22px; height: 30px; background: #6D24D3; border-radius: 1px; z-index: 5; }
+        .n-case-marker-top { top: 0; clip-path: polygon(50% 100%, 0 0, 100% 0); } 
+        .n-case-marker-bot { bottom: 0; clip-path: polygon(50% 0, 0 100%, 100% 100%); }
+
+        .n-case-item { width: 150px; height: 138px; background: #151515; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; margin: 0 5px; box-sizing: border-box; }
+        .n-case-item img { width: 108px; height: 85px; object-fit: contain; }
+        
+        /* Updated Item Cost Badge (For stock and roulette items) */
+        .n-case-item-cost { position: absolute; top: 10px; left: 10px; background: rgba(18, 18, 18, 0.68); border-radius: 15px; padding: 4px 8px; display: flex; align-items: center; gap: 4px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 10px; color: #FFFFFF; z-index: 2; }
+
+        /* Bigger 1 2 3 Buttons */
+        .n-case-spin-toggle { border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; display: flex; height: 49px; padding: 3px; box-sizing: border-box; margin-bottom: 25px; width: 100%; }
+        .n-case-toggle-btn { flex: 1; display: flex; justify-content: center; align-items: center; height: 100%; border-radius: 20px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 18px; color: #FFFFFF; cursor: pointer; transition: 0.3s; }
+        .n-case-toggle-btn.active { background: #6D24D3; }
+
+        .n-case-stock-title { font-family: 'Inter', sans-serif; font-size: 10px; text-transform: uppercase; color: #FFFFFF; opacity: 0.6; margin-bottom: 15px; }
+        .n-case-stock-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        
+        /* Max 2 rows trick -> hide items 7 and beyond by default */
+        .n-case-stock-grid .n-case-stock-item:nth-child(n+7) { display: none; }
+        .n-case-stock-grid.expanded .n-case-stock-item:nth-child(n+7) { display: flex; }
+
+        .n-case-stock-item { width: 100%; aspect-ratio: 123/113; background: #151515; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .n-case-stock-item img { width: 70%; height: 70%; object-fit: contain; }
+
+        /* Show More Button */
+        .n-case-show-more { background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; color: #fff; width: 100%; height: 40px; font-family: 'Inter', sans-serif; font-size: 14px; margin-bottom: 25px; cursor: pointer; transition: 0.2s; }
+        .n-case-show-more:active { background: rgba(255,255,255,0.05); }
+
+        /* Bigger Open Case Button */
+        .n-case-open-btn { background: linear-gradient(90deg, #BA60FF 0%, #6D24D3 100%); border-radius: 100px; height: 60px; width: 100%; border: none; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; color: #FFFFFF; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(109, 36, 211, 0.3); }
+        .n-case-open-btn:active { transform: scale(0.98); }
+        .n-case-open-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
         @keyframes pulseLogo {
             0% { transform: scale(0.95); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -1195,7 +1252,7 @@
                         <div class="n-home-card n-ratio-1" onclick="switchView('view-mines')">
                             <img class="n-home-img-full" src="https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/mainpage/mines.png?raw=true" alt="Mines">
                         </div>
-                        <div class="n-home-card n-ratio-1" onclick="openCasesMenu()">
+                        <div class="n-home-card n-ratio-1" onclick="switchView('view-case-play'); initCasePlay();">
                             <img class="n-home-img-full" src="https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/mainpage/cases.png?raw=true" alt="Cases">
                         </div>
                     </div>
@@ -1283,31 +1340,52 @@
             </div>
         </div>
 
-        <!-- CASES MENU -->
-        <div id="view-cases-menu" class="game-view">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
-                <button class="btn btn-back" onclick="switchView('view-home')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 style="margin:0; font-family:'Rajdhani'">SELECT CASE</h2>
-            </div>
-            <div class="cases-list" id="cases-list-container"></div>
-        </div>
-
-        <!-- CASE PLAY -->
+        <!-- SINGLE CASE PLAY -->
         <div id="view-case-play" class="game-view">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <button class="btn btn-back" onclick="openCasesMenu()"><i class="fa-solid fa-arrow-left"></i></button>
-                <div style="text-align:right;">
-                    <div style="font-family:'Rajdhani'; font-weight:bold; font-size:18px;" id="cp-name">...</div>
-                    <div style="display:flex; gap:10px; justify-content:flex-end; font-size:12px;">
-                        <span style="color:var(--gold);" id="cp-price">...</span>
-                        <span style="color:white; opacity:0.6;">Bal: <span id="case-balance-display">0.00</span></span>
-                    </div>
+            <!-- 1. Top Live Winnings -->
+            <div class="n-case-live-wrapper">
+                <div class="n-case-live-badge">
+                    <div class="n-case-live-dot"></div>
+                    <div class="n-case-live-text">Live</div>
                 </div>
+                <div class="n-case-ticker-track" id="n-case-ticker-track"></div>
             </div>
-            <div class="case-container"><div class="case-marker"></div><div class="case-strip" id="case-strip"></div></div>
-            <button class="btn" onclick="spinCase()" id="spin-btn" style="margin-bottom:20px;">OPEN CASE</button>
-            <div style="color:#666; font-size:10px; text-transform:uppercase; margin-bottom:5px;">Possible Drops</div>
-            <div class="select-grid" id="case-drops-grid"></div>
+
+            <!-- 2. Single Rounded Main Container -->
+            <div class="n-case-main-container">
+                <div class="n-case-handle"></div>
+
+                <div class="n-case-main-price">
+                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <rect width="19" height="19" rx="9.5" fill="#6D24D3"/>
+                        <rect x="4" y="5" width="11" height="10" fill="url(#pattern_diamond_case)"/>
+                        <defs>
+                            <pattern id="pattern_diamond_case" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                <use xlink:href="#img_diamond_case" transform="matrix(0.0127315 0 0 0.0143229 -0.111111 -0.25)"/>
+                            </pattern>
+                            <image id="img_diamond_case" width="96" height="96" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
+                        </defs>
+                    </svg>
+                    2.50
+                </div>
+
+                <div class="n-case-roulette-section">
+                    <div id="n-case-strips-container" class="n-case-strips-container"></div>
+                </div>
+
+                <div class="n-case-spin-toggle">
+                    <div class="n-case-toggle-btn active" onclick="nSetCaseCount(1)">1</div>
+                    <div class="n-case-toggle-btn" onclick="nSetCaseCount(2)">2</div>
+                    <div class="n-case-toggle-btn" onclick="nSetCaseCount(3)">3</div>
+                </div>
+
+                <div class="n-case-stock-title">IN STOCK</div>
+                <div class="n-case-stock-grid" id="n-case-stock-grid"></div>
+                
+                <button class="n-case-show-more" id="n-case-show-more" onclick="nToggleStock()">Show more</button>
+
+                <button class="n-case-open-btn" id="n-case-open-btn" onclick="nSpinCase()">Open for 2.50 tokens</button>
+            </div>
         </div>
 
         <!-- UPGRADER -->
@@ -2073,13 +2151,191 @@
             }
         });
 
-        const CASES = [
-            { id: 'daily', name: "Daily Free", price: 0, icon: "fa-gift", color: "#fff" },
-            { id: 'starter', name: "Starter Case", price: 1.5, icon: "fa-leaf", color: "#00ff88" },
-            { id: 'rare', name: "Rare Case", price: 10, icon: "fa-gem", color: "#0088cc" },
-            { id: 'high', name: "High Roller", price: 50, icon: "fa-crown", color: "#ff0055" },
-            { id: 'god', name: "God Case", price: 250, icon: "fa-bolt", color: "#ffd700" }
-        ];
+        // --- REDESIGNED CASES JS ---
+        let nCaseCount = 1;
+        const CASE_PRICE = 2.5;
+        let isCaseSpinning = false;
+        let isStockExpanded = false; // Tracks if "Show More" is clicked
+
+        function initCasePlay() {
+            // 1. Move this to the TOP so the ticker starts regardless of API speed
+            if (!window.caseTickerStarted) {
+                window.caseTickerStarted = true;
+                nStartCaseTicker();
+            }
+
+            if(allGifts.length === 0) return alert("Items are loading, please wait!");
+            nSetCaseCount(1);
+            
+            // Render "In Stock" Grid (Only first 6 shown by default via CSS)
+            const grid = document.getElementById('n-case-stock-grid');
+            grid.innerHTML = '';
+            const unique =[...new Map(allGifts.map(item =>[item['id'], item])).values()].sort((a,b)=>b.price-a.price);
+            
+            unique.forEach(i => {
+                grid.innerHTML += `
+                    <div class="n-case-stock-item">
+                        <div class="n-case-item-cost">
+                            <svg width="10" height="10" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="19" height="19" rx="9.5" fill="#6D24D3"/>
+                                <rect x="4" y="5" width="11" height="10" fill="url(#pattern_diamond_case)"/>
+                            </svg>
+                            ${i.price}
+                        </div>
+                        <img src="https://cdn.changes.tg/gifts/originals/${i.id}/Original.png">
+                    </div>
+                `;
+            });
+        }
+
+        function nToggleStock() {
+            const grid = document.getElementById('n-case-stock-grid');
+            const btn = document.getElementById('n-case-show-more');
+            isStockExpanded = !isStockExpanded;
+            
+            if(isStockExpanded) {
+                grid.classList.add('expanded');
+                btn.innerText = "Show less";
+            } else {
+                grid.classList.remove('expanded');
+                btn.innerText = "Show more";
+            }
+        }
+
+        function nSetCaseCount(count) {
+            if(isCaseSpinning) return;
+            nCaseCount = count;
+            document.querySelectorAll('.n-case-toggle-btn').forEach((el, idx) => {
+                el.classList.toggle('active', idx === (count - 1));
+            });
+            document.getElementById('n-case-open-btn').innerText = `Open for ${(CASE_PRICE * count).toFixed(2)} tokens`;
+            nRenderCaseStrips();
+        }
+
+        function nRenderCaseStrips() {
+            const container = document.getElementById('n-case-strips-container');
+            container.innerHTML = '';
+            
+            for(let i = 0; i < nCaseCount; i++) {
+                let markers = '';
+                if(i === 0) markers += '<div class="n-case-marker-top"></div>';
+                if(i === nCaseCount - 1) markers += '<div class="n-case-marker-bot"></div>';
+                
+                let inner = '';
+                for(let j = 0; j < 60; j++) {
+                    const item = allGifts[Math.floor(Math.random() * allGifts.length)] || {id: 'placeholder', price: 0};
+                    inner += nGetCaseItemHTML(item);
+                }
+                
+                container.innerHTML += `
+                    <div class="n-case-strip-wrap">
+                        ${markers}
+                        <div class="n-case-strip" id="n-case-strip-${i}">${inner}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function nGetCaseItemHTML(item) {
+            return `
+                <div class="n-case-item">
+                    <div class="n-case-item-cost">
+                        <svg width="10" height="10" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="19" height="19" rx="9.5" fill="#6D24D3"/>
+                            <rect x="4" y="5" width="11" height="10" fill="url(#pattern_diamond_case)"/>
+                        </svg>
+                        ${item.price}
+                    </div>
+                    <img src="https://cdn.changes.tg/gifts/originals/${item.id}/Original.png">
+                </div>
+            `;
+        }
+
+        async function nSpinCase() {
+            if (isCaseSpinning) return;
+            const totalCost = CASE_PRICE * nCaseCount;
+            if (balance < totalCost) return alert("Insufficient funds");
+
+            isCaseSpinning = true;
+            const btn = document.getElementById('n-case-open-btn');
+            btn.disabled = true;
+            btn.innerText = "Opening...";
+
+            const promises =[];
+            for(let i=0; i < nCaseCount; i++) {
+                promises.push(api("/api/game/case", "POST", { caseId: 'rare', price: CASE_PRICE, pool: allGifts }));
+            }
+
+            const results = await Promise.all(promises);
+
+            if(results.some(r => r.error)) {
+                alert(results.find(r => r.error).error);
+                isCaseSpinning = false;
+                btn.disabled = false;
+                btn.innerText = `Open for ${(CASE_PRICE * nCaseCount).toFixed(2)} tokens`;
+                return;
+            }
+
+            const animPromises =[];
+            for(let i=0; i < nCaseCount; i++) {
+                const winner = results[i].winner;
+                const strip = document.getElementById(`n-case-strip-${i}`);
+                
+                strip.children[45].outerHTML = nGetCaseItemHTML(winner);
+                
+                const itemWidth = 160;
+                const offset = (45 * itemWidth) + (itemWidth / 2) - (window.innerWidth / 2);
+                
+                strip.style.transition = 'transform 4s cubic-bezier(0.15,0,0,1)';
+                strip.style.transform = `translateX(-${offset}px)`;
+
+                animPromises.push(new Promise(res => setTimeout(() => {
+                    showResult(true, winner);
+                    res();
+                }, 4100)));
+            }
+
+            await Promise.all(animPromises);
+            refreshUser();
+
+            setTimeout(() => {
+                isCaseSpinning = false;
+                btn.disabled = false;
+                btn.innerText = `Open for ${(CASE_PRICE * nCaseCount).toFixed(2)} tokens`;
+                nRenderCaseStrips(); 
+            }, 1500); 
+        }
+
+        function nStartCaseTicker() {
+            const track = document.getElementById('n-case-ticker-track');
+            if(!track) return;
+            
+            // Helper function to create a new item
+            const createItem = () => {
+                let gift = allGifts.length > 0 ? allGifts[Math.floor(Math.random() * allGifts.length)] : {id: "placeholder"};
+                const item = document.createElement('div');
+                item.className = 'n-case-ticker-item';
+                // Includes safe fallback image
+                item.innerHTML = `<img src="https://cdn.changes.tg/gifts/originals/${gift.id}/Original.png" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/logo/R.png'">`;
+                return item;
+            };
+
+            if (track.children.length === 0) {
+                // Pre-fill with 6 items immediately on the first run
+                for (let i = 0; i < 6; i++) {
+                    track.appendChild(createItem());
+                }
+            } else {
+                // Normal behavior: pop new item in on the left side
+                track.insertBefore(createItem(), track.firstChild);
+                if (track.children.length > 15) {
+                    track.removeChild(track.lastChild);
+                }
+            }
+
+            // Schedule the next item
+            setTimeout(nStartCaseTicker, Math.floor(Math.random() * 2000) + 1000);
+        }
 
         let balance=0, inventory=[], allGifts=[], activeCase=null;
 
@@ -2228,7 +2484,6 @@
         window.onload = async () => { 
             initMinesGrid(); // <--- safely initializes the grid now
             await Promise.all([refreshUser(), loadGifts()]); 
-            renderCasesMenu(); 
             checkDailyTimer(); 
             hideLoading(); 
         };
@@ -2325,21 +2580,6 @@
             }
         }
         function updateDeepLink() {}
-    
-
-        // --- CASES UI ---
-        function renderCasesMenu() {
-            const c=document.getElementById('cases-list-container'); c.innerHTML='';
-            CASES.forEach(ca => {
-                const d=document.createElement('div'); d.className='glass case-select-card'; if(ca.id==='daily') d.className+=' daily';
-                d.onclick=()=>openCaseView(ca.id);
-                if(ca.id==='daily') d.id='daily-case-btn';
-                let subHtml = `<div class="case-price">${ca.price} TON</div>`;
-                if(ca.id==='daily') subHtml = `<div class="case-price" style="color:var(--success)">FREE</div><div id="daily-timer" class="timer-badge">READY</div>`;
-                d.innerHTML=`<div class="case-img-wrap"><i class="fa-solid ${ca.icon}" style="color:${ca.color}"></i></div><div class="case-info"><div class="case-name">${ca.name}</div>${subHtml}</div><div class="case-btn-icon"><i class="fa-solid fa-chevron-right" style="color:white"></i></div>`;
-                c.appendChild(d);
-            });
-        }
 
         async function sendTonTransaction() {
             const amt = document.getElementById('dep-amount').value || 5;
@@ -2429,34 +2669,6 @@
             btn.innerHTML = '<i class="fa-solid fa-rotate"></i> MANUAL CHECK';
         }
         
-        function openCaseView(id) {
-            activeCase = CASES.find(c=>c.id===id);
-            document.getElementById('cp-name').innerText = activeCase.name;
-            document.getElementById('cp-price').innerText = activeCase.price > 0 ? activeCase.price + " TON" : "FREE";
-            switchView('view-case-play');
-            
-            let pool = [];
-            if(id === 'daily') pool = allGifts.filter(g => g.price < 5);
-            else if(id === 'starter') pool = allGifts.filter(g => g.price < 8); 
-            else if(id === 'rare') pool = allGifts.filter(g => g.price > 5 && g.price < 50);
-            else if(id === 'high') pool = allGifts.filter(g => g.price > 20);
-            else if(id === 'god') pool = allGifts.filter(g => g.price > 100);
-            if(pool.length < 5) pool = allGifts;
-
-            const grid = document.getElementById('case-drops-grid'); grid.innerHTML='';
-            const unique = [...new Map(pool.map(item => [item['id'], item])).values()].sort((a,b)=>b.price-a.price);
-            unique.forEach(i => { grid.innerHTML += `<div class="select-item"><img src="https://cdn.changes.tg/gifts/originals/${i.id}/Original.png"><div style="font-size:9px;">${i.price}</div></div>`; });
-            initCaseStrip(pool);
-        }
-
-        function initCaseStrip(pool) {
-            const s=document.getElementById('case-strip'); s.innerHTML=''; s.style.transform='translateX(0)';
-            for(let i=0;i<60;i++){ 
-                const item = pool[Math.floor(Math.random()*pool.length)];
-                s.innerHTML+=`<div class="case-item"><img src="https://cdn.changes.tg/gifts/originals/${item.id}/Original.png"><div class="price-tag">${item.price}</div></div>`; 
-            }
-        }
-        
         function checkDailyTimer() {
             const last = localStorage.getItem('lastDaily');
             const btn = document.getElementById('daily-case-btn');
@@ -2465,40 +2677,6 @@
                 btn.style.opacity=0.5; btn.onclick=null;
                 document.getElementById('daily-timer').innerText = Math.ceil((86400000-(Date.now()-last))/3600000) + "H LEFT";
             }
-        }
-
-        async function spinCase() {
-            if(!activeCase) return;
-            const btn=document.getElementById('spin-btn');
-            
-            let pool = [];
-            if(activeCase.id === 'daily') pool = allGifts.filter(g => g.price < 5);
-            else if(activeCase.id === 'starter') pool = allGifts.filter(g => g.price < 8);
-            else if(activeCase.id === 'rare') pool = allGifts.filter(g => g.price > 5 && g.price < 50);
-            else if(activeCase.id === 'high') pool = allGifts.filter(g => g.price > 20);
-            else pool = allGifts.filter(g => g.price > 100);
-            if(pool.length < 5) pool = allGifts;
-
-            if(activeCase.price > 0 && balance < activeCase.price) return alert("No funds");
-            btn.disabled=true;
-
-            const res = await api("/api/game/case", "POST", { caseId: activeCase.id, price: activeCase.price, pool: pool });
-            if(res.error) { alert(res.error); btn.disabled=false; return; }
-
-            if(activeCase.id === 'daily') localStorage.setItem('lastDaily', Date.now());
-
-            const winner = res.winner;
-            const strip = document.getElementById('case-strip');
-            strip.children[45].innerHTML = `<img src="https://cdn.changes.tg/gifts/originals/${winner.id}/Original.png"><div class="price-tag">${winner.price}</div>`;
-            const offset = (45 * 118) - (window.innerWidth/2) + 59;
-            strip.style.transition = 'transform 4s cubic-bezier(0.15,0,0,1)';
-            strip.style.transform = `translateX(-${offset}px)`;
-
-            setTimeout(() => {
-                btn.disabled=false; strip.style.transition='none';
-                refreshUser(); showResult(true, winner);
-                setTimeout(() => { strip.style.transform='translateX(0)'; initCaseStrip(pool); }, 500);
-            }, 4100);
         }
 
         // --- MINES LOGIC ---
@@ -3234,7 +3412,7 @@
         
             // 3. Header Visibility
             const header = document.querySelector('header');
-            const viewsWithHeader =['view-home', 'view-crash', 'view-mines', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history', 'view-transactions', 'view-tasks'];
+            const viewsWithHeader =['view-home', 'view-crash', 'view-mines', 'view-inventory', 'view-cases-menu', 'view-upgrade', 'view-leaderboard', 'view-profile', 'view-referral-main', 'view-referral-history', 'view-transactions', 'view-tasks', 'view-case-play'];
 
             if (viewsWithHeader.includes(id)) {
                 header.classList.remove('hidden');
