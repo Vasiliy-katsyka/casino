@@ -836,251 +836,31 @@
             animation: pulseLogo 2s infinite ease-in-out;
         }
         /* --- MINES REDESIGN --- */
-        .n-mines-wrap {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            flex: 1;
-        }
-
-        /* Ticker */
-        .n-mines-ticker-wrap {
-            position: relative;
-            width: calc(100% + 40px);
-            margin: -20px -20px 20px -20px;
-            height: 75px;
-            background: linear-gradient(90deg, rgba(109, 36, 211, 0.4) -4.43%, rgba(6, 6, 6, 0) 47.61%);
-            display: flex;
-            align-items: center;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding: 0 15px;
-            flex-shrink: 0;
-        }
-        .n-mines-ticker-wrap::-webkit-scrollbar { display: none; }
-        .n-mines-ticker-list {
-            display: flex;
-            gap: 10px;
-        }
-        .n-mines-t-card {
-            flex-shrink: 0;
-            width: 154px;
-            height: 55px;
-            background: #161616;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            padding: 6px 10px;
-            box-sizing: border-box;
-            position: relative;
-        }
-        .n-mines-t-card.wotd {
-            border: 1px solid #6D24D3;
-            overflow: visible;
-        }
-        .n-mines-t-img {
-            width: 43px;
-            height: 43px;
-            object-fit: contain;
-            margin-right: 10px;
-            background: transparent;
-        }
-        .n-mines-t-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .n-mines-t-name {
-            font-family: 'Inter';
-            font-weight: 600;
-            font-size: 16px;
-            color: #FFFFFF;
-            text-transform: uppercase;
-        }
-        .n-mines-t-time {
-            font-family: 'Inter';
-            font-weight: 500;
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-        .n-mines-wotd-label {
-            position: absolute;
-            bottom: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(270deg, #6D24D3 0%, #BA60FF 100%);
-            border-radius: 3px;
-            font-family: 'Inter';
-            font-weight: 700;
-            font-size: 10px;
-            color: #FFFFFF;
-            padding: 2px 10px;
-            white-space: nowrap;
-            text-transform: uppercase;
-            z-index: 2;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-
-        /* Grid Size Selector */
-        .n-mines-size-selector {
-            width: 100%;
-            height: 49px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            padding: 3px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-        }
-        .n-mines-size-btn {
-            flex: 1;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Inter';
-            font-weight: 500;
-            font-size: 18px;
-            color: #FFFFFF;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .n-mines-size-btn.active {
-            background: #6D24D3;
-        }
-
-        /* Play Grid */
-        .n-mines-play-grid {
-            display: grid;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        .n-mines-play-grid.grid-3 { grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .n-mines-play-grid.grid-5 { grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .n-mines-play-grid.grid-10 { grid-template-columns: repeat(10, 1fr); gap: 4px; }
-
-        .n-mines-tile {
-            aspect-ratio: 1 / 1;
-            background: #161616;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
-            transform-style: preserve-3d;
-        }
-        .n-mines-tile:active { transform: scale(0.95); }
-
-        /* SVG Mask R Logo */
-        .n-mines-r-logo {
-            background: linear-gradient(180deg, #6D24D3 0%, #BA60FF 100%);
-            -webkit-mask-image: url('https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/logo/R.png');
-            -webkit-mask-size: contain;
-            -webkit-mask-repeat: no-repeat;
-            -webkit-mask-position: center;
-        }
-        .n-mines-play-grid.grid-3 .n-mines-r-logo { width: 50px; height: 65px; }
-        .n-mines-play-grid.grid-5 .n-mines-r-logo { width: 40px; height: 52px; }
-        .n-mines-play-grid.grid-10 .n-mines-r-logo { width: 15px; height: 20px; }
-
-        /* Revealed states (Matches your existing style map) */
-        .n-mines-tile.gem .n-mines-r-logo, .n-mines-tile.bomb .n-mines-r-logo { display: none; }
-        .n-mines-tile.gem { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; box-shadow: inset 0 0 15px rgba(0, 255, 136, 0.2); transform: rotateY(180deg); }
-        .n-mines-tile.gem::before { content: '\f3a5'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #00ff88; transform: rotateY(180deg); text-shadow: 0 0 10px #00ff88; font-size: 24px; }
-        .n-mines-tile.bomb { background: rgba(255, 0, 85, 0.1); border-color: #ff0055; box-shadow: inset 0 0 20px rgba(255, 0, 85, 0.4); transform: rotateY(180deg); animation: shake 0.4s; }
-        .n-mines-tile.bomb::before { content: '\f1e2'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: #ff0055; transform: rotateY(180deg); text-shadow: 0 0 15px #ff0055; font-size: 24px; }
-        .n-mines-tile.dimmed { opacity: 0.3; filter: grayscale(1); pointer-events: none; }
-        .n-mines-tile.disabled { pointer-events: none; }
-
-        /* Bottom Controls */
-        .n-mines-controls-box {
-            background: #161616;
-            border-radius: 20px;
-            padding: 20px;
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: auto;
-        }
-        .n-mines-bomb-row {
-            background: #131313;
-            border: 1px solid rgba(255, 255, 255, 0.19);
-            border-radius: 20px;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            margin-bottom: 15px;
-        }
-        .n-mines-icon-btn {
-            width: 31px;
-            height: 31px;
-            background: #202020;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .n-mines-icon-btn:active { transform: scale(0.9); }
-        .n-mines-bomb-display {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: white;
-        }
-        .n-mines-bomb-display input {
-            background: transparent; border: none; color: white;
-            font-family: 'Inter'; font-weight: 500; font-size: 16px;
-            width: 30px; text-align: right; outline: none; pointer-events: none;
-        }
-
-        .n-mines-bet-btn {
-            width: 100%;
-            height: 66px;
-            background: linear-gradient(90deg, #BA60FF 0%, #6D24D3 100%);
-            border-radius: 100px;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
-            font-family: 'Inter';
-            font-weight: 600;
-            font-size: 16px;
-            color: #FFFFFF;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .n-mines-bet-btn.cashout { background: linear-gradient(90deg, #00ff88 0%, #00cc66 100%); }
-        .n-mines-bet-btn:active { transform: scale(0.98); }
-        .n-mines-bet-btn input {
-            background: transparent; border: none; color: white;
-            font-family: 'Inter'; font-weight: 500; font-size: 16px;
-            width: 50px; text-align: right; outline: none;
-        }
-        .n-mines-crystal {
-            width: 20px; height: 20px; background: transparent; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .n-mines-hud {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 15px; padding: 15px; background: #161616; border-radius: 12px;
-        }
-        .n-mines-multiplier { font-family: 'Inter'; font-size: 24px; font-weight: 700; color: #BA60FF; }
-        .n-mines-profit { font-family: 'Inter'; font-size: 24px; font-weight: 700; color: white; }
+        /* Ticker sizing */
+        .n-mines-ticker-wrap { height: 65px; margin: -20px -20px 15px -20px; }
+        .n-mines-t-card { width: 140px; height: 48px; }
+        .n-mines-t-img { width: 38px; height: 38px; }
+        .n-mines-t-name { font-size: 14px; }
+        .n-mines-t-time { font-size: 9px; }
+        
+        /* Selector & Grid gaps */
+        .n-mines-size-selector { height: 44px; margin-bottom: 15px; }
+        .n-mines-size-btn { font-size: 16px; }
+        .n-mines-play-grid.grid-3 { gap: 12px; }
+        .n-mines-play-grid.grid-5 { gap: 8px; }
+        .n-mines-tile.gem::before { font-size: 20px; }
+        .n-mines-tile.bomb::before { font-size: 20px; }
+        
+        /* Controls box and buttons */
+        .n-mines-controls-box { padding: 15px; }
+        .n-mines-bomb-row { height: 55px; margin-bottom: 12px; }
+        .n-mines-bet-btn { height: 55px; font-size: 15px; padding: 0 20px; }
+        .n-mines-icon-btn { width: 28px; height: 28px; }
+        
+        /* HUD adjustments */
+        .n-mines-hud { padding: 12px; margin-bottom: 12px; }
+        .n-mines-multiplier { font-size: 21px; }
+        .n-mines-profit { font-size: 21px; }
 
         /* --- REDESIGNED CASES CSS --- */
         .n-case-live-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding: 0 5px; }
@@ -1951,7 +1731,6 @@
                 <div class="n-mines-size-selector">
                     <div class="n-mines-size-btn" id="n-size-3" onclick="nSetMinesSize(3)">3X3</div>
                     <div class="n-mines-size-btn active" id="n-size-5" onclick="nSetMinesSize(5)">5X5</div>
-                    <div class="n-mines-size-btn" id="n-size-10" onclick="nSetMinesSize(10)">10X10</div>
                 </div>
 
                 <!-- GRID -->
@@ -3396,6 +3175,7 @@
 
         // --- UTILS ---
         function switchView(id) {
+            document.querySelector('main').scrollTop = 0; 
             // 1. Handle Active View Class
             document.querySelectorAll('.game-view').forEach(e => e.classList.remove('active'));
             document.getElementById(id).classList.add('active');
