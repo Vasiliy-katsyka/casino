@@ -937,6 +937,130 @@
         .n-case-open-btn:active { transform: scale(0.98); }
         .n-case-open-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
+        /* --- LIQUID GLASS BOTTOM NAVIGATION --- */
+        /* --- LIQUID GLASS BOTTOM NAVIGATION --- */
+        /* --- LIQUID GLASS BOTTOM NAVIGATION --- */
+        nav.n-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 85px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 35px 35px 0px 0px;
+            isolation: isolate;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 15px;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
+            
+            /* KILL OLD NAV STYLES SO LIQUID WORKS */
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: none !important;
+        }
+
+        nav.n-nav:focus {
+            outline: none;
+        }
+
+        nav.n-nav::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: 56px 56px 0 0;
+            box-shadow: inset 0 0 15px -5px #000000;
+            background-color: rgba(255, 255, 255, 0);
+            pointer-events: none;
+        }
+
+        nav.n-nav::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: 56px 56px 0 0;
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(0px);
+            filter: url(#glass-distortion);
+            -webkit-filter: url(#glass-distortion);
+            pointer-events: none;
+        }
+
+        /* Base style for Unselected Tabs */
+        .n-nav-item {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #1A1A1A; /* Dark grey circle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1;
+            opacity: 80%;
+            color: #FFFFFF; /* White icon */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0; 
+        }
+
+        .n-nav-item svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s ease;
+        }
+
+        /* Style for Selected Tab */
+        .n-nav-item.active {
+            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
+            opacity: 100%;
+            color: #000000; /* Black icon inside */
+        }
+
+        .n-nav-item.active svg {
+            stroke: #000000;
+        }
+
+        /* --- GLASS GRADIENT BORDER STROKE --- */
+        .n-nav-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: -5px; /* Hides the bottom edge */
+            border-radius: 56px 56px 0 0;
+            padding: 1.5px; /* Stroke thickness */
+            
+            background: 
+                /* 1. Bright White Highlight on Top-Left */
+                radial-gradient(circle at 0% 0%, rgb(255, 255, 255, 0.3) 0%, rgb(126, 126, 126, 0.11) 120px),
+                
+                /* 2. Gray Base with a transparent gap exactly on the Top-Right curve */
+                conic-gradient(from 0deg at calc(100% - 56px) 56px, 
+                    rgba(255, 255, 255, 0.25) 0deg,    /* Top edge: Gray */
+                    rgba(255, 255, 255, 0) 35deg,      /* Start fading out on the curve */
+                    rgba(255, 255, 255, 0) 55deg,      /* Apex of the Top-Right curve: Transparent */
+                    rgba(255, 255, 255, 0.25) 90deg,   /* Fades back to Gray exactly as right edge starts */
+                    rgba(255, 255, 255, 0.25) 360deg   /* Left and Bottom: Gray */
+                );
+            
+            /* The Mask: cuts out the center so ONLY the 1.5px padding is visible */
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            
+            pointer-events: none;
+            z-index: 5;
+        }
+    
         @keyframes pulseLogo {
             0% { transform: scale(0.95); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -946,6 +1070,16 @@
     </style>
 </head>
 <body>
+    <!-- LIQUID GLASS FILTER -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <defs>
+        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.007 0.007" numOctaves="2" seed="92" result="noise" />
+        <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+        <feDisplacementMap in="SourceGraphic" in2="blurred" scale="53" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </defs>
+    </svg>
     <div id="loading-screen">
         <div class="loading-bg-glow"></div>
         <img src="https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/logo/R.png" id="loading-logo" alt="Roller Gift">
@@ -1847,10 +1981,25 @@
             <button class="n-inv-btn-full" style="width: 100px; padding: 8px;" onclick="invCloseModals()">OK</button>
         </div>
     </div>
-    <nav>
-        <div class="nav-item active" id="nav-home" onclick="switchView('view-home')"><i class="fa-solid fa-house"></i>HOME</div>
-        <div class="nav-item" id="nav-leaderboard" onclick="switchView('view-leaderboard')"><i class="fa-solid fa-trophy"></i>LEADERS</div>
-        <div class="nav-item" id="nav-profile" onclick="switchView('view-profile')"><i class="fa-solid fa-user"></i>PROFILE</div>
+    <nav class="n-nav">
+        <div class="n-nav-border"></div>
+        <div class="nav-item n-nav-item active" id="nav-home" onclick="switchView('view-home')">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 10.5L12 4l7 6.5V18a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 16h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="nav-item n-nav-item" id="nav-leaderboard" onclick="switchView('view-leaderboard')">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 21h8M12 17v4M7 4h10v6a5 5 0 0 1-10 0V4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 6H4a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4h1M17 6h3a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="nav-item n-nav-item" id="nav-profile" onclick="switchView('view-profile')">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
     </nav>
 
     <!-- MODALS -->
