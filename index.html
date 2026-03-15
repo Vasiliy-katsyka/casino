@@ -937,6 +937,75 @@
         .n-case-open-btn:active { transform: scale(0.98); }
         .n-case-open-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
+        /* --- NEW BOTTOM NAVIGATION --- */
+        .n-nav-container {
+            position: fixed;
+            width: 100%;
+            max-width: 440px;
+            height: 75px;
+            left: 50%;
+            bottom: 0px;
+            transform: translateX(-50%);
+            background: rgba(22, 22, 22, 0.3);
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+            border-radius: 35px 35px 0px 0px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            z-index: 100;
+            isolation: isolate;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        .n-nav-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            border-radius: 35px 35px 0px 0px;
+            box-shadow: inset 0 0 5px -13px #000000;
+            background-color: rgba(255, 255, 255, 0);
+        }
+        
+        .n-nav-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: 35px 35px 0px 0px;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            filter: url(#n-glass-distortion);
+            -webkit-filter: url(#n-glass-distortion);
+        }
+        
+        .n-nav-item {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .n-nav-item:active {
+            transform: scale(0.92);
+        }
+        
+        .n-nav-item.active {
+            background: linear-gradient(90deg, #6D24D3 0%, #BA60FF 100%);
+            box-shadow: 0 4px 15px rgba(109, 36, 211, 0.4);
+        }
+        
+        .n-nav-item svg {
+            width: 26px;
+            height: 26px;
+        }
+        
         @keyframes pulseLogo {
             0% { transform: scale(0.95); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -1847,10 +1916,62 @@
             <button class="n-inv-btn-full" style="width: 100px; padding: 8px;" onclick="invCloseModals()">OK</button>
         </div>
     </div>
-    <nav>
-        <div class="nav-item active" id="nav-home" onclick="switchView('view-home')"><i class="fa-solid fa-house"></i>HOME</div>
-        <div class="nav-item" id="nav-leaderboard" onclick="switchView('view-leaderboard')"><i class="fa-solid fa-trophy"></i>LEADERS</div>
-        <div class="nav-item" id="nav-profile" onclick="switchView('view-profile')"><i class="fa-solid fa-user"></i>PROFILE</div>
+    <!-- LIQUID GLASS FILTER DEF -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+      <defs>
+        <filter id="n-glass-distortion" x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.007 0.007" numOctaves="2" seed="92" result="noise" />
+          <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+          <feDisplacementMap in="SourceGraphic" in2="blurred" scale="53" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
+    
+    <!-- NEW NAVIGATION -->
+    <nav class="n-nav-container">
+        <div class="n-nav-item active" id="nav-home" onclick="switchView('view-home')">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 13.2039C3 10.9155 3 9.77128 3.5192 8.82274C4.0384 7.87421 4.98695 7.28551 6.88403 6.10813L8.88403 4.86687C10.8894 3.62229 11.8921 3 13 3C14.1079 3 15.1106 3.62229 17.116 4.86687L19.116 6.10812C21.0131 7.28551 21.9616 7.87421 22.4808 8.82274C23 9.77128 23 10.9155 23 13.2039V14.725C23 18.6258 23 20.5763 21.8284 21.7881C20.6569 23 18.7712 23 15 23H11C7.22876 23 5.34315 23 4.17157 21.7881C3 20.5763 3 18.6258 3 14.725V13.2039Z" stroke="#1E2121" stroke-width="2"/>
+                <path d="M16 19H10" stroke="#1E2121" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        
+        <div class="n-nav-item" id="nav-leaderboard" onclick="switchView('view-leaderboard')">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g clip-path="url(#clip0_816_216)">
+                    <mask id="mask0_816_216" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="2" width="27" height="23">
+                        <rect x="0.5" y="2.5" width="25.9636" height="21.6364" fill="url(#pattern0_816_216)"/>
+                    </mask>
+                    <g mask="url(#mask0_816_216)">
+                        <rect x="0.5" y="2.5" width="26.1634" height="21.8028" fill="#B3BEC1"/>
+                    </g>
+                </g>
+                <defs>
+                    <pattern id="pattern0_816_216" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_816_216" transform="matrix(0.0104167 0 0 0.0125 -0.0208333 -0.125)"/>
+                    </pattern>
+                    <clipPath id="clip0_816_216"><rect width="26" height="26" fill="white"/></clipPath>
+                    <image id="image0_816_216" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
+                </defs>
+            </svg>
+        </div>
+        
+        <div class="n-nav-item" id="nav-profile" onclick="switchView('view-profile')">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <mask id="mask0_816_221" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="26">
+                    <rect width="26" height="26" fill="url(#pattern0_816_221)"/>
+                </mask>
+                <g mask="url(#mask0_816_221)">
+                    <rect width="26" height="26" fill="#B3BEC1"/>
+                </g>
+                <defs>
+                    <pattern id="pattern0_816_221" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_816_221" transform="translate(-0.222222 -0.277778) scale(0.0144444)"/>
+                    </pattern>
+                    <image id="image0_816_221" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHklEQVR4nO2dW6hWRRTHR000LUm7p0L0kGYP3iiiIColKuihgpAeDHoIuhwjkB6MworsRhD1kl2keupC9VBRnXoILbVMz8uJMisVi64qSuUpL79YfEv42Gf29nyd2ZeZvX7wwWHv/c1/Zu1v75lZs2Yd5wzDMAzDMAzDMAzDMAzDMAzDMAzDMAzDMIzwAFOB64EngfeBQWC7fgb1mJy7Tq6tu77JAlwOvAX8w8gZAt4ELqu7/skAzAc+ZfSsBebV3Z5oAcYBDwCHCMdBYKWUXXf7ogI4AfhghEberX3HoP49EqSfmVx3O2O6GRsKjLkHeB64Fpjk+f4kPfcCsLegnPWiVU8rIwE4Dvgwx4B/A4/1MnLSEdnjwIGCJ8VeX3kAD+cY7ltg9ijKPQ/YllP2g2FbkQjAhcDhnNHRtADlT9OyssigYWGYViQCMAb4wmOsrSEnd/oKkzKzbAilkQTANR4j/QnMKkFrtpad5arQWtGinWtl73bgoWFq8F5ZelEBnOmZ/P0GnFii5hTVyE4aT3NtB1jq+bU+VYHu0x7dm1zbAZ7zGOaKCnQXeXSfdW3H4zgckgliBbrjPZ7jta7tALsyRtleofaOjPZO13aAfRmjfFahtvizutnr2g6wP2OUdRVqr8to73NtB/gpY5TvKtT+PqO9y7UdYGPGKH8BYyvQHevxAq93bQd4ieFcVIHuxR7dNa7tALd6DPNIBbqyTpLlFtd2gLOBIxnD7AQmlKg5QTW6kTrMLEszKjyjHeHuEvWWM5xPytKLDmCJx0B/iOOxBK2zcoIhbgytFXvIzzceI8kIbGJAnYnA5x6dr6oY2UUFcCV+3gjRn2i/IWX5WBSmFYlBJ3THh7g4zhjlmkteaNHqsK1ICOB4YHOO4X4F7hAvbY8e3Ts9i1FH2SSa5bYqcoDTNewnDwnnuQ+YW1DGXL0mL/QHDXawFcIebsoWjs3vwADwrn4G9Nix+FI06m5nVNAJCV1DeF70haAavYUIbQtwI+Q1eHXd7UkCOp3zzdoJ98omDaQofVm4lQCzgLt0TjGYWeDar8fk3DLg3LrraxiGYRiGYRg9AsxQN32frLsDrwCvd7lO5O+X9VyfXjuj7nonAzATuF3nFb+MYpb+s96s22zd/P/tBVymDsAyOKKz974QexeTBZgOPFOwhbkMDug+kel1t78xyJoE8KjuQ68L2ZawutX9jSYJuLeHJ2IP0A+sAm6QrczAOUd36epO3ql6bKFes0q/I98dCVKXFa1zRALn52yDzrJDszfMD6C5QKMVs3tCfEhkyhyXOvorvkd3SeVxGHhVY2/HlFSHS4DXchIVdD8ty8uoQ5OSykgysaLRzzshnoYe6jRH5zJFKaCkTlNcgmvkst6dx5Y6k4vRCYrIi3ZBz53qEppd+6IShX81odj4hqxK3q918vF19MNjHdL6cougnesC1zCAecAPBTclzidFMjEUvKYGygikDoVESRZ4CjZHl/hMRzJ5cbQfx9BJApO1Q/fxdlTB2Ro16KO/Cf1Fj5NX8SL7WOFiALggp2OUaJCTXJwBexs97TlYxV7IEMHSvqC2H2N2e9PpUyRzdpatIfevBEdyXHkqfajxv6SRz1V8WbVXugYPcX0ukSdcIuDvG4caORQGFufE0yaz/4LO5NEXlb/YNQ3g5EwiGXHcXeoSg86rq3vtRvI3nuIanOr1I90+tsSl/Z8a+jXpc3I/OsMwDMMwDMMwDMMwDMMwDMMwDMNwafEfEoMQHMMEVMYAAAAASUVORK5CYII="/>
+                </defs>
+            </svg>
+        </div>
     </nav>
 
     <!-- MODALS -->
@@ -3200,13 +3321,13 @@
             document.getElementById(id).classList.add('active');
         
             // 2. Handle Bottom Navigation Highlighting
-            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.n-nav-item').forEach(e => e.classList.remove('active'));
             if (id === 'view-home' || id.includes('case')) document.getElementById('nav-home').classList.add('active');
             if (id === 'view-leaderboard') { 
                 document.getElementById('nav-leaderboard').classList.add('active'); 
                 loadLeaderboard(); 
             }
-            if (id === 'view-profile') document.getElementById('nav-profile').classList.add('active'); 
+            if (id === 'view-profile') document.getElementById('nav-profile').classList.add('active');
             if (id === 'view-inventory') renderInventory();
         
             // 3. Header Visibility
