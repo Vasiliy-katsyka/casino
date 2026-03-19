@@ -394,7 +394,6 @@
         .n-home-card:active { transform: scale(0.96); }
         .n-ratio-1 { aspect-ratio: 200 / 180; }
         .n-ratio-2 { height: 100%; min-height: 100%; }
-        .n-win-title { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 20px; color: #FFFFFF; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .n-win-table { background: #161616; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; padding-bottom: 10px; margin-bottom: 20px; position: relative; z-index: 2; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
         .n-win-th {
             background: #1E1E1E;
@@ -408,7 +407,7 @@
         .n-win-th-text.right { text-align: right; }
         .n-win-tr { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 15px 20px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .n-win-tr:last-child { border-bottom: none; }
-        .n-win-ava { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: #FFF; border: 2px solid rgba(255,255,255,0.1); }
+        .n-win-ava { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: #FFF; }
         .n-win-val { display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Inter', sans-serif; font-weight: 400; font-size: 14px; color: #FFFFFF; }
         .n-win-val.right { justify-content: flex-end; }
         .n-win-crystal { width: 20px; height: 20px; background: #6D24D3; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -882,7 +881,17 @@
         .n-mines-profit { font-family: 'Inter'; font-size: 21px; font-weight: 700; color: white; }
 
         /* --- REDESIGNED CASES CSS --- */
-        .n-case-live-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding: 0 5px; }
+        /* Верхняя плашка "Live" с последними выигрышами */
+        .n-case-live-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin-bottom: 25px; 
+            padding: 0; 
+            margin-left: -10px; /* Вытягиваем влево */
+            margin-right: -10px; /* Вытягиваем вправо */
+        }
+
         .n-case-live-badge { width: 50px; height: 40px; background: #151515; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         .n-case-live-dot { width: 5px; height: 5px; background: #2DFF3B; border-radius: 50%; box-shadow: 0 0 5px #2DFF3B; }
         .n-case-live-text { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 11px; line-height: 1; color: #2DFF3B; }
@@ -892,7 +901,6 @@
         @keyframes nTickerPop { from { opacity: 0; transform: scale(0.5) translateX(-20px); } to { opacity: 1; transform: scale(1) translateX(0); } }
         .n-case-ticker-item img { width: 31px; height: 26px; object-fit: contain; }
 
-        .n-case-main-container { background: #161616; border-radius: 20px; padding: 10px 15px 25px 15px; position: relative; display: flex; flex-direction: column; margin-bottom: 20px; }
         .n-case-handle { width: 60px; height: 13px; background: #222222; border-radius: 10px; margin: 0 auto 15px auto; }
         
         .n-case-main-price { position: absolute; left: 15px; top: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(18, 18, 18, 0.68); border-radius: 20px; padding: 8px 14px; z-index: 10; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 15px; color: #FFFFFF; text-transform: uppercase; }
@@ -900,21 +908,13 @@
         .n-case-roulette-section { position: relative; width: 100%; margin-bottom: 25px; padding-top: 45px; } 
 
         .n-case-strips-container { display: flex; flex-direction: column; gap: 15px; position: relative; width: 100%; }
-        .n-case-strip-wrap { position: relative; height: 138px; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); }
         .n-case-strip { display: flex; height: 100%; align-items: center; will-change: transform; transition: transform 4s cubic-bezier(0.15,0,0,1); }
-
-        .n-case-marker-top, .n-case-marker-bot { position: absolute; left: 50%; transform: translateX(-50%); width: 22px; height: 30px; background: #6D24D3; border-radius: 1px; z-index: 5; }
-        .n-case-marker-top { top: 0; clip-path: polygon(50% 100%, 0 0, 100% 0); } 
-        .n-case-marker-bot { bottom: 0; clip-path: polygon(50% 0, 0 100%, 100% 100%); }
-
-        .n-case-item { width: 150px; height: 138px; background: #151515; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; margin: 0 5px; box-sizing: border-box; }
-        .n-case-item img { width: 108px; height: 85px; object-fit: contain; }
         
         /* Updated Item Cost Badge (For stock and roulette items) */
         .n-case-item-cost { position: absolute; top: 10px; left: 10px; background: rgba(18, 18, 18, 0.68); border-radius: 15px; padding: 4px 8px; display: flex; align-items: center; gap: 4px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 10px; color: #FFFFFF; z-index: 2; }
 
         /* Bigger 1 2 3 Buttons */
-        .n-case-spin-toggle { border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; display: flex; height: 49px; padding: 3px; box-sizing: border-box; margin-bottom: 25px; width: 100%; }
+        .n-case-spin-toggle { border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; display: flex; height: 40px; padding: 3px; box-sizing: border-box; margin-bottom: 25px; width: 100%; }
         .n-case-toggle-btn { flex: 1; display: flex; justify-content: center; align-items: center; height: 100%; border-radius: 20px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 18px; color: #FFFFFF; cursor: pointer; transition: 0.3s; }
         .n-case-toggle-btn.active { background: #6D24D3; }
 
@@ -933,7 +933,7 @@
         .n-case-show-more:active { background: rgba(255,255,255,0.05); }
 
         /* Bigger Open Case Button */
-        .n-case-open-btn { background: linear-gradient(90deg, #BA60FF 0%, #6D24D3 100%); border-radius: 100px; height: 60px; width: 100%; border: none; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; color: #FFFFFF; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(109, 36, 211, 0.3); }
+        .n-case-open-btn { background: linear-gradient(90deg, #BA60FF 0%, #6D24D3 100%); border-radius: 100px; height: 50px; width: 100%; border: none; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; color: #FFFFFF; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(109, 36, 211, 0.3); }
         .n-case-open-btn:active { transform: scale(0.98); }
         .n-case-open-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
@@ -1029,6 +1029,55 @@
             stroke: #000000;
         }
 
+        /* --- HOME FIXES --- */
+        .n-win-title { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 20px; color: #FFFFFF; margin-bottom: 15px; } /* Изменили на 500 */
+
+        /* Третий блюр на главном экране снизу */
+        .n-home-bg-3 {
+            position: absolute;
+            width: 280px; height: 280px;
+            left: 50%; bottom: 0;
+            transform: translateX(-50%);
+            background: #6D24D3;
+            opacity: 0.45;
+            filter: blur(80px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+
+        /* Главный темный контейнер с рулеткой и кнопками */
+        .n-case-main-container { 
+            background: #161616; 
+            border-radius: 20px; 
+            padding: 10px 15px 25px 15px; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            margin-bottom: 120px; 
+            flex-shrink: 0; 
+            margin-left: -10px; /* Вытягиваем влево */
+            margin-right: -10px; /* Вытягиваем вправо */
+        }
+
+        /* Увеличиваем рулетку */
+        .n-case-strip-wrap { position: relative; height: 160px; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, transparent); }
+        .n-case-item { width: 160px; height: 160px; background: #151515; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; margin: 0 5px; box-sizing: border-box; }
+        .n-case-item img { width: 110px; height: 110px; object-fit: contain; }
+
+        /* Скругленные треугольники (сделаны через повернутый квадрат) */
+        .n-case-marker-top, .n-case-marker-bot { 
+            position: absolute; 
+            left: 50%; 
+            width: 20px; 
+            height: 20px; 
+            background: #6D24D3; 
+            border-radius: 4px; /* Небольшое скругление */
+            z-index: 5; 
+        }
+        .n-case-marker-top { top: -10px; transform: translateX(-50%) rotate(45deg); clip-path: none; } 
+        .n-case-marker-bot { bottom: -10px; transform: translateX(-50%) rotate(45deg); clip-path: none; }
+
         /* --- GLASS GRADIENT BORDER STROKE --- */
         .n-nav-border {
             position: absolute;
@@ -1061,6 +1110,59 @@
             z-index: 5;
         }
     
+        /* Фикс расстояния в лайв-ленте мин */
+        .n-mines-t-name { margin-bottom: 2px !important; line-height: 1.1 !important; }
+        .n-mines-t-time { margin-top: 0px !important; line-height: 1 !important; }
+
+        /* Align Mines button items to the left */
+        #mines-action-btn {
+            justify-content: flex-start; /* Aligns all children to the left edge */
+        }
+
+        /* Target ONLY the wallet icon SVG */
+        #mines-action-btn > svg:first-child {
+            margin-left: 10px; /* This gives the icon the specific 10px offset */
+            flex-shrink: 0;
+        }
+
+        /* Add space between icon and text */
+        #mines-btn-text {
+            margin-left: 20px; 
+        }
+
+        /* Push the bet amount (right-side) to the far right */
+        #mines-action-btn .right-side {
+            margin-left: auto; 
+            margin-right: 20px; /* Offset from the right edge */
+        }
+
+        /* Универсальные стили для кнопок BET (Кошелек слева, Токен и сумма справа) */
+        .n-cba-bet-btn svg.wallet-icon {
+            position: absolute;
+            left: 20px;
+        }
+        .n-cba-bet-btn .right-side {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            z-index: 2;
+        }
+        .n-cba-bet-btn input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            width: 45px;
+            text-align: right;
+            outline: none;
+        }
+
         @keyframes pulseLogo {
             0% { transform: scale(0.95); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -1210,7 +1312,7 @@
                     
                     <!-- Mock Row 1 -->
                     <div class="n-win-tr">
-                        <img class="n-win-ava" src="https://ui-avatars.com/api/?name=W&background=fff&color=000">
+                        <img class="n-win-ava" src="https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/avatars/avatar-2.png">
                         <div class="n-win-val">100 
                             <div class="n-win-crystal">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -1241,7 +1343,7 @@
                     
                     <!-- Mock Row 2 -->
                     <div class="n-win-tr">
-                        <img class="n-win-ava" src="https://ui-avatars.com/api/?name=B&background=d9d9d9&color=000">
+                        <img class="n-win-ava" src="https://raw.githubusercontent.com/Vasiliy-katsyka/casino/main/avatars/avatar-1.png">
                         <div class="n-win-val">50 
                             <div class="n-win-crystal">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -1445,7 +1547,14 @@
                 </div>
 
                 <button class="n-cba-bet-btn" id="crash-action-btn" onclick="toggleCrash()">
-                    <i class="fa-solid fa-wallet"></i> BET <span class="right" id="crash-bet-display">$10</span>
+                    <svg class="wallet-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"></path><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"></path>
+                    </svg>
+                    <span id="crash-btn-text">BET</span>
+                    <div class="right-side">
+                        <svg width="14" height="14" viewBox="0 0 23 23" fill="none"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg>
+                        <span id="crash-bet-display">10.0</span>
+                    </div>
                 </button>
             </div>
 
@@ -1904,25 +2013,43 @@
                 </div>
 
                 <!-- CONTROLS -->
+                <!-- CONTROLS -->
                 <div class="n-mines-controls-box">
                     <div class="n-mines-bomb-row">
                         <button class="n-mines-icon-btn" onclick="nMinesChangeBombs(-1)"><i class="fa-solid fa-minus"></i></button>
                         <div class="n-mines-bomb-display">
                             <input type="number" id="mines-count" value="1" min="1" max="24" readonly>
-                            <i class="fa-solid fa-bomb" style="font-size: 18px;"></i>
+                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <rect width="22" height="22" fill="url(#pattern0_766_112)"/>
+                                <defs>
+                                <pattern id="pattern0_766_112" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                <use xlink:href="#image0_766_112" transform="scale(0.01)"/>
+                                </pattern>
+                                <image id="image0_766_112" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
+                                </defs>
+                            </svg>
                         </div>
                         <button class="n-mines-icon-btn" onclick="nMinesChangeBombs(1)"><i class="fa-solid fa-plus"></i></button>
                     </div>
 
-                    <div class="n-mines-bet-btn" id="mines-action-btn">
-                        <div id="mines-btn-text" onclick="toggleMines()" style="flex:1; height:100%; display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-wallet" style="font-size: 20px;"></i> BET
-                        </div>
-                        <div style="display:flex; align-items:center; gap:5px; padding-left: 10px; z-index: 2;">
-                            <div class="n-mines-crystal"><svg width="35" height="35" viewBox="0 0 23 23" fill="none"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg></div>
+                    <!-- Одинаковая кнопка BET -->
+                    <button class="n-cba-bet-btn" id="mines-action-btn" onclick="toggleMines()">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect width="20.2903" height="20.2903" fill="url(#pattern0_766_102)"/>
+                            <defs>
+                            <pattern id="pattern0_766_102" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_766_102" transform="scale(0.01)"/>
+                            </pattern>
+                            <image id="image0_766_102" width="100" height="100" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAADTElEQVR4nO3dQYgOYRzH8UES1iLExQEXuVC05bRrcbKbg3JYkTiJohwWCSdxcFZsUi7UYlkpubk4rJAiSVZIbCRkLWm/eurBtoc1887z7vOfmd+n3ts2O8/z3Xdmdmbed5JERERERCQoYAKwFNgOnAHuAE+B98B94CKw3v1c2N8sfwELgK3ABeAd6XQDU/4tRWrmJhJYC5wEHgDD1OZ07WtRccAyYB9wE/hGGL/c5i322AoBmANsBrqAV9TPkdhjNQmYBKwEOoHbwE/Gx63YYzcDWALsAq4Cn4mjP6kqYDqwDjgBPMaGD0lVABNHbYZ+YM9gUmbAQmAncMn99VEASZkAU0dshu7l+J8gmqTogMXAXr8Z+k7BJQXdF2zIeGqiMJKiAGb7d8ILSiyxDpjr9wmDVEBi/KTdMeArFZJYBKzy1wtuAPuB1f4QdlrsdascoA044K4rxF6XyvM77nmx10OkGIBGYIe/EPQGGKJ6vviTn5eBbcCsWKdAjlflUDcjd9R51J2tHq8Yy4FnWdeygvqBFfWO0QR8jD3SAnHX89vrFWMR8Cn2CAsapSl0jMnA3dgjK7C3wMyQQXbHHlEJnAp5zup17NGUgLszZn6IIJtij6RE9oQIcj72KEok/31dwJPYoyiR5yGCxLoprYyGQgSRgBTEGAUxRkGMURBjFMQYBTFGQYxREGMUxBgFMUZBjFEQYxTEGAUxRkGMUZBweoBm/4UG7tUCXM+6EAUJo3OM+TmUZUEKkl9PijnqTbswBcmvOcUcrUm7MAXJryHFHM1IuzAFGZ8g7oNLqShIfi0p5qg17cIUJL9rKebIfTw8FQUJ4+AY83M4y4IUJJxefzTV4F+tWd4ZfyiIMQpijIIYoyDGKIgxCmKMghijIMYoiDEKYoyCGKMgxiiIMQpijIIYoyAlDFK4Z3wYNhwiSCGefFMQAyGCPIo9ihJ5GCLIudijKJGzIYJsjD2KEmkL9Z2LL2OPpCRfrBzmidP+cdeST0eQGCMeBO+eNSi1ueLmMFgQH8XdHNZX4wpVWV/dvpjff5SrO/YIC3a3Y2NdYozafG3Rjv6/O/CO4JupFEdf7f6h8u6fxwGqa8DPQZefkzBHUyIiIiIiIkn9/QYHdJPbsDyUuwAAAABJRU5ErkJggg=="/>
+                            </defs>
+                        </svg>
+
+                        <span id="mines-btn-text">BET</span>
+                        <div class="right-side" onclick="event.stopPropagation()">
+                            <svg width="14" height="14" viewBox="0 0 23 23" fill="none"><rect width="23" height="23" fill="url(#pattern0_620_13217)"/></svg>
                             <input type="number" id="mines-bet" value="10" step="1" min="0.5">
                         </div>
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -2904,7 +3031,7 @@
             
             if (isMinesRunning) {
                 // CASHOUT FLOW
-                btnText.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> CASHOUT...`;
+                btnText.innerHTML = `CASHOUT...`;
                 actionBtn.style.pointerEvents = 'none';
                 
                 const res = await api("/api/game/mines/cashout", "POST");
@@ -2970,7 +3097,7 @@
             const inputBet = document.getElementById('mines-bet');
             
             // Return back to default BET Button State
-            btnText.innerHTML = `<i class="fa-solid fa-wallet" style="font-size: 20px;"></i> BET`;
+            btnText.innerHTML = `BET`;
             actionBtn.classList.remove('cashout');
             actionBtn.style.pointerEvents = 'auto';
             inputBet.disabled = false;
@@ -3269,12 +3396,12 @@
             const btn = document.getElementById('crash-action-btn');
             const msg = document.getElementById('crash-status');
             const uiMult = document.getElementById('crash-text');
-
+            const btnText = document.getElementById('crash-btn-text');
             if (RocketEngine.status === 'RUNNING' && !RocketEngine.hasCashedOut) {
                 const finalMult = RocketEngine.cashOut();
                 const winAmt = RocketEngine.bet * finalMult;
                 
-                btn.innerHTML = "SYNCING..."; btn.disabled = true;
+                btnText.innerHTML = "SYNCING..."; btn.disabled = true;
                 
                 const res = await api("/api/game/crash/cashout", "POST", { winAmt: winAmt });
                 btn.disabled = false;
@@ -3297,7 +3424,7 @@
 
                 if(balance < betAmt) { alert("Insufficient funds!"); return; }
 
-                btn.innerHTML = "PREPARING..."; btn.disabled = true;
+                btnText.innerHTML = "PREPARING..."; btn.disabled = true;
 
                 const res = await api("/api/game/crash/start", "POST", { bet: betAmt });
                 btn.disabled = false;
@@ -3325,7 +3452,7 @@
         function crashEnd() {
             RocketEngine.crash();
             const btn = document.getElementById('crash-action-btn');
-            btn.innerHTML = `<i class="fa-solid fa-wallet"></i> BET <span class="right" id="crash-bet-display">$10</span>`; 
+            document.getElementById('crash-btn-text').innerHTML = `BET`;
             btn.classList.remove('cashout');
             
             if (!RocketEngine.hasCashedOut) {
